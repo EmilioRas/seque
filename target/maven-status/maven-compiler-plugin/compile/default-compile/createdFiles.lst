@@ -1,3 +1,7 @@
 device\MidiAccess1.class
-device\MidiAccess.class
 Main.class
+device\AudioAccess.class
+seque\TrackSeque.class
+device\MidiAccess.class
+device\AudioAccess1.class
+seque\Seque.class

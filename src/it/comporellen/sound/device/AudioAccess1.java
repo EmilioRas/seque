@@ -29,8 +29,10 @@ public class AudioAccess1 implements AudioAccess {
         this.lines = new LinkedList<Line>();
         this.ports = new LinkedList<Port>();
         for (int au = 0; au < mixerInfos.length; au++){
+            System.out.print("AU num >> ["+au+"] \n");
             System.out.println("\t" + AudioSystem.getMixer(mixerInfos[au]).getMixerInfo().getName());
             System.out.println("\t\t" + AudioSystem.getMixer(mixerInfos[au]).getMixerInfo().getVendor());
+            System.out.println("\t\t\t"+ mixerInfos[au].getDescription());
         }
         AudioAccess1.audioAccess1 = this;
     }

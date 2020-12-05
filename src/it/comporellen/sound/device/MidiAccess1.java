@@ -10,8 +10,7 @@ public final class MidiAccess1 implements MidiAccess {
     private List<Synthesizer> synths;
     private List<Sequencer> sequencers;
 
-    private List<Receiver> receivers;
-    private List<Transmitter> transmitters;
+    private List<MidiDevice> midi;
 
     private MidiDevice device;
     private MidiDevice.Info[] infos = MidiSystem.getMidiDeviceInfo();
@@ -31,33 +30,29 @@ public final class MidiAccess1 implements MidiAccess {
 
 
     private MidiAccess1(){
-        this.receivers = new LinkedList<Receiver>();
-        this.transmitters = new LinkedList<Transmitter>();
+        this.midi = new LinkedList<MidiDevice>();
         this.synths = new LinkedList<Synthesizer>();
         this.sequencers = new LinkedList<Sequencer>();
         for (int sy = 0; sy < infos.length; sy++){
             try {
+                System.out.print("SY num >> ["+sy+"] \n");
                 device = MidiSystem.getMidiDevice(infos[sy]);
                 if (device instanceof Synthesizer){
                     this.synths.add((Synthesizer) device);
                     System.out.println("Add new synth ..." + infos[sy].getName() + ", " + infos[sy].getVendor());
-
+                    System.out.println("\t"+ infos[sy].getDescription());
                 }
                 if (device instanceof Sequencer){
                     this.sequencers.add((Sequencer) device);
                     System.out.println("Add new sequencer ..." + infos[sy].getName() + ", " + infos[sy].getVendor());
-
+                    System.out.println("\t"+ infos[sy].getDescription());
                 }
-                if (device instanceof Receiver){
-                    this.receivers.add((Receiver) device);
-                    System.out.println("Add new receiver ..." + infos[sy].getName() + ", " + infos[sy].getVendor());
-
+                if (device instanceof MidiDevice){
+                    this.midi.add((MidiDevice) device);
+                    System.out.println("Add new midi ..." + infos[sy].getName() + ", " + infos[sy].getVendor());
+                    System.out.println("\t"+ infos[sy].getDescription());
                 }
-                if (device instanceof Transmitter){
-                    this.transmitters.add((Transmitter) device);
-                    System.out.println("Add new transmitter ..." + infos[sy].getName() + ", " + infos[sy].getVendor());
 
-                }
             } catch (MidiUnavailableException m){
                 System.err.println("MidiAcc1 error : " + infos[sy].getName() + " ," + infos[sy].getVendor());
                 continue;
@@ -83,6 +78,14 @@ public final class MidiAccess1 implements MidiAccess {
         } else {
             return null;
         }
+    }
+
+    @Override
+    public MidiDevice getMidiDevice(int index){
+        if (this.midi.size() > index){
+            return this.midi.get(index);
+        }
+        return null;
     }
 
     @Override
