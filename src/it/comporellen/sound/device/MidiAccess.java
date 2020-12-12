@@ -11,4 +11,6 @@ public interface MidiAccess {
     public Receiver getReceiver();
     public Transmitter getTransmitter();
     public MidiDevice getMidiDevice(int index);
+    public Object getSqeContext() throws Exception;
+
 }

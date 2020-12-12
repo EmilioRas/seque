@@ -1,21 +1,40 @@
+package seque;
+
+import bridge.SingleMidiCommunication;
 import device.AudioAccess;
 import device.AudioAccess1;
 import device.MidiAccess;
 import device.MidiAccess1;
-import seque.Seque;
-import seque.TrackSeque;
 
 import javax.sound.midi.*;
 import java.io.*;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Scanner;
 
-public class Main {
+public class MainSeque {
 
     public static final String loaderExtName = "sqe";
     public static final String loaderInitTrackSymb = "#>";
 
     private AudioAccess audioAccess;
     private MidiAccess midiAccess;
+
+    private List<MidiDevice> midiTransmetter;
+    private List<MidiDevice> midiRecever;
+
+    public List<MidiDevice> getMidiTransmetter() {
+        return midiTransmetter;
+    }
+
+    public List<MidiDevice> getMidiRecever() {
+        return midiRecever;
+    }
+
+    public MainSeque(){
+        this.midiRecever = new LinkedList<MidiDevice>();
+        this.midiTransmetter = new LinkedList<MidiDevice>();
+    }
 
     public AudioAccess getAudioAccess() {
         return audioAccess;
@@ -34,7 +53,7 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        Main main = new Main();
+        MainSeque main = new MainSeque();
 
         main.setAudioAccess(AudioAccess1.getInstance());
         main.setMidiAccess(MidiAccess1.getInstance());
@@ -56,57 +75,62 @@ public class Main {
         }
 
         Scanner io = new Scanner(System.in);
+        ((MidiAccess1)main.getMidiAccess()).setSqeContext(main);
+        try {
+            main.singleMidiConnect(0, io, main.getMidiAccess());
+        } catch (Exception e){
+            System.err.println(e.getMessage());
+        }
+        String e = io.next();
+        synchronized (main.getMidiRecever().get(0)) {
+            if (e.equals("q")){
 
-        System.out.println("What do you want connect for midi in ?");
-        System.out.println("number of SY description device...");
-        String d1 = io.next();
-        System.out.println("What do you want connect for midi out ?");
-        System.out.println("number of SY description device...");
-        String d2 = io.next();
-
-        int iD1 = Integer.parseInt(d1);
-
-        int iD2 = Integer.parseInt(d2);
-
-        MidiDevice midi2 = main.getMidiAccess().getMidiDevice(iD2);
-        MidiDevice midi1 = main.getMidiAccess().getMidiDevice(iD1);
-        int i = 0;
-        do {
-
-            synchronized (midi1){
-                Receiver r = null;
-                Transmitter t = null;
-
-                try {
-                    r = midi1.getReceiver();
-                    t = midi2.getTransmitter();
-
-                    t.setReceiver(r);
-                    midi1.open();
-                    midi2.open();
-                    String e = io.next();
-                    if (e.equals("q")){
-                        i = -2;
-                    }
-                } catch (MidiUnavailableException m){
-                    System.err.println("Unavailable midi error ," + m.getMessage());
-                    i = -2;
-                } finally {
-                    midi1.close();
-                    midi2.close();
-                }
+                System.exit(0);
             }
-
-            i++;
-        } while (i > -1);
+        }
     }
 
-    private void createSeque(Main main, String[] args){
+    private void singleMidiConnect(int index,Scanner io, MidiAccess midiAccess) throws Exception{
+        System.out.println("Do you want connect two midi devices ? (Yes/no)");
+        String con = io.next();
+
+        if (con.equals("Y") || con.equals("y")) {
+            System.out.println("What do you want connect for midi in ?");
+            System.out.println("number of SY description device...");
+            String d1 = io.next();
+            System.out.println("What do you want connect for midi out ?");
+            System.out.println("number of SY description device...");
+            String d2 = io.next();
+
+            int iD1 = Integer.parseInt(d1);
+
+            int iD2 = Integer.parseInt(d2);
+
+            this.getMidiTransmetter().
+                    add(midiAccess.getMidiDevice(iD2));
+            this.getMidiRecever().
+                    add(midiAccess.getMidiDevice(iD1));
+
+            index++;
+            synchronized (this.getMidiTransmetter().get((index - 1))) {
+                SingleMidiCommunication smc = new SingleMidiCommunication();
+                smc.setMidi1(this.getMidiRecever().get((index - 1)));
+                smc.setMidi2(this.getMidiTransmetter().get((index - 1)));
+                Thread t = new Thread((Runnable) smc);
+                t.start();
+                this.singleMidiConnect(index,io,midiAccess);
+            }
+        } else {
+            return;
+        }
+    }
+
+    private void createSeque(MainSeque main, String[] args){
         InputStream loaderIn = null;
         Seque sequeLoader = new TrackSeque();
         try {
             loaderIn = new FileInputStream(
-                    new File(args[0] + File.separator + args[1] + "." + Main.loaderExtName));
+                    new File(args[0] + File.separator + args[1] + "." + MainSeque.loaderExtName));
             boolean isTk = false;
 
             int len = 0;
@@ -133,7 +157,7 @@ public class Main {
 
     private boolean readTkLoader(byte[] b){
         String c = new String(b,0,2);
-        if (c.equals(Main.loaderInitTrackSymb)){
+        if (c.equals(MainSeque.loaderInitTrackSymb)){
             return true;
         }
         return false;

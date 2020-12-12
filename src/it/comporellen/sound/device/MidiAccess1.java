@@ -1,11 +1,21 @@
 package device;
 
+
+import seque.MainSeque;
+
 import javax.sound.midi.*;
 import java.util.LinkedList;
 import java.util.List;
 
 
 public final class MidiAccess1 implements MidiAccess {
+
+
+    private MainSeque context;
+
+    public void setSqeContext(MainSeque context) {
+        this.context = context;
+    }
 
     private List<Synthesizer> synths;
     private List<Sequencer> sequencers;
@@ -86,6 +96,16 @@ public final class MidiAccess1 implements MidiAccess {
             return this.midi.get(index);
         }
         return null;
+    }
+
+    @Override
+    public Object getSqeContext() throws Exception {
+        try {
+            return this.getSqeContext();
+        } catch (Exception e){
+            throw new Exception(e);
+        }
+
     }
 
     @Override
