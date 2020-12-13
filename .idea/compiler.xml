@@ -6,11 +6,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="Seque" />
+        <module name="seque" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="Seque" target="1.8" />
+      <module name="seque" target="1.7" />
     </bytecodeTargetLevel>
   </component>
 </project>
