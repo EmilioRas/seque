@@ -10,4 +10,4 @@ Build your main folder (folder where is the pom.xml) . To build you must run thi
 - mvn clean package
 
 #Start
-[your java jer path]\java.exe -jar seque-1.0.jar . loader
+- [your java jer path]\java.exe -jar seque-1.0.jar . loader
