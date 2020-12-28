@@ -101,10 +101,13 @@ public class MainSeque {
             System.out.println("What do you want connect for midi out ?");
             System.out.println("number of SY description device...");
             String d2 = io.next();
-
+            System.out.println("What channel for out ?");
+            String dc3 = io.next();
             int iD1 = Integer.parseInt(d1);
 
             int iD2 = Integer.parseInt(d2);
+
+            int iDC3 = Integer.parseInt(dc3);
 
             this.getMidiTransmetter().
                     add(midiAccess.getMidiDevice(iD2));
@@ -116,6 +119,7 @@ public class MainSeque {
                 SingleMidiCommunication smc = new SingleMidiCommunication();
                 smc.setMidi1(this.getMidiRecever().get((index - 1)));
                 smc.setMidi2(this.getMidiTransmetter().get((index - 1)));
+                smc.setCurrCh(iDC3);
                 Thread t = new Thread((Runnable) smc);
                 t.start();
                 this.singleMidiConnect(index,io,midiAccess);
