@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Seque.iml" filepath="$PROJECT_DIR$/Seque.iml" />
+      <module fileurl="file://$PROJECT_DIR$/src/it/comporellen/comporellen.iml" filepath="$PROJECT_DIR$/src/it/comporellen/comporellen.iml" />
+      <module fileurl="file://$PROJECT_DIR$/seque.iml" filepath="$PROJECT_DIR$/seque.iml" />
     </modules>
   </component>
 </project>

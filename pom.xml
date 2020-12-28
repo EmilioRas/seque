@@ -30,8 +30,8 @@
         </dependency>
     </dependencies>
     <build>
-        <testSourceDirectory>./src/it/comporellen/sound/test</testSourceDirectory>
-        <sourceDirectory>./src/it/comporellen/sound</sourceDirectory>
+        <testSourceDirectory>src/it/comporellen/sound/test</testSourceDirectory>
+        <sourceDirectory>src/it/comporellen/sound</sourceDirectory>
         <plugins>
             <plugin>
 
