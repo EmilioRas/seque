@@ -91,7 +91,7 @@ public class MainSeque {
     }
 
     private void singleMidiConnect(int index,Scanner io, MidiAccess midiAccess) throws Exception{
-        System.out.println("Do you want connect two midi devices ? (Yes/no)");
+        System.out.println("Do you want connect two midi devices ? (Y/N)");
         String con = io.next();
 
         if (con.equals("Y") || con.equals("y")) {
