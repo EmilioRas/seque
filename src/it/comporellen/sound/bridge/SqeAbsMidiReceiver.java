@@ -27,6 +27,7 @@ public abstract class SqeAbsMidiReceiver implements SqeReceiverCh {
             SqeMessage midi = new SqeMessage(new byte[]{(byte) (
                 message.getMessage()[0] | (this.currentCh & 0x0F)),
                 message.getMessage()[1], message.getMessage()[2]});
+
             return midi;
         }
        return message;
