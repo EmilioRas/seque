@@ -11,3 +11,5 @@ Build your main folder (folder where is the pom.xml) . To build you must run thi
 
 #Start
 - [your java jer path]\java.exe -jar seque-1.0.jar . loader
+
+https://youtu.be/3Z_Yb8uY5Qo
