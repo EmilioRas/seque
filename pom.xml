@@ -9,6 +9,11 @@
     <packaging>jar</packaging>
     <dependencies>
         <dependency>
+            <groupId>usb</groupId>
+            <artifactId>JUSB</artifactId>
+            <version>1.0.7</version>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.12</version>
@@ -52,6 +57,7 @@
                         <manifest>
                             <mainClass>seque.MainSeque</mainClass>
                             <addClasspath>true</addClasspath>
+                            
                         </manifest>
 
                     </archive>

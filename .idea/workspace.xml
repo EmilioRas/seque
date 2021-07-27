@@ -2,17 +2,18 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="29e840de-d463-45a5-b5c5-24a1b16d2e24" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/it/comporellen/sound/bridge/SqeAbsMidiReceiver.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/it/comporellen/sound/bridge/SqeMessage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/it/comporellen/sound/bridge/SqeReceiver.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/it/comporellen/sound/bridge/SqeReceiverCh.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__usb_JUSB_1_0_7.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/it/comporellen/sound/bridge/SingleMidiCommunication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/it/comporellen/sound/bridge/SingleMidiCommunication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/seque.iml" beforeDir="false" afterPath="$PROJECT_DIR$/seque.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/it/comporellen/sound/device/AudioAccess.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/it/comporellen/sound/device/AudioAccess.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/it/comporellen/sound/device/AudioAccess1.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/it/comporellen/sound/device/AudioAccess1.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/it/comporellen/sound/device/MidiAccess.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/it/comporellen/sound/device/MidiAccess.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/it/comporellen/sound/device/MidiAccess1.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/it/comporellen/sound/device/MidiAccess1.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/it/comporellen/sound/seque/MainSeque.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/it/comporellen/sound/seque/MainSeque.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/maven-archiver/pom.properties" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-archiver/pom.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -34,14 +35,17 @@
   <component name="ProjectId" id="1lc5gAXeOqjh5rI10oAZSbvw3zW" />
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="project.structure.last.edited" value="Artifacts" />
-    <property name="project.structure.proportion" value="0.0" />
+    <property name="ignore.virus.scanning.warn.message" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.42413792" />
   </component>
   <component name="RunAnythingCache">
     <option name="myCommands">
       <command value="mvn clean" />
       <command value="mvn compile" />
+      <command value="mvn clean install" />
       <command value="mvn clean package" />
     </option>
   </component>

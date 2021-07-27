@@ -6,7 +6,7 @@ import javax.sound.sampled.Mixer;
 
 public interface MidiAccess {
 
-    public Sequencer getSequencer();
+    public Sequencer getSequencer(int index);
     public Synthesizer getSynthesizer();
     public Receiver getReceiver();
     public Transmitter getTransmitter();

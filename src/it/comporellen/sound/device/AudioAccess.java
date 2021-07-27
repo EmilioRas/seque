@@ -9,5 +9,5 @@ public interface AudioAccess {
     public Mixer getMixer();
     public Line getLine();
     public Port getPort();
-
+    public Object getSqeContext() throws Exception;
 }

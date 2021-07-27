@@ -1,5 +1,7 @@
 package device;
 
+import seque.MainSeque;
+
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Line;
 import javax.sound.sampled.Mixer;
@@ -50,5 +52,21 @@ public class AudioAccess1 implements AudioAccess {
     @Override
     public Port getPort() {
         return null;
+    }
+
+    private MainSeque context;
+
+    public void setSqeContext(MainSeque context) {
+        this.context = context;
+    }
+
+    @Override
+    public Object getSqeContext() throws Exception {
+        try {
+            return this.getSqeContext();
+        } catch (Exception e){
+            throw new Exception(e);
+        }
+
     }
 }
