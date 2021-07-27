@@ -146,7 +146,7 @@ public class MainSeque {
             }
 
             try {
-                main.singleSequeLoad(sequeInd,io,main.getMidiAccess(), args[0],args[1]);
+                main.singleSequeLoad(sequeInd,io,main.getMidiAccess(), args[0],args[1],main);
             } catch (Exception e) {
                 System.err.println(e.getMessage());
             }
@@ -154,7 +154,10 @@ public class MainSeque {
             synchronized (main.getMidiRecever().get(0)) {
                 if (e.equals("q")) {
                     for (Sequencer s : ((MidiAccess1) main.getMidiAccess()).getSequencers()){
-                        if (s != null) s.stop();
+                        if (s != null && s.isOpen() && s.isRunning()){
+                            s.stop();
+                            System.out.println("Main sequencer " + ((MidiDevice) s).getDeviceInfo().getName() + " stopped!");
+                        }
                     }
 
 
@@ -164,13 +167,20 @@ public class MainSeque {
         }
     }
 
-    private void singleSequeLoad(int index,Scanner io, MidiAccess midiAccess,String startWith,String wd) throws Exception{
+    private void singleSequeLoad(int index,Scanner io, MidiAccess midiAccess,String startWith,String wd,MainSeque main) throws Exception{
         System.out.println("Do you want load from midi tracks ? (Y/N)");
         String con = io.next();
 
         if (con.equals("Y") || con.equals("y")) {
-            System.out.println("What do you want connect for midi seque ?");
+            System.out.println("What do you want connect one of this midi seque ?");
             System.out.println("number of SY description device...");
+            int sy = 0;
+            for (Sequencer s : ((MidiAccess1) main.getMidiAccess()).getSequencers()){
+                System.out.print("SY num >> ["+sy+"] \n");
+                System.out.println("sequencer ..." + ((MidiDevice)s).getDeviceInfo().getName() + ", " + ((MidiDevice)s).getDeviceInfo().getVendor());
+                sy++;
+            }
+
             String s1 = io.next();
 
             int iS1 = Integer.parseInt(s1);
@@ -198,7 +208,12 @@ public class MainSeque {
             System.out.println("What do you want start midi seque ?");
             String s2 = io.next();
             if (s2.equals("Y") || s2.equals("y")) {
-                seque.start();
+                TrackSeque ts = new TrackSeque();
+                ts.setSeque(seque);
+                Thread t = new Thread((Runnable) ts);
+                synchronized (ts){
+                    t.start();
+                }
             }
             index++;
         }
