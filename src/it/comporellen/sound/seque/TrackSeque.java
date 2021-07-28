@@ -8,6 +8,8 @@ import java.util.List;
 
 public class TrackSeque implements Seque,Runnable{
 
+    private String[][] sequeParams;
+
     private Sequencer seque;
 
     public Sequencer getSeque() {
@@ -22,6 +24,14 @@ public class TrackSeque implements Seque,Runnable{
 
     public TrackSeque(){
         this.tracks = new LinkedList<Track>();
+    }
+
+    public String[][] getSequeParams() {
+        return sequeParams;
+    }
+
+    public void setSequeParams(String[][] sequeParams) {
+        this.sequeParams = sequeParams;
     }
 
     @Override
