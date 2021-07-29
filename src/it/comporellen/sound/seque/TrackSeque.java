@@ -1,8 +1,8 @@
 package seque;
 
-import javax.sound.midi.MidiDevice;
-import javax.sound.midi.Sequencer;
-import javax.sound.midi.Track;
+import bridge.SqeMessage;
+
+import javax.sound.midi.*;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -57,6 +57,17 @@ public class TrackSeque implements Seque,Runnable{
     @Override
     public void peekMidiTk(Track tk) {
         if (this.tracks != null) this.tracks.add(0,tk);
+    }
+
+    @Override
+    public MidiEvent overrideCh(MidiEvent message, int currentCh) {
+        if (message.getMessage().getLength() == 3){
+            SqeMessage midi = new SqeMessage(new byte[]{(byte) (
+                    message.getMessage().getMessage()[0] | (currentCh & 0x0F)),
+                    message.getMessage().getMessage()[1], message.getMessage().getMessage()[2]});
+            return new MidiEvent(message.getMessage(),message.getTick());
+        }
+        return message;
     }
 
     @Override

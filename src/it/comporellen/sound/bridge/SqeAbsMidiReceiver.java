@@ -1,6 +1,5 @@
 package bridge;
 
-import javax.sound.midi.MidiEvent;
 import javax.sound.midi.MidiMessage;
 import javax.sound.midi.Receiver;
 

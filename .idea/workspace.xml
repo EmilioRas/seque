@@ -3,7 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="29e840de-d463-45a5-b5c5-24a1b16d2e24" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/it/comporellen/sound/bridge/SqeAbsMidiReceiver.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/it/comporellen/sound/bridge/SqeAbsMidiReceiver.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/it/comporellen/sound/seque/MainSeque.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/it/comporellen/sound/seque/MainSeque.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/it/comporellen/sound/seque/Seque.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/it/comporellen/sound/seque/Seque.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/it/comporellen/sound/seque/TrackSeque.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/it/comporellen/sound/seque/TrackSeque.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/maven-archiver/pom.properties" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-archiver/pom.properties" afterDir="false" />
     </list>

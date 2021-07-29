@@ -223,7 +223,7 @@ public class MainSeque {
                     break;
             }
 
-
+            TrackSeque ts = new TrackSeque();
 
             for (int t = 0; t < Integer.parseInt(dscParams[0][2]); t++){
                 try {
@@ -240,8 +240,11 @@ public class MainSeque {
                     for (int tm = 0;tm < seque.getSequence().getTracks().length; tm++){
                         Track tr = sq.createTrack();
                         int k = 0;
+                        System.out.println(startWith + "_" + (t + 1) + ".mid" + " track...");
+                        System.out.println("...what channel for sequencer out [1..16] ?");
+                        String id3 = io.next();
                         while (k < seque.getSequence().getTracks()[tm].size()) {
-                            tr.add(seque.getSequence().getTracks()[tm].get(k));
+                            tr.add(ts.overrideCh(seque.getSequence().getTracks()[tm].get(k),Integer.parseInt(id3)));
                             k++;
                             System.out.print("=");
                         }
@@ -288,7 +291,7 @@ public class MainSeque {
             System.out.println("What do you want start midi seque ?");
             String s2 = io.next();
             if (s2.equals("Y") || s2.equals("y")) {
-                TrackSeque ts = new TrackSeque();
+
                 ts.setSeque(seque);
 
                 ts.setSequeParams(dscParams);
@@ -312,7 +315,7 @@ public class MainSeque {
             System.out.println("What do you want connect for midi out ?");
             System.out.println("number of SY description device...");
             String d2 = io.next();
-            System.out.println("What channel for out ?");
+            System.out.println("What channel for out [1..16] ?");
             String dc3 = io.next();
             int iD1 = Integer.parseInt(d1);
 
@@ -330,7 +333,7 @@ public class MainSeque {
                 SingleMidiCommunication smc = new SingleMidiCommunication();
                 smc.setMidi1(this.getMidiRecever().get((index - 1)));
                 smc.setMidi2(this.getMidiTransmetter().get((index - 1)));
-                smc.setCurrCh(iDC3);
+                smc.setCurrCh(iDC3-1);
                 Thread t = new Thread((Runnable) smc);
                 t.start();
                 this.singleMidiConnect(index,io,midiAccess);
