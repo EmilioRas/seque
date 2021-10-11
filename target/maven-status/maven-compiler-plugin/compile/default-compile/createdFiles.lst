@@ -1,12 +1,14 @@
-device\MidiAccess1.class
 device\AudioAccess.class
 bridge\SqeAbsMidiReceiver.class
 bridge\SingleMidiCommunication.class
 bridge\SqeReceiver.class
-bridge\SqeReceiverCh.class
 seque\MainSeque.class
-bridge\SqeMessage.class
 seque\TrackSeque.class
+device\MidiAccess1.class
+bridge\SqeReceiverCh.class
+ux\SequeSwUx.class
+bridge\SqeMessage.class
 device\MidiAccess.class
+ux\SequeUX.class
 device\AudioAccess1.class
 seque\Seque.class

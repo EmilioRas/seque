@@ -5,6 +5,8 @@ import device.AudioAccess;
 import device.AudioAccess1;
 import device.MidiAccess;
 import device.MidiAccess1;
+import ux.SequeSwUx;
+import ux.SequeUX;
 
 import javax.sound.midi.*;
 import java.io.*;
@@ -31,9 +33,15 @@ public class MainSeque {
         return midiRecever;
     }
 
+    private SequeUX sequeUX;
+
     public MainSeque(){
         this.midiRecever = new LinkedList<MidiDevice>();
         this.midiTransmetter = new LinkedList<MidiDevice>();
+    }
+
+    public void setSequeUX(SequeUX sequeUX) {
+        this.sequeUX = sequeUX;
     }
 
     public AudioAccess getAudioAccess() {
@@ -71,21 +79,29 @@ public class MainSeque {
             System.out.println("Missing params. exit!");
             System.out.println("1 - midi tracks folder");
             System.out.println("2 - midi tracks loader . [in midi folder]");
+            System.out.println("3 - flag ux - user interface");
             System.exit(0);
         }
 
-        Scanner io = new Scanner(System.in);
-        ((MidiAccess1)main.getMidiAccess()).setSqeContext(main);
-        try {
-            main.singleMidiConnect(0, io, main.getMidiAccess());
-        } catch (Exception e){
-            System.err.println(e.getMessage());
-        }
-        String e = io.next();
-        synchronized (main.getMidiRecever().get(0)) {
-            if (e.equals("q")){
+        if (args.length > 2 && args[2].equalsIgnoreCase("true")){
+           //ux
+            SequeUX ux = new SequeSwUx();
+            main.setSequeUX(ux);
+        } else {
+            //shell
+            Scanner io = new Scanner(System.in);
+            ((MidiAccess1) main.getMidiAccess()).setSqeContext(main);
+            try {
+                main.singleMidiConnect(0, io, main.getMidiAccess());
+            } catch (Exception e) {
+                System.err.println(e.getMessage());
+            }
+            String e = io.next();
+            synchronized (main.getMidiRecever().get(0)) {
+                if (e.equals("q")) {
 
-                System.exit(0);
+                    System.exit(0);
+                }
             }
         }
     }
@@ -127,6 +143,45 @@ public class MainSeque {
         } else {
             return;
         }
+    }
+
+    private void singleMidiUxConnect(int index,SequeUX ux, MidiAccess midiAccess) throws Exception{
+        System.out.println("Do you want connect two midi devices ? (Y/N)");
+        /*String con = io.next();
+
+        if (con.equals("Y") || con.equals("y")) {
+            System.out.println("What do you want connect for midi in ?");
+            System.out.println("number of SY description device...");
+            String d1 = io.next();
+            System.out.println("What do you want connect for midi out ?");
+            System.out.println("number of SY description device...");
+            String d2 = io.next();
+            System.out.println("What channel for out ?");
+            String dc3 = io.next();
+            int iD1 = Integer.parseInt(d1);
+
+            int iD2 = Integer.parseInt(d2);
+
+            int iDC3 = Integer.parseInt(dc3);
+
+            this.getMidiTransmetter().
+                    add(midiAccess.getMidiDevice(iD2));
+            this.getMidiRecever().
+                    add(midiAccess.getMidiDevice(iD1));
+
+            index++;
+            synchronized (this.getMidiTransmetter().get((index - 1))) {
+                SingleMidiCommunication smc = new SingleMidiCommunication();
+                smc.setMidi1(this.getMidiRecever().get((index - 1)));
+                smc.setMidi2(this.getMidiTransmetter().get((index - 1)));
+                smc.setCurrCh(iDC3);
+                Thread t = new Thread((Runnable) smc);
+                t.start();
+                this.singleMidiConnect(index,io,midiAccess);
+            }
+        } else {
+            return;
+        }*/
     }
 
     private void createSeque(MainSeque main, String[] args){
