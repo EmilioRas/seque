@@ -109,8 +109,9 @@ public class MainSeque {
 
                     System.exit(0);
                 }
-            System.out.println("3 - seque mode . [ie: LOOP,ST-END]");
-            System.exit(0);
+                System.out.println("3 - seque mode . [ie: LOOP,ST-END]");
+                System.exit(0);
+            }
         }
 
         File wd = new File(args[1]);
@@ -121,7 +122,7 @@ public class MainSeque {
 
          
 
-        if ((args.length >= 2) {
+        if (args.length >= 2) {
 
             Scanner io = new Scanner(System.in);
             ((MidiAccess1) main.getMidiAccess()).setSqeContext(main);
