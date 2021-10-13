@@ -27,8 +27,17 @@ public final class MidiAccess1 implements MidiAccess {
 
     private static MidiAccess1 midiAccess1;
 
+    public List<Synthesizer> getSynths() {
+        return synths;
+    }
 
+    public List<Sequencer> getSequencers() {
+        return sequencers;
+    }
 
+    public List<MidiDevice> getMidi() {
+        return midi;
+    }
 
     public static MidiAccess1 getInstance(){
         if (MidiAccess1.midiAccess1 == null){
@@ -73,12 +82,11 @@ public final class MidiAccess1 implements MidiAccess {
 
 
     @Override
-    public Sequencer getSequencer() {
-        if (this.sequencers.size() > 0 && this.sequencers.size() < 2){
-            return this.sequencers.get(0);
-        } else {
-            return null;
+    public Sequencer getSequencer(int index) {
+        if (this.sequencers.size() > index){
+            return this.sequencers.get(index);
         }
+        return null;
     }
 
     @Override

@@ -6,10 +6,13 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="JUSB" />
         <module name="seque" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="JUSB" target="1.7" />
+      <module name="jusb" target="1.7" />
       <module name="seque" target="1.7" />
     </bytecodeTargetLevel>
   </component>
