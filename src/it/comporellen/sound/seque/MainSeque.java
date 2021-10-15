@@ -82,62 +82,54 @@ public class MainSeque {
             System.exit(0);
         }
 
-        if (args == null || args.length < 2){
+        /*if (args == null || args.length < 2){
             System.out.println("Missing params. exit!");
             System.out.println("1 - midi tracks folder");
             System.out.println("2 - midi tracks loader . [in midi folder]");
-            System.out.println("3 - flag ux - user interface");
+           // System.out.println("3 - flag ux - user interface");
             System.exit(0);
-        }
+        }*/
 
-        if (args.length > 2 && args[2].equalsIgnoreCase("true")){
+        /*if (args.length > 2 && args[2].equalsIgnoreCase("true")){
            //ux
             SequeUX ux = new SequeSwUx();
             main.setSequeUX(ux);
-        } else {
-            //shell
-            Scanner io = new Scanner(System.in);
-            ((MidiAccess1) main.getMidiAccess()).setSqeContext(main);
-            try {
-                main.singleMidiConnect(0, io, main.getMidiAccess());
-            } catch (Exception e) {
-                System.err.println(e.getMessage());
-            }
-            String e = io.next();
-            synchronized (main.getMidiRecever().get(0)) {
-                if (e.equals("q")) {
+        }*/
 
-                    System.exit(0);
-                }
-                System.out.println("3 - seque mode . [ie: LOOP,ST-END]");
-                System.exit(0);
+
+        //shell
+        Scanner io = new Scanner(System.in);
+        ((MidiAccess1) main.getMidiAccess()).setSqeContext(main);
+        try {
+            main.singleMidiConnect(0, io, main.getMidiAccess());
+        } catch (Exception e0) {
+            System.err.println(e0.getMessage());
+        }
+        String e = null;
+
+
+        if (args.length >= 1) {
+
+            File wd = new File(args[1]);
+            if (!wd.isDirectory()) {
+                System.err.println("WORKDIR not correct!");
+                System.exit(1);
             }
         }
 
-        File wd = new File(args[1]);
-        if (!wd.isDirectory()){
-            System.err.println("WORKDIR not correct!");
-            System.exit(1);
-        }
-
-         
 
         if (args.length >= 2) {
 
-            Scanner io = new Scanner(System.in);
+
             ((MidiAccess1) main.getMidiAccess()).setSqeContext(main);
-            try {
-                main.singleMidiConnect(0, io, main.getMidiAccess());
-            } catch (Exception e) {
-                System.err.println(e.getMessage());
-            }
+
             InputStream ioF = null;
             try {
                 main.singleSequeLoad(sequeInd,io,main.getMidiAccess(), args[0],args[1],main,ioF);
-            } catch (Exception e) {
-                System.err.println(e.getMessage());
+            } catch (Exception e2) {
+                System.err.println(e2.getMessage());
             }
-            String e = io.next();
+            e = io.next();
             synchronized (main.getMidiRecever().get(0)) {
                 if (e.equals("q")) {
                     for (Sequencer s : ((MidiAccess1) main.getMidiAccess()).getSequencers()){
@@ -156,6 +148,8 @@ public class MainSeque {
                     System.exit(0);
                 }
             }
+
+
         }
     }
 
