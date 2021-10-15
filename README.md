@@ -12,6 +12,8 @@ Build your main folder (folder where is the pom.xml) . To build you must run thi
  
 https://youtu.be/3Z_Yb8uY5Qo
 
+http://comporellen.it/
+
 #####Seque
 #####Sequencer and high level MIDI interface
 
