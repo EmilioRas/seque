@@ -82,19 +82,19 @@ public class MainSeque {
             System.exit(0);
         }
 
-        /*if (args == null || args.length < 2){
+        if (args == null || args.length < 2){
             System.out.println("Missing params. exit!");
             System.out.println("1 - midi tracks folder");
             System.out.println("2 - midi tracks loader . [in midi folder]");
-           // System.out.println("3 - flag ux - user interface");
+            System.out.println("3 - flag ux - user interface");
             System.exit(0);
-        }*/
+        }
 
-        /*if (args.length > 2 && args[2].equalsIgnoreCase("true")){
+        if (args.length > 2 && args[2].equalsIgnoreCase("true")){
            //ux
             SequeUX ux = new SequeSwUx();
             main.setSequeUX(ux);
-        }*/
+        }
 
 
         //shell
@@ -175,7 +175,7 @@ public class MainSeque {
             int len = 0;
             byte[] b = new byte[8];
             while ((len = oneLine.read(b)) != -1) {
-                dsc.append((new String(b, 0, len)).replaceAll("\\n",""));
+                dsc.append(new String(b, 0, len));
             }
 
             //primo elemento sempre solo descrittivo
@@ -203,25 +203,29 @@ public class MainSeque {
                     currSequeDivType = Sequence.PPQ; //new Sequence(Sequence.PPQ, Integer.parseInt(dscParams[0][1]), Integer.parseInt(dscParams[0][2]));
                     break;
             }
-
+            System.out.println("BPM => " + Integer.parseInt(dscParams[1][0].trim()));
             TrackSeque ts = new TrackSeque();
+            int t = 1;
+            System.out.println(Integer.parseInt(dscParams[0][2].trim()) + " total seque!");
 
-            for (int t = 0; t < Integer.parseInt(dscParams[0][2]); t++){
+            while (t <= Integer.parseInt(dscParams[0][2].trim())){
                 try {
-                    ioF = new FileInputStream(new File(wd, startWith + "_" + (t + 1) + ".mid"));
+                    ioF = new FileInputStream(new File(wd, startWith + "_" + t+ ".mid"));
                 } catch (Exception ioe) {
-                    System.out.println("Not found tkr num: " + (t+1));
+                    System.out.println("Not found tkr num: " + t);
+
                     continue;
                 }
-                if (seque.getSequence() != null){
+                if (t > 1){
+                    System.out.println("Add to Seque...");
                     Sequence sq = seque.getSequence();
 
                     seque.setSequence(ioF);
-                    Track[] tracks = seque.getSequence().getTracks();
+
                     for (int tm = 0;tm < seque.getSequence().getTracks().length; tm++){
                         Track tr = sq.createTrack();
                         int k = 0;
-                        System.out.println(startWith + "_" + (t + 1) + ".mid" + " track...");
+                        System.out.println(startWith + "_" + t + ".mid" + " track...");
                         System.out.println("...what channel for sequencer out [1..16] ?");
                         String id3 = io.next();
                         while (k < seque.getSequence().getTracks()[tm].size()) {
@@ -230,13 +234,34 @@ public class MainSeque {
                             System.out.print("=");
                         }
                         System.out.print(">");
-                        System.out.println(" "+ tm);
+                        System.out.println(" "+  t);
                     }
                     seque.setSequence(sq);
 
                 } else {
-                    seque.setSequence(ioF);
+                    seque.setSequence(new Sequence(currSequeDivType,
+                            Integer.parseInt(dscParams[1][0].trim())));
+                    Track tr = seque.getSequence().createTrack();
+                    for (int tm = 0;tm < seque.getSequence().getTracks().length; tm++){
+                        if (tm > 0){
+                            tr = seque.getSequence().createTrack();
+                        }
+                        int k = 0;
+                        System.out.println(startWith + "_" + t + ".mid" + " track...");
+                        System.out.println("...what channel for sequencer out [1..16] ?");
+                        String id3 = io.next();
+                        while (k < seque.getSequence().getTracks()[tm].size()) {
+                            tr.add(ts.overrideCh(seque.getSequence().getTracks()[tm].get(k),Integer.parseInt(id3)));
+                            k++;
+                            System.out.print("=");
+                        }
+                        System.out.print(">");
+                        System.out.println(" "+  t);
+
+                    }
+
                 }
+                t++;
             }
 
             seque.setTempoInBPM(Float.parseFloat(dscParams[1][0]));
@@ -276,9 +301,9 @@ public class MainSeque {
                 ts.setSeque(seque);
 
                 ts.setSequeParams(dscParams);
-                Thread t = new Thread((Runnable) ts);
+                Thread too = new Thread((Runnable) ts);
                 synchronized (ts){
-                    t.start();
+                    too.start();
                 }
             }
             index++;
