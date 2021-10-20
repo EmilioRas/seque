@@ -3,6 +3,7 @@ package device;
 import javax.sound.sampled.Line;
 import javax.sound.sampled.Mixer;
 import javax.sound.sampled.Port;
+import java.io.OutputStream;
 
 public interface AudioAccess {
 

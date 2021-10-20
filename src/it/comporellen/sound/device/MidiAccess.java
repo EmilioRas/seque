@@ -3,6 +3,7 @@ package device;
 import javax.sound.midi.*;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Mixer;
+import java.io.OutputStream;
 
 public interface MidiAccess {
 

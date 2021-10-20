@@ -5,11 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="29e840de-d463-45a5-b5c5-24a1b16d2e24" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/it/comporellen/sound/seque/load/SequeLoadAndConnect.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/it/comporellen/sound/seque/load/Single.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/it/comporellen/sound/seque/load/AbstractSequeLoad.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/it/comporellen/sound/seque/load/SingleInfo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/it/comporellen/sound/ux/Seque2d.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/it/comporellen/sound/device/AudioAccess.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/it/comporellen/sound/device/AudioAccess.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/it/comporellen/sound/device/AudioAccess1.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/it/comporellen/sound/device/AudioAccess1.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/it/comporellen/sound/device/MidiAccess.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/it/comporellen/sound/device/MidiAccess.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/it/comporellen/sound/device/MidiAccess1.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/it/comporellen/sound/device/MidiAccess1.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/it/comporellen/sound/seque/MainSeque.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/it/comporellen/sound/seque/MainSeque.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/it/comporellen/sound/seque/load/SequeLoadAndConnect.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/it/comporellen/sound/seque/load/SequeLoadAndConnect.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/it/comporellen/sound/seque/load/Single.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/it/comporellen/sound/seque/load/Single.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/it/comporellen/sound/ux/SequeSwUx.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/it/comporellen/sound/ux/SequeSwUx.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/it/comporellen/sound/ux/SequeUX.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/it/comporellen/sound/ux/SequeUX.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -62,7 +70,7 @@
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
       <option name="MAIN_CLASS_NAME" value="seque.MainSeque" />
       <module name="seque" />
-      <option name="PROGRAM_PARAMETERS" value="night ./ false" />
+      <option name="PROGRAM_PARAMETERS" value="night ./ true" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>

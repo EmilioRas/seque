@@ -2,13 +2,19 @@ package device;
 
 
 import seque.MainSeque;
+import seque.load.Single;
+import seque.load.SingleInfo;
 
 import javax.sound.midi.*;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.LinkedList;
 import java.util.List;
 
 
-public final class MidiAccess1 implements MidiAccess {
+public final class MidiAccess1 implements MidiAccess, SingleInfo {
+
+    private OutputStream output;
 
 
     private MainSeque context;
@@ -39,41 +45,46 @@ public final class MidiAccess1 implements MidiAccess {
         return midi;
     }
 
-    public static MidiAccess1 getInstance(){
+    public static MidiAccess1 getInstance(OutputStream output){
         if (MidiAccess1.midiAccess1 == null){
-            MidiAccess1.midiAccess1 = new MidiAccess1();
+            try {
+                MidiAccess1.midiAccess1 = new MidiAccess1(output);
+            } catch (IOException io){
+                System.out.println("Cannot access in io midi");
+            }
         }
         return MidiAccess1.midiAccess1;
     }
 
 
 
-    private MidiAccess1(){
+    private MidiAccess1(OutputStream output) throws IOException{
+        this.output = output;
         this.midi = new LinkedList<MidiDevice>();
         this.synths = new LinkedList<Synthesizer>();
         this.sequencers = new LinkedList<Sequencer>();
         for (int sy = 0; sy < infos.length; sy++){
             try {
-                System.out.print("SY num >> ["+sy+"] \n");
+                this.singleInfo("SY num >> ["+sy+"]",true);
                 device = MidiSystem.getMidiDevice(infos[sy]);
                 if (device instanceof Synthesizer){
                     this.synths.add((Synthesizer) device);
-                    System.out.println("Add new synth ..." + infos[sy].getName() + ", " + infos[sy].getVendor());
-                    System.out.println("\t"+ infos[sy].getDescription());
+                    this.singleInfo("Add new synth ..." + infos[sy].getName() + ", " + infos[sy].getVendor(),true);
+                    this.singleInfo("\t"+ infos[sy].getDescription(),true);
                 }
                 if (device instanceof Sequencer){
                     this.sequencers.add((Sequencer) device);
-                    System.out.println("Add new sequencer ..." + infos[sy].getName() + ", " + infos[sy].getVendor());
-                    System.out.println("\t"+ infos[sy].getDescription());
+                    this.singleInfo("Add new sequencer ..." + infos[sy].getName() + ", " + infos[sy].getVendor(),true);
+                    this.singleInfo("\t"+ infos[sy].getDescription(),true);
                 }
                 if (device instanceof MidiDevice){
                     this.midi.add((MidiDevice) device);
-                    System.out.println("Add new midi ..." + infos[sy].getName() + ", " + infos[sy].getVendor());
-                    System.out.println("\t"+ infos[sy].getDescription());
+                    this.singleInfo("Add new midi ..." + infos[sy].getName() + ", " + infos[sy].getVendor(),true);
+                    this.singleInfo("\t"+ infos[sy].getDescription(),true);
                 }
 
             } catch (MidiUnavailableException m){
-                System.err.println("MidiAcc1 error : " + infos[sy].getName() + " ," + infos[sy].getVendor());
+                this.singleInfo("MidiAcc1 error : " + infos[sy].getName() + " ," + infos[sy].getVendor(),true);
                 continue;
             }
         }
@@ -124,5 +135,26 @@ public final class MidiAccess1 implements MidiAccess {
     @Override
     public Transmitter getTransmitter() {
         return null;
+    }
+
+    @Override
+    public void singleInfo(String msg) throws IOException {
+        if (this.output!= null && this.output != null){
+            msg = msg + " :";
+            this.output.write(msg.getBytes());
+            this.output.flush();
+        }
+    }
+
+    @Override
+    public void singleInfo(String msg, boolean rl) throws IOException {
+        if (this.output != null && this.output != null ){
+
+            if (rl) {
+                msg = msg + "\n";
+            }
+            this.output.write(msg.getBytes());
+            this.output.flush();
+        }
     }
 }

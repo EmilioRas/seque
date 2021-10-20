@@ -16,14 +16,19 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 
-public class SequeLoadAndConnect implements Single{
+public class SequeLoadAndConnect extends AbstractSequeLoad implements Single{
 
     public SequeLoadAndConnect(){
+        super();
         this.midiRecever = new LinkedList<MidiDevice>();
         this.midiTransmetter = new LinkedList<MidiDevice>();
     }
 
-    private String loadType;
+    protected SequeLoadAndConnect(String loadType){
+        super(loadType);
+        this.midiRecever = new LinkedList<MidiDevice>();
+        this.midiTransmetter = new LinkedList<MidiDevice>();
+    }
 
     private OutputStream loadInfo;
 
@@ -36,7 +41,7 @@ public class SequeLoadAndConnect implements Single{
     public List<MidiDevice> getMidiTransmetter() {
         return midiTransmetter;
     }
-
+    @Override
     public List<MidiDevice> getMidiRecever() {
         return midiRecever;
     }
@@ -51,7 +56,12 @@ public class SequeLoadAndConnect implements Single{
                 && this.loadType.equals(Single.LOAD_TYPE[0])){
             msg = msg + " :";
             this.loadInfo.write(msg.getBytes());
+            this.loadInfo.flush();
         }
+    }
+
+    public void setLoadInfo(OutputStream loadInfo) {
+        this.loadInfo = loadInfo;
     }
 
     @Override
@@ -63,6 +73,7 @@ public class SequeLoadAndConnect implements Single{
                 msg = msg + "\n";
             }
             this.loadInfo.write(msg.getBytes());
+            this.loadInfo.flush();
         }
     }
     @Override
@@ -70,6 +81,7 @@ public class SequeLoadAndConnect implements Single{
         this.audioAccess = audioAccess;
     }
 
+    @Override
     public MidiAccess getMidiAccess() {
         return midiAccess;
     }
@@ -77,6 +89,10 @@ public class SequeLoadAndConnect implements Single{
     @Override
     public void setMidiAccess(MidiAccess midiAccess) {
         this.midiAccess = midiAccess;
+    }
+
+    public String getLoadType() {
+        return loadType;
     }
 
     public void setLoadType(String loadType) {
@@ -89,9 +105,7 @@ public class SequeLoadAndConnect implements Single{
             System.out.println("Missing load type!");
         }
 
-        if (this.loadType.equals(Single.LOAD_TYPE[0])){
-            this.loadInfo = System.out;
-        }
+
 
         this.singleInfo("Do you want connect two midi devices ? (Y/N)");
         String con = io.next();

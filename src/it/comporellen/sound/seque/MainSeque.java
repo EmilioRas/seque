@@ -1,7 +1,5 @@
 package seque;
 
-import bridge.SingleMidiCommunication;
-import device.AudioAccess;
 import device.AudioAccess1;
 import device.MidiAccess;
 import device.MidiAccess1;
@@ -11,10 +9,9 @@ import ux.SequeSwUx;
 import ux.SequeUX;
 
 import javax.sound.midi.*;
-import javax.sound.midi.spi.MidiFileReader;
+
 import java.io.*;
-import java.util.LinkedList;
-import java.util.List;
+
 import java.util.Scanner;
 
 public class MainSeque {
@@ -30,26 +27,45 @@ public class MainSeque {
 
     private SequeLoadAndConnect seque;
 
-    private SequeUX sequeUX;
+
 
     public MainSeque(){
         this.seque = new SequeLoadAndConnect();
-    }
-
-    public void setSequeUX(SequeUX sequeUX) {
-        this.sequeUX = sequeUX;
     }
 
 
     public static void main(String[] args) {
         MainSeque main = new MainSeque();
         int sequeInd = 0;
-        main.seque.setAudioAccess(AudioAccess1.getInstance());
-        main.seque.setMidiAccess(MidiAccess1.getInstance());
 
-        Synthesizer mainSynth =  main.seque.getMidiAccess().getSynthesizer();
+        Single single = null;
+        Single ux = null;
+        if (args.length > 2 && args[2].equalsIgnoreCase("true")){
+           //ux
+            ux = new SequeSwUx();
+            single = ux;
+            single.setAudioAccess(AudioAccess1.getInstance(((SequeUX)ux).getSequeInfo()));
+            single.setMidiAccess(MidiAccess1.getInstance(((SequeUX)ux).getSequeInfo()));
 
-        Sequencer mainSeque =  main.seque.getMidiAccess().getSequencer(sequeInd);
+            single.setLoadType(Single.LOAD_TYPE[1]);
+        } else {
+            single = main.seque;
+            single.setAudioAccess(AudioAccess1.getInstance(System.out));
+            single.setMidiAccess(MidiAccess1.getInstance(System.out));
+
+            single.setLoadType(Single.LOAD_TYPE[0]);
+        }
+
+        if (single.getLoadType().equals(Single.LOAD_TYPE[0])){
+            single.setLoadInfo(System.out);
+        } else if (single.getLoadType().equals(Single.LOAD_TYPE[1])){
+            single.setLoadInfo(((SequeUX)ux).getSequeInfo());
+        }
+
+
+        Synthesizer mainSynth =  single.getMidiAccess().getSynthesizer();
+
+        Sequencer mainSeque =  single.getMidiAccess().getSequencer(sequeInd);
 
         if (mainSeque == null || mainSynth == null){
             System.out.println("Missing midi devices. exit!");
@@ -64,22 +80,11 @@ public class MainSeque {
             System.exit(0);
         }
 
-        if (args.length > 2 && args[2].equalsIgnoreCase("true")){
-           //ux
-            main.seque.setLoadType(Single.LOAD_TYPE[1]);
-            SequeUX ux = new SequeSwUx();
-            main.setSequeUX(ux);
-
-        } else {
-            main.seque.setLoadType(Single.LOAD_TYPE[0]);
-        }
-
-
         //shell
         Scanner io = new Scanner(System.in);
-        ((MidiAccess1)  main.seque.getMidiAccess()).setSqeContext(main);
+        ((MidiAccess1)  single.getMidiAccess()).setSqeContext(main);
         try {
-            main.seque.singleMidiConnect(0, io,  main.seque.getMidiAccess());
+            single.singleMidiConnect(0, io,  main.seque.getMidiAccess());
         } catch (Exception e0) {
             System.err.println(e0.getMessage());
         }
@@ -99,18 +104,18 @@ public class MainSeque {
         if (args.length >= 2) {
 
 
-            ((MidiAccess1)  main.seque.getMidiAccess()).setSqeContext(main);
+            ((MidiAccess1)  single.getMidiAccess()).setSqeContext(main);
 
             InputStream ioF = null;
             try {
-                main.seque.singleSequeLoad(sequeInd,io, main.seque.getMidiAccess(), args[0],args[1],ioF);
+                single.singleSequeLoad(sequeInd,io, single.getMidiAccess(), args[0],args[1],ioF);
             } catch (Exception e2) {
                 System.err.println(e2.getMessage());
             }
             e = io.next();
-            synchronized ( main.seque.getMidiRecever().get(0)) {
+            synchronized ( single.getMidiRecever().get(0)) {
                 if (e.equals("q")) {
-                    for (Sequencer s : ((MidiAccess1)  main.seque.getMidiAccess()).getSequencers()){
+                    for (Sequencer s : ((MidiAccess1)  single.getMidiAccess()).getSequencers()){
                         if (s != null && s.isOpen() && s.isRunning()){
                             s.stop();
                             System.out.println("Main sequencer " + ((MidiDevice) s).getDeviceInfo().getName() + " stopped!");
