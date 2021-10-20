@@ -1,15 +1,15 @@
 package ux;
 
-import java.awt.*;
+import javax.swing.*;
 
-public class Seque2d extends Canvas {
+public class Seque2d extends JTextArea {
 
-    public Seque2d(GraphicsConfiguration config){
-        super(config);
+    public Seque2d(){
+        super();
+
     }
 
-    @Override
-    public void paint(Graphics g){
-        super.paint(g);
+    public void addLine(String current){
+        this.setText(this.getText() + current);
     }
 }

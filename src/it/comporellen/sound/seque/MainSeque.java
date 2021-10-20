@@ -40,27 +40,32 @@ public class MainSeque {
 
         Single single = null;
         Single ux = null;
+
+
+
         if (args.length > 2 && args[2].equalsIgnoreCase("true")){
            //ux
             ux = new SequeSwUx();
             single = ux;
-            single.setAudioAccess(AudioAccess1.getInstance(((SequeUX)ux).getSequeInfo()));
-            single.setMidiAccess(MidiAccess1.getInstance(((SequeUX)ux).getSequeInfo()));
-
+            ((SequeSwUx)ux).initSwUx();
+            ((SequeSwUx)ux).setLoadInfo(new ByteArrayOutputStream());
             single.setLoadType(Single.LOAD_TYPE[1]);
+            single.setLoadInfo(((SequeUX)ux).getSequeInfo());
+            single.setAudioAccess(AudioAccess1.getInstance(((SequeUX)ux).getSequeInfo(),Single.LOAD_TYPE[1],(SequeUX)ux));
+            single.setMidiAccess(MidiAccess1.getInstance(((SequeUX)ux).getSequeInfo(),Single.LOAD_TYPE[1],(SequeUX)ux));
+
+
         } else {
             single = main.seque;
-            single.setAudioAccess(AudioAccess1.getInstance(System.out));
-            single.setMidiAccess(MidiAccess1.getInstance(System.out));
-
             single.setLoadType(Single.LOAD_TYPE[0]);
+            single.setLoadInfo(System.out);
+            single.setAudioAccess(AudioAccess1.getInstance(System.out,Single.LOAD_TYPE[0]));
+            single.setMidiAccess(MidiAccess1.getInstance(System.out,Single.LOAD_TYPE[0]));
+
+
         }
 
-        if (single.getLoadType().equals(Single.LOAD_TYPE[0])){
-            single.setLoadInfo(System.out);
-        } else if (single.getLoadType().equals(Single.LOAD_TYPE[1])){
-            single.setLoadInfo(((SequeUX)ux).getSequeInfo());
-        }
+
 
 
         Synthesizer mainSynth =  single.getMidiAccess().getSynthesizer();
