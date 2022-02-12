@@ -144,26 +144,23 @@ public class MainSeque {
             } catch (Exception e) {
                 System.err.println(e.getMessage());
             }
-            InputStream ioF = null;
+
+
             try {
-                main.singleSequeLoad(sequeInd,io,main.getMidiAccess(), args[0],args[1],main,ioF);
+                main.singleSequeLoad(sequeInd,io,main.getMidiAccess(), args[0],args[1],main);
             } catch (Exception e) {
                 System.err.println(e.getMessage());
             }
             String e = io.next();
             synchronized (main.getMidiRecever().get(0)) {
                 if (e.equals("q")) {
-                    for (Sequencer s : ((MidiAccess1) main.getMidiAccess()).getSequencers()){
+                     Sequencer s = ((MidiAccess1) main.getMidiAccess()).getSequencer(0);
                         if (s != null && s.isOpen() && s.isRunning()){
                             s.stop();
                             System.out.println("Main sequencer " + ((MidiDevice) s).getDeviceInfo().getName() + " stopped!");
                         }
-                        try {
-                            if (ioF != null) ioF.close();
-                        } catch (Exception io2){
-                            System.err.println(io2.getMessage() + " , ioF");
-                        }
-                    }
+
+
 
 
                     System.exit(0);
@@ -172,38 +169,46 @@ public class MainSeque {
         }
     }
 
-    private void singleSequeLoad(int index,Scanner io, MidiAccess midiAccess,String startWith,String wd,MainSeque main,InputStream ioF) throws Exception{
+    private void singleSequeLoad(int index,Scanner io, MidiAccess midiAccess,String startWith,String wd,MainSeque main) throws Exception{
         System.out.println("Do you want load from midi tracks ? (Y/N)");
         String con = io.next();
 
         if (con.equals("Y") || con.equals("y")) {
             System.out.println("What do you want connect one of this midi seque ?");
             System.out.println("number of SY description device...");
-            int sy = 0;
-            for (Sequencer s : ((MidiAccess1) main.getMidiAccess()).getSequencers()){
-                System.out.print("SY num >> ["+sy+"] \n");
-                System.out.println("sequencer ..." + ((MidiDevice)s).getDeviceInfo().getName() + ", " + ((MidiDevice)s).getDeviceInfo().getVendor());
-                sy++;
-            }
+
+
+                System.out.print("SY num >> [\" \"] ...\n");
+
 
             String s1 = io.next();
 
             int iS1 = Integer.parseInt(s1);
-            FileInputStream oneLine = new FileInputStream(new File(wd, "seque.ini"));
+            FileInputStream oneLine = new FileInputStream(new File(wd + File.separator + startWith + File.separator + "seque.ini"));
             StringBuffer dsc = new StringBuffer();
             int len = 0;
-            byte[] b = new byte[8];
+            byte[] b = new byte[128];
+            String ini = "";
             while ((len = oneLine.read(b)) != -1) {
-                dsc.append((new String(b, 0, len)).replaceAll("\\n",""));
+                System.out.println(ini = new String(b, 0, len));
+                dsc.append(ini);
             }
 
-            //primo elemento sempre solo descrittivo
+
+
             String[] dscParamsRow = dsc.toString().split("\\#");
             String[][] dscParams = new String[dscParamsRow.length][8];
             for (int r = 0 ; r < dscParamsRow.length; r++){
                 dscParams[r] = dscParamsRow[r].split("\\,");
             }
-            Sequencer seque = this.getMidiAccess().getSequencer(iS1);
+            for (int a = 0; a < dscParams.length;a++){
+                for (int b2 = 0; b2 < dscParams[a].length; b2++){
+                    System.out.print(dscParams[a][b2] + ",");
+                }
+            }
+            System.out.println("Initialize ini... | midi access :" + (midiAccess != null ? "ok" : "null"));
+            Sequencer sq = ((MidiAccess1) main.getMidiAccess()).getSequencer(iS1);
+            System.out.println((sq != null ? "seque ok..." : "seque null..."));
             float currSequeDivType = 0f;
             switch (dscParams[0][0]){
                 case "SMPTE_24":
@@ -222,77 +227,95 @@ public class MainSeque {
                     currSequeDivType = Sequence.PPQ; //new Sequence(Sequence.PPQ, Integer.parseInt(dscParams[0][1]), Integer.parseInt(dscParams[0][2]));
                     break;
             }
-
+            System.out.println("tracks loading...");
             TrackSeque ts = new TrackSeque();
 
-            for (int t = 0; t < Integer.parseInt(dscParams[0][2]); t++){
+            int trackNum = Integer.parseInt(dscParams[0][2]);
+
+            System.out.println(trackNum + " tracks...");
+
+            for (int t = 0; t < trackNum; t++){
+                FileInputStream ioF = null;
+                System.out.println("Loading midi :" + wd +  File.separator +startWith + File.separator + startWith + "_" + (t + 1) + ".mid");
                 try {
-                    ioF = new FileInputStream(new File(wd, startWith + "_" + (t + 1) + ".mid"));
+                    ioF = new FileInputStream(new File(wd + File.separator +startWith + File.separator + startWith  + "_" + (t + 1) + ".mid"));
                 } catch (Exception ioe) {
+                    t++;
                     System.out.println("Not found tkr num: " + (t+1));
                     continue;
                 }
-                if (seque.getSequence() != null){
-                    Sequence sq = seque.getSequence();
 
-                    seque.setSequence(ioF);
-                    Track[] tracks = seque.getSequence().getTracks();
-                    for (int tm = 0;tm < seque.getSequence().getTracks().length; tm++){
-                        Track tr = sq.createTrack();
+
+
+                if (t == 0){
+                    sq.setSequence(ioF);
+                    t++;
+                }
+
+                if (sq != null && sq.getSequence() != null){
+                    Sequence sq1 = sq.getSequence();
+
+                    sq.setSequence(ioF);
+                    Track[] tracks = sq.getSequence().getTracks();
+                    System.out.println("Number of sequence tracks in " + t + " :" + tracks.length);
+                    for (int tm = 0;tm < tracks.length; tm++){
+                        Track tr = sq1.createTrack();
                         int k = 0;
                         System.out.println(startWith + "_" + (t + 1) + ".mid" + " track...");
                         System.out.println("...what channel for sequencer out [1..16] ?");
                         String id3 = io.next();
-                        while (k < seque.getSequence().getTracks()[tm].size()) {
-                            tr.add(ts.overrideCh(seque.getSequence().getTracks()[tm].get(k),Integer.parseInt(id3)));
+                        while (k < sq.getSequence().getTracks()[tm].size()) {
+                            tr.add(ts.overrideCh(sq.getSequence().getTracks()[tm].get(k),Integer.parseInt(id3)));
                             k++;
                             System.out.print("=");
                         }
                         System.out.print(">");
                         System.out.println(" "+ tm);
                     }
-                    seque.setSequence(sq);
+                    sq.setSequence(sq1);
 
-                } else {
-                    seque.setSequence(ioF);
+                }
+                else {
+                    System.out.println("Sequencer not found. Exit!!!");
+                    return;
                 }
             }
 
-            seque.setTempoInBPM(Float.parseFloat(dscParams[1][0]));
-            seque.setTickPosition(Long.parseLong(dscParams[1][1]));
+            sq.setTempoInBPM(Float.parseFloat(dscParams[1][0]));
+            sq.setTickPosition(Long.parseLong(dscParams[1][1]));
 
             if (dscParams[1].length >= 3){
-                seque.setLoopCount(Integer.parseInt(dscParams[1][2]));
+                sq.setLoopCount(Integer.parseInt(dscParams[1][2]));
             }
 
             if (dscParams[1].length >= 4){
-                seque.setLoopStartPoint(Long.parseLong(dscParams[1][3]));
+                sq.setLoopStartPoint(Long.parseLong(dscParams[1][3]));
             }
 
             if (dscParams[1].length >= 5){
-                seque.setLoopEndPoint(Long.parseLong(dscParams[1][4]));
+                sq.setLoopEndPoint(Long.parseLong(dscParams[1][4]));
             }
 
-            System.out.println("\t num tracks :" + seque.getSequence().getTracks().length );
-            System.out.println("\t DivisionType :" + seque.getSequence().getDivisionType());
-            System.out.println("\t MicrosecondLength :" + seque.getSequence().getMicrosecondLength());
-            System.out.println("\t Resolution :" + seque.getSequence().getResolution());
-            System.out.println("\t TickLength :" + seque.getSequence().getTickLength());
-            System.out.println("\t LoopCount :" + seque.getLoopCount());
-            System.out.println("\t LoopStartPoint :" + seque.getLoopStartPoint());
-            System.out.println("\t LoopEndPoint :" + seque.getLoopEndPoint());
+            System.out.println("\t num tracks :" + sq.getSequence().getTracks().length );
+            System.out.println("\t DivisionType :" + sq.getSequence().getDivisionType());
+            System.out.println("\t MicrosecondLength :" + sq.getSequence().getMicrosecondLength());
+            System.out.println("\t Resolution :" + sq.getSequence().getResolution());
+            System.out.println("\t TickLength :" + sq.getSequence().getTickLength());
+            System.out.println("\t LoopCount :" + sq.getLoopCount());
+            System.out.println("\t LoopStartPoint :" + sq.getLoopStartPoint());
+            System.out.println("\t LoopEndPoint :" + sq.getLoopEndPoint());
 
 
-            Track[] tracks = seque.getSequence().getTracks();
+            Track[] tracks = sq.getSequence().getTracks();
             System.out.println("Load number :" + tracks.length + " track");
 
 
 
-            System.out.println("What do you want start midi seque ?");
+            System.out.println("What do you want start midi sq ?");
             String s2 = io.next();
             if (s2.equals("Y") || s2.equals("y")) {
 
-                ts.setSeque(seque);
+                ts.setSeque(sq);
 
                 ts.setSequeParams(dscParams);
                 Thread t = new Thread((Runnable) ts);
