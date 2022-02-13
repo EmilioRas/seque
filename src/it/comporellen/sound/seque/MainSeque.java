@@ -265,16 +265,16 @@ public class MainSeque {
                     sq.setSequence(ioF);
 		    Sequence sq1 = sq.getSequence();
 
-                    Track[] tracks = sq2.getTracks();
+                    Track[] tracks = sq1.getTracks();
                     System.out.println("Number of sequence tracks in " + tt + " :" + tracks.length);
                     for (int tm = 0;tm < tracks.length; tm++){
                         Track tr = sq2.createTrack();
                         int k = 0;
-                        System.out.println(startWith + "_" + (tt + 1) + ".mid" + " track...");
+                        System.out.println(startWith + "_" + (tm + 1) + ".mid" + " track...");
                         System.out.println("...what channel for sequencer out [1..16] ?");
                         String id3 = io.next();
                         while (k < sq2.getTracks()[tm].size()) {
-                            tr.add(ts.overrideCh(sq.getSequence().getTracks()[tm].get(k),Integer.parseInt(id3)));
+                            tr.add(ts.overrideCh(sq2.getTracks()[tm].get(k),Integer.parseInt(id3)));
                             k++;
                             System.out.print("=");
                         }
