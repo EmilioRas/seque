@@ -8,7 +8,11 @@ import device.MidiAccess1;
 
 import javax.sound.midi.*;
 import javax.sound.midi.spi.MidiFileReader;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
@@ -233,38 +237,43 @@ public class MainSeque {
             int trackNum = Integer.parseInt(dscParams[0][2]);
 
             System.out.println(trackNum + " tracks...");
-
-            for (int t = 0; t < trackNum; t++){
+	    int  tt = 0;
+            while (tt < trackNum){
                 FileInputStream ioF = null;
-                System.out.println("Loading midi :" + wd +  File.separator +startWith + File.separator + startWith + "_" + (t + 1) + ".mid");
+                System.out.println("Loading midi :" + wd +  File.separator +startWith + File.separator + startWith + "_" + (tt + 1) + ".mid");
                 try {
-                    ioF = new FileInputStream(new File(wd + File.separator +startWith + File.separator + startWith  + "_" + (t + 1) + ".mid"));
+                    ioF = new FileInputStream(new File(wd + File.separator +startWith + File.separator + startWith  + "_" + (tt + 1) + ".mid"));
                 } catch (Exception ioe) {
-                    t++;
-                    System.out.println("Not found tkr num: " + (t+1));
+                    tt++;
+                    System.out.println("Not found tkr num: " + tt);
                     continue;
                 }
 
+		if (ioF == null){
+			System.out.println("Attention!!! You sequence could be null...");
+		}
 
-
-                if (t == 0){
+                if (tt == 0){
                     sq.setSequence(ioF);
-                    t++;
+                    tt++;
+		    continue;
                 }
 
                 if (sq != null && sq.getSequence() != null){
-                    Sequence sq1 = sq.getSequence();
+                    Sequence sq2 = sq.getSequence();
 
                     sq.setSequence(ioF);
-                    Track[] tracks = sq.getSequence().getTracks();
-                    System.out.println("Number of sequence tracks in " + t + " :" + tracks.length);
+		    Sequence sq1 = sq.getSequence();
+
+                    Track[] tracks = sq2.getTracks();
+                    System.out.println("Number of sequence tracks in " + tt + " :" + tracks.length);
                     for (int tm = 0;tm < tracks.length; tm++){
-                        Track tr = sq1.createTrack();
+                        Track tr = sq2.createTrack();
                         int k = 0;
-                        System.out.println(startWith + "_" + (t + 1) + ".mid" + " track...");
+                        System.out.println(startWith + "_" + (tt + 1) + ".mid" + " track...");
                         System.out.println("...what channel for sequencer out [1..16] ?");
                         String id3 = io.next();
-                        while (k < sq.getSequence().getTracks()[tm].size()) {
+                        while (k < sq2.getTracks()[tm].size()) {
                             tr.add(ts.overrideCh(sq.getSequence().getTracks()[tm].get(k),Integer.parseInt(id3)));
                             k++;
                             System.out.print("=");
@@ -272,13 +281,14 @@ public class MainSeque {
                         System.out.print(">");
                         System.out.println(" "+ tm);
                     }
-                    sq.setSequence(sq1);
+                    sq.setSequence(sq2);
 
                 }
                 else {
                     System.out.println("Sequencer not found. Exit!!!");
                     return;
                 }
+		tt++;
             }
 
             sq.setTempoInBPM(Float.parseFloat(dscParams[1][0]));
