@@ -276,8 +276,10 @@ public class MainSeque {
 		    continue;
                 }
 
-                if (tt > 0 && sq != null && sq.getSequence() != null){
-                    Sequence sqCopy = sq.getSequence();
+		Sequence sqCopy = null;
+                
+		if (tt > 0 && sq != null && sq.getSequence() != null){
+                    sqCopy = sq.getSequence();
 
                     sq.setSequence(ioF);
 		    Sequence sq1 = sq.getSequence();
@@ -302,7 +304,7 @@ public class MainSeque {
 		    System.out.print(">");
                     System.out.println(" "+ (tt + 1));
 		}
-                sq.setSequence(sq2);
+                sq.setSequence(sqCopy);
 		tt++;
     	}
 
