@@ -250,46 +250,61 @@ public class MainSeque {
                 }
 
 		if (ioF == null){
-			System.out.println("Attention!!! You sequence could be null...");
+			System.out.println("Attention!!! You sequence could be null... Check before your .mid");
 		}
 
                 if (tt == 0){
                     sq.setSequence(ioF);
-                    tt++;
+			Sequence sq1 = sq.getSequence();
+			Track[] tracks = sq1.getTracks();
+               	        Track tr = sq1.createTrack();
+			System.out.println("ADD New Track... num: " + tt);
+         		int k = 0;
+	 		System.out.println("...what channel for sequencer out [1..16] ?");
+                        String id3 = io.next();
+                        while (k < sq1.getTracks()[0].size()) {
+                        	tr.add(ts.overrideCh(sq1.getTracks()[0].get(k),Integer.parseInt(id3)));
+                            	k++;
+                            	System.out.print("=");
+                        }
+                        System.out.print(">");
+                        System.out.println(" "+ 1);
+                    
+                    	sq.setSequence(sq1);
+
+                    	tt++;
 		    continue;
                 }
 
-                if (sq != null && sq.getSequence() != null){
-                    Sequence sq2 = sq.getSequence();
+                if (tt > 0 && sq != null && sq.getSequence() != null){
+                    Sequence sqCopy = sq.getSequence();
 
                     sq.setSequence(ioF);
 		    Sequence sq1 = sq.getSequence();
+		    Track[] tracks = sq1.getTracks();
+                    
+	    	    int j = 0;
+		    while(j < tracks.length ){
+			System.out.println("ADD New Track in same sequence... num: " + tt);
+         		Track tr = sqCopy.createTrack();            		 
+			int k = 0;
 
-                    Track[] tracks = sq1.getTracks();
-                    System.out.println("Number of sequence tracks in " + tt + " :" + tracks.length);
-                    for (int tm = 0;tm < tracks.length; tm++){
-                        Track tr = sq2.createTrack();
-                        int k = 0;
-                        System.out.println(startWith + "_" + (tm + 1) + ".mid" + " track...");
-                        System.out.println("...what channel for sequencer out [1..16] ?");
-                        String id3 = io.next();
-                        while (k < sq2.getTracks()[tm].size()) {
-                            tr.add(ts.overrideCh(sq2.getTracks()[tm].get(k),Integer.parseInt(id3)));
-                            k++;
-                            System.out.print("=");
-                        }
-                        System.out.print(">");
-                        System.out.println(" "+ tm);
-                    }
-                    sq.setSequence(sq2);
-
-                }
-                else {
-                    System.out.println("Sequencer not found. Exit!!!");
-                    return;
-                }
+                    	System.out.println("...what channel for sequencer out [1..16] ?");
+        		String id3 = io.next();
+                    	while (k < sq1.getTracks()[j].size()) {
+                    		tr.add(ts.overrideCh(tracks[j].get(k),Integer.parseInt(id3)));
+                        	k++;
+                        	System.out.print("=");
+                    	}
+			j++;
+		    }	
+ 
+		    System.out.print(">");
+                    System.out.println(" "+ (tt + 1));
+		}
+                sq.setSequence(sq2);
 		tt++;
-            }
+    	}
 
             sq.setTempoInBPM(Float.parseFloat(dscParams[1][0]));
             sq.setTickPosition(Long.parseLong(dscParams[1][1]));

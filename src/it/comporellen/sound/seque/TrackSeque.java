@@ -61,7 +61,7 @@ public class TrackSeque implements Seque,Runnable{
 
     @Override
     public MidiEvent overrideCh(MidiEvent message, int currentCh) {
-        if (message.getMessage().getLength() == 3){
+        if (message.getMessage().getLength() == 3 && currentCh != -1){
             SqeMessage midi = new SqeMessage(new byte[]{(byte) (
                     message.getMessage().getMessage()[0] | (currentCh & 0x0F)),
                     message.getMessage().getMessage()[1], message.getMessage().getMessage()[2]});
