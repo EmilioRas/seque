@@ -173,6 +173,8 @@ public class MainSeque {
         }
     }
 
+	private Sequence sqCopy = null;
+
     private void singleSequeLoad(int index,Scanner io, MidiAccess midiAccess,String startWith,String wd,MainSeque main) throws Exception{
         System.out.println("Do you want load from midi tracks ? (Y/N)");
         String con = io.next();
@@ -238,75 +240,43 @@ public class MainSeque {
 
             System.out.println(trackNum + " tracks...");
 	    int  tt = 0;
+	   FileInputStream ioF = null;
+
+		loadingtrack:
             while (tt < trackNum){
-                FileInputStream ioF = null;
-                System.out.println("Loading midi :" + wd +  File.separator +startWith + File.separator + startWith + "_" + (tt + 1) + ".mid");
+                                System.out.println("Loading midi :" + wd +  File.separator +startWith + File.separator + startWith + "_" + (tt + 1) + ".mid");
                 try {
-                    ioF = new FileInputStream(new File(wd + File.separator +startWith + File.separator + startWith  + "_" + (tt + 1) + ".mid"));
+                    ioF = new FileInputStream(wd + File.separator +startWith + File.separator + startWith  + "_" + (tt + 1) + ".mid");
                 } catch (Exception ioe) {
                     tt++;
-                    System.out.println("Not found tkr num: " + tt);
-                    continue;
+                    System.out.println("Not found tkr num: " + (tt + 1));
+                    continue loadingtrack;
                 }
 
 		if (ioF == null){
 			System.out.println("Attention!!! You sequence could be null... Check before your .mid");
+			break loadingtrack;
 		}
 
-                if (tt == 0){
-                    sq.setSequence(ioF);
-			Sequence sq1 = sq.getSequence();
-			Track[] tracks = sq1.getTracks();
-               	        Track tr = sq1.createTrack();
-			System.out.println("ADD New Track... num: " + tt);
-         		int k = 0;
-	 		System.out.println("...what channel for sequencer out [1..16] ?");
-                        String id3 = io.next();
-                        while (k < sq1.getTracks()[0].size()) {
-                        	tr.add(ts.overrideCh(sq1.getTracks()[0].get(k),Integer.parseInt(id3)));
-                            	k++;
-                            	System.out.print("=");
-                        }
-                        System.out.print(">");
-                        System.out.println(" "+ 1);
-                    
-                    	sq.setSequence(sq1);
-
-                    	tt++;
-		    continue;
-                }
-
-		Sequence sqCopy = null;
-                
-		if (tt > 0 && sq != null && sq.getSequence() != null){
-                    sqCopy = sq.getSequence();
-
-                    sq.setSequence(ioF);
-		    Sequence sq1 = sq.getSequence();
-		    Track[] tracks = sq1.getTracks();
-                    
-	    	    int j = 0;
-		    while(j < tracks.length ){
-			System.out.println("ADD New Track in same sequence... num: " + tt);
-         		Track tr = sqCopy.createTrack();            		 
-			int k = 0;
-
-                    	System.out.println("...what channel for sequencer out [1..16] ?");
-        		String id3 = io.next();
-                    	while (k < sq1.getTracks()[j].size()) {
-                    		tr.add(ts.overrideCh(tracks[j].get(k),Integer.parseInt(id3)));
-                        	k++;
-                        	System.out.print("=");
-                    	}
-			j++;
-		    }	
- 
-		    System.out.print(">");
-                    System.out.println(" "+ (tt + 1));
+		try {
+                	this.sqCopy = this.addSqTracks(tt,ioF,io,ts,sq);
+		} catch (Exception sqe){
+			tt++;
+			System.out.println("Some error occurred... | skip track ");
+			continue loadingtrack;		
 		}
-                sq.setSequence(sqCopy);
 		tt++;
-    	}
+
+    		if (ioF != null){
+			try {
+				ioF.close();
+			} catch (IOException ioe2){
+				System.err.println("ioF not Closed!");
+			}
+		}
+
+	    }
+
 
             sq.setTempoInBPM(Float.parseFloat(dscParams[1][0]));
             sq.setTickPosition(Long.parseLong(dscParams[1][1]));
@@ -353,6 +323,72 @@ public class MainSeque {
             index++;
         }
     }
+
+    
+    private synchronized Sequence addSqTracks(int tt , FileInputStream ioF,Scanner io, TrackSeque ts, Sequencer sq) throws Exception{
+
+ 		if (tt == 0){
+        	       sq.setSequence(ioF);
+			Sequence sq1 = sq.getSequence();
+			Track[] tracks = sq1.getTracks();
+               	        Track tr = sq1.createTrack();
+			System.out.println("ADD New Track... num: " + (tt + 1));
+         		int k = 0;
+	 		System.out.println("...what channel for sequencer out [1..16] ?");
+                        String id3 = io.next();
+                        while (k < sq1.getTracks()[0].size()) {
+                        	tr.add(ts.overrideCh(sq1.getTracks()[0].get(k),Integer.parseInt(id3)));
+                            	k++;
+                            	System.out.print("=");
+                        }
+                        System.out.print(">");
+                        System.out.println(" "+ 1);
+                    
+                    	sq.setSequence(sq1);
+
+                    	tt++;
+			
+
+		    return sq.getSequence();
+                }
+
+		
+                
+		if (tt > 0 && sq != null && sq.getSequence() != null){
+                    
+
+                    sq.setSequence(ioF);
+		    Sequence sq1 = sq.getSequence();
+		    Track[] tracks = sq1.getTracks();
+               	
+	    	    if (tracks.length > 1){
+			System.out.println("Your midi contains more than one track...");		
+			}
+     
+	    	    int j = 0;
+		    while(j < tracks.length ){
+		
+			System.out.println("ADD New Track num: " + (tt + j +1) + " in main sequence.");
+         		Track tr = this.sqCopy.createTrack();            		 
+			int k = 0;
+
+                    	System.out.println("...what channel for sequencer out [1..16] ?");
+        		String id3 = io.next();
+                    	while (k < sq1.getTracks()[j].size()) {
+                    		tr.add(ts.overrideCh(tracks[j].get(k),Integer.parseInt(id3)));
+                        	k++;
+                        	System.out.print("=");
+                    	}
+			j++;
+		    }	
+ 
+		    System.out.println("> oK!");
+			sq.setSequence(sqCopy);
+		}
+		return sq.getSequence();
+
+    }
+
 
     private void singleMidiConnect(int index,Scanner io, MidiAccess midiAccess) throws Exception{
         System.out.println("Do you want connect two midi devices ? (Y/N)");
