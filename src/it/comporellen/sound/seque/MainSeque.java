@@ -236,81 +236,73 @@ public class MainSeque {
                     	break;
             	}
 
-	TrackSeque ts = new TrackSeque(); 
+	List<TrackSeque> ts = new LinkedList<TrackSeque>(); 
 	Sequencer sq = null; 
 	int sqeNumber = 0;
+		loadingDevice:
 	    for (String deviceName : this.m2TransmitterMap.keySet()){ 
-                System.out.print("SY num >> [\"" + deviceName + "\"] ...\n");
+                System.out.println("SY num >> [\"" + deviceName + "\"] ...");
+		System.out.println("Loading... or do you want to skip ? (skip = \"skp\")");
 
-
-            	//String s1 = io.next();
+            	String s1 = io.next();
 	
-		//int iS1 = Integer.parseInt(s1);
+		if (s1 != null && s1.equalsIgnoreCase("skp")){
+			continue loadingDevice;
+		}
 
             	System.out.println("Initialize ini... | midi access :" + (midiAccess != null ? "ok" : "null"));
 		int sqe = 0;
 		int tt = 0;
 		findsqe:
-		while ( sqe < (dscParamsRow.length - 2)){
-			for (String device : this.m2TransmitterMap.keySet()) {
-				if (dscParams[sqe + 2][2].equals(device)){
+		while ( sqe < (dscParamsRow.length - 2) ){
+			System.out.println("I m on " + sqe + " device by -" + deviceName +"- name");
+			
+				if (dscParams[sqe + 2][2].equals(deviceName)){
 					sqeNumber = Integer.parseInt(dscParams[sqe + 2][1]);
 					sq = ((MidiAccess1) main.getMidiAccess()).getSequencer(sqe);
-					int[] tmp = this.updateTracks(wd,startWith,sqeNumber,sq,ts,dscParams,io,tt);
+					ts.add(new TrackSeque());
+					int[] tmp = this.updateTracks(wd,startWith,sqeNumber,sq,ts.get(ts.size()-1),dscParams,io,tt);
+	
 					if (tmp != null){
 						sqeNumber = tmp[0];
 						tt = tmp[1];					
 					} else {
 						break findsqe;
 					}
+	
+						
 				}
-			}
+			
 			sqe++;
 		}
 
 	}
 
-            sq.setTempoInBPM(Float.parseFloat(dscParams[1][0]));
-            sq.setTickPosition(Long.parseLong(dscParams[1][1]));
-
-            if (dscParams[1].length >= 3){
-                sq.setLoopCount(Integer.parseInt(dscParams[1][2]));
-            }
-
-            if (dscParams[1].length >= 4){
-                sq.setLoopStartPoint(Long.parseLong(dscParams[1][3]));
-            }
-
-            if (dscParams[1].length >= 5){
-                sq.setLoopEndPoint(Long.parseLong(dscParams[1][4]));
-            }
-
-            System.out.println("\t num tracks :" + sq.getSequence().getTracks().length );
-            System.out.println("\t DivisionType :" + sq.getSequence().getDivisionType());
-            System.out.println("\t MicrosecondLength :" + sq.getSequence().getMicrosecondLength());
-            System.out.println("\t Resolution :" + sq.getSequence().getResolution());
-            System.out.println("\t TickLength :" + sq.getSequence().getTickLength());
-            System.out.println("\t LoopCount :" + sq.getLoopCount());
-            System.out.println("\t LoopStartPoint :" + sq.getLoopStartPoint());
-            System.out.println("\t LoopEndPoint :" + sq.getLoopEndPoint());
-
-
-            Track[] tracks = sq.getSequence().getTracks();
-            System.out.println("Load number :" + tracks.length + " track");
-
-
+            
 
             System.out.println("What do you want start midi sq ?");
             String s2 = io.next();
+	    int tSqe = 0;
+	    Thread[] tSequeFL = new Thread[ts.size()];
             if (s2.equals("Y") || s2.equals("y")) {
+		for (TrackSeque trkSqe : ts){
+                     	Thread t = new Thread((Runnable) trkSqe);
+         		tSequeFL[tSqe] = t; 
+		  	tSqe++;	
+		}
+			synchronized (tSequeFL){
+				int qe = 0;
 
-                ts.setSeque(sq);
 
-                ts.setSequeParams(dscParams);
-                Thread t = new Thread((Runnable) ts);
-                synchronized (ts){
-                    t.start();
-                }
+				for (Thread tsqe : tSequeFL){
+					tsqe.start();
+					qe++;
+				}
+
+				tSequeFL.wait();
+                	
+				tSequeFL.notifyAll();
+			}
             }
             index++;
         }
@@ -330,9 +322,23 @@ public class MainSeque {
 	   	FileInputStream ioF = null;
 
 		
-            	while ((tt + Integer.parseInt(dscParams[sqeNumber][1].trim())) <= trackNum ){
+		int intTT = 0;
+
+		uploadingTkr:
+            	while (intTT < trackNum ){
                       	System.out.println("Loading midi :" + wd +  File.separator +startWith + File.separator + startWith + "_" + (tt + 1) + ".mid");
-                	try {
+                
+			System.out.println("Do you want to skip for load this midi ? (skip = \"skp-mid\") ...");
+			
+			String skp = io.next();
+
+			if (skp != null && skp.equalsIgnoreCase("skp-mid")){
+				tt++;
+				intTT = 0;
+				continue uploadingTkr;
+			}
+
+			try {
                     		ioF = new FileInputStream(wd + File.separator +startWith + File.separator + startWith  + "_" + (tt + 1) + ".mid");
                 	} catch (Exception ioe) {
                     		tt++;
@@ -346,7 +352,7 @@ public class MainSeque {
 			}
 
 			try {	
-                		this.sqCopy = this.addSqTracks(tt,ioF,io,ts,sq);
+                		this.sqCopy = this.addSqTracks(intTT,tt,ioF,io,dscParams,ts,sq);
 			} catch (Exception sqe){
 				tt++;
 				System.out.println("Some error occurred... | skip track ");
@@ -354,7 +360,7 @@ public class MainSeque {
 			}
 
 			tt++;
-
+			intTT++;
     			if (ioF != null){
 				try {
 					ioF.close();
@@ -370,9 +376,9 @@ public class MainSeque {
 
 
     
-    private synchronized Sequence addSqTracks(int tt , FileInputStream ioF,Scanner io, TrackSeque ts, Sequencer sq) throws Exception{
+    private synchronized Sequence addSqTracks(int intTT,int tt , FileInputStream ioF,Scanner io,String[][] dscParams, TrackSeque ts, Sequencer sq) throws Exception{
 
- 		if (tt == 0){
+ 		if (intTT == 0){
         	       sq.setSequence(ioF);
 			Sequence sq1 = sq.getSequence();
 			Track[] tracks = sq1.getTracks();
@@ -391,15 +397,14 @@ public class MainSeque {
                     
                     	sq.setSequence(sq1);
 
-                    	tt++;
-			
+                    		
 
 		    return sq.getSequence();
                 }
 
 		
                 
-		if (tt > 0 && sq != null && sq.getSequence() != null){
+		if (intTT > 0 && sq != null && sq.getSequence() != null){
                     
 
                     sq.setSequence(ioF);
@@ -430,6 +435,39 @@ public class MainSeque {
 		    System.out.println("> oK!");
 			sq.setSequence(sqCopy);
 		}
+
+		sq.setTempoInBPM(Float.parseFloat(dscParams[1][0]));
+            	sq.setTickPosition(Long.parseLong(dscParams[1][1]));
+
+            	if (dscParams[1].length >= 3){
+                	sq.setLoopCount(Integer.parseInt(dscParams[1][2]));
+		}
+
+            	if (dscParams[1].length >= 4)	{
+                	sq.setLoopStartPoint(Long.parseLong(dscParams[1][3]));
+            	}
+
+            	if (dscParams[1].length >= 5){
+                	sq.setLoopEndPoint(Long.parseLong(dscParams[1][4]));
+            	}
+
+            	System.out.println("\t num tracks :" + sq.getSequence().getTracks().length );
+            	System.out.println("\t DivisionType :" + sq.getSequence().getDivisionType());
+            	System.out.println("\t MicrosecondLength :" + sq.getSequence().getMicrosecondLength());
+            	System.out.println("\t Resolution :" + sq.getSequence().getResolution());
+            	System.out.println("\t TickLength :" + sq.getSequence().getTickLength());
+            	System.out.println("\t LoopCount :" + sq.getLoopCount());
+            	System.out.println("\t LoopStartPoint :" + sq.getLoopStartPoint());
+            	System.out.println("\t LoopEndPoint :" + sq.getLoopEndPoint());
+
+
+            	Track[] tracks = sq.getSequence().getTracks();
+            	System.out.println("Load number :" + tracks.length + " tracks");
+
+		ts.setSeque(sq);
+
+                ts.setSequeParams(dscParams);
+
 		return sq.getSequence();
 
     }
