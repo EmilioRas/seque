@@ -301,11 +301,12 @@ public class MainSeque {
                         System.out.println("Check... " + dnFName );
                         if (deviceName.equals(dnFName)){
                             sq = ((MidiAccess1) this.getMidiAccess()).getSequencer(0);
-
+			    //(this.getMidiTransmetter().get((index - 1)))	
                             TrackSeque tsCurr = null;
-
-                            ts.add(tsCurr = new TrackSeque((((MidiAccess1) this.getMidiAccess()).getTransmitter(Integer.parseInt(String.valueOf(this.m2TransmitterMap[j][0])))).getReceiver()));
-                            synchronized(sq){
+			    synchronized(this.getMidiTransmetter().get((Integer.parseInt(String.valueOf(this.m2TransmitterMap[j][0]))))){
+                            ts.add(tsCurr = new TrackSeque((this.getMidiTransmetter().get((Integer.parseInt(String.valueOf(this.m2TransmitterMap[j][0])))).getReceiver())));
+			    }
+			    synchronized(sq){
                                 sqeNumber = this.updateTracks(wd,startWith,sqeNumber,sq,tsCurr,dscParams,io,tt);
                                 System.out.println("In  device -" + deviceName + "- loaded num.: " + (sqeNumber != -1 ? sqeNumber : 0) +" tracks and planned num.: " + dscParams[dscNameDev][1]);
                             }
@@ -560,7 +561,7 @@ public class MainSeque {
 				this.m2TransmitterMap[i][0] = tmp[i][0];
 				this.m2TransmitterMap[i][1] = tmp[i][1];
 			}
-
+			i++;
 			this.m2TransmitterMap[index-1][0] = i;
 			this.m2TransmitterMap[index-1][1] = SCon2;
 
