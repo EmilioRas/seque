@@ -83,11 +83,11 @@ public final class MidiAccess1 implements MidiAccess {
     }
 
     @Override
-    public Synthesizer getSynthesizer() {
-        if (this.synths.size() > 0 && this.synths.size() < 2){
-            return this.synths.get(0);
+    public Synthesizer getSynthesizer(int index) {
+        if (this.synths.size() > index){
+            return this.synths.get(index);
         } else {
-            return null;
+            return this.synths.get(0);
         }
     }
 
@@ -110,12 +110,34 @@ public final class MidiAccess1 implements MidiAccess {
     }
 
     @Override
-    public Receiver getReceiver() {
+    public List<Receiver> getReceivers(int deviceId) {
+        if (this.midi.size() > deviceId) {
+            return this.midi.get(deviceId).getReceivers();
+        }
         return null;
     }
 
     @Override
-    public Transmitter getTransmitter() {
+    public List<Transmitter> getTransmitters(int deviceid) {
+        if (this.midi.size() > deviceid) {
+            return this.midi.get(deviceid).getTransmitters();
+        }
+        return null;
+    }
+
+    @Override
+    public Receiver getReceiver(int deviceId) {
+        if (this.midi.size() > deviceId) {
+            return (Receiver)this.midi.get(deviceId);
+        }
+        return null;
+    }
+
+    @Override
+    public Transmitter getTransmitter(int deviceId) {
+        if (this.midi.size() > deviceId) {
+            return (Transmitter)this.midi.get(deviceId);
+        }
         return null;
     }
 }

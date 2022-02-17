@@ -8,6 +8,10 @@ public abstract class SqeAbsMidiReceiver implements SqeReceiverCh {
 
     protected int currentCh;
 
+    public int getCurrentCh() {
+        return currentCh;
+    }
+
     public void setCurrentCh(int currentCh) {
         this.currentCh = currentCh;
     }
@@ -22,7 +26,7 @@ public abstract class SqeAbsMidiReceiver implements SqeReceiverCh {
     }
 
     private MidiMessage overrideCh(MidiMessage message ){
-        if (message.getLength() == 3){
+        if (message.getLength() == 3 && this.currentCh != -1){
             SqeMessage midi = new SqeMessage(new byte[]{(byte) (
                 message.getMessage()[0] | (this.currentCh & 0x0F)),
                 message.getMessage()[1], message.getMessage()[2]});
