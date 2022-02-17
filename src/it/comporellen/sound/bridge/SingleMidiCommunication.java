@@ -37,7 +37,7 @@ public class SingleMidiCommunication implements Runnable {
             try {
                 r = midi1.getReceiver();
                 t = midi2.getTransmitter();
-                SqeReceiverCh sqeReceiver = new SqeReceiver(r);
+		SqeReceiver sqeReceiver = new SqeReceiver(r);
                 sqeReceiver.setCurrentCh(this.getCurrCh());
                 t.setReceiver(sqeReceiver);
                 midi1.open();

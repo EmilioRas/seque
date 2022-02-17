@@ -63,11 +63,11 @@ public class TrackSeque extends SqeReceiver implements Seque,Runnable{
     }
 
     @Override
-    public MidiEvent overrideCh(MidiEvent message) {
+    public MidiEvent overrideCh(MidiEvent message,int ch) {
         SqeMessage sqe = null;
-        if (message.getMessage().getLength() == 3 && this.currentCh != 0 && this.currentCh != -1){
+        if (message.getMessage().getLength() == 3 && ch != -1){
             SqeMessage midi = new SqeMessage(new byte[]{(byte) (
-                    message.getMessage().getMessage()[0] | (this.currentCh & 0x0F)),
+                    message.getMessage().getMessage()[0] | (ch & 0x0F)),
                     message.getMessage().getMessage()[1], message.getMessage().getMessage()[2]});
             sqe = new SqeMessage((new MidiEvent(message.getMessage(),message.getTick())).getMessage().getMessage());
         }
@@ -81,10 +81,10 @@ public class TrackSeque extends SqeReceiver implements Seque,Runnable{
     public void run() {
         synchronized (this){
             try {
-                if (this.seque != null){
-                    this.seque.start();
-                }
 
+		if (this.seque != null){
+                    this.seque.start();
+                }                
                 this.wait(1000);
 
                 if (this.seque != null && this.seque.isOpen() && this.seque.getSequence() != null &&  this.seque.getSequence().getTracks() != null){
@@ -94,6 +94,8 @@ public class TrackSeque extends SqeReceiver implements Seque,Runnable{
                         this.tracks.add(t);
                     }
                 }
+
+		
 
                 this.wait(1000);
 

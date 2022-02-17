@@ -9,5 +9,5 @@ public interface Seque {
     public Track popMidiTk();
     public void pushMidiTk(Track tk);
     public void peekMidiTk(Track tk);
-    public MidiEvent overrideCh(MidiEvent message);
+    public MidiEvent overrideCh(MidiEvent message,int ch);
 }
