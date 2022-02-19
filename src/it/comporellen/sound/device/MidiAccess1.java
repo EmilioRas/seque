@@ -4,8 +4,10 @@ package device;
 import seque.MainSeque;
 
 import javax.sound.midi.*;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 
 public final class MidiAccess1 implements MidiAccess {
@@ -21,6 +23,23 @@ public final class MidiAccess1 implements MidiAccess {
     private List<Sequencer> sequencers;
 
     private List<MidiDevice> midi;
+
+    private Map<Integer,Synthesizer> synthsMap;
+    private Map<Integer,Sequencer> sequencersMap;
+
+    private Map<Integer,MidiDevice> midiMap;
+
+    public Map<Integer, Synthesizer> getSynthsMap() {
+        return synthsMap;
+    }
+
+    public Map<Integer, Sequencer> getSequencersMap() {
+        return sequencersMap;
+    }
+
+    public Map<Integer, MidiDevice> getMidiMap() {
+        return midiMap;
+    }
 
     private MidiDevice device;
     private MidiDevice.Info[] infos = MidiSystem.getMidiDeviceInfo();
@@ -45,22 +64,28 @@ public final class MidiAccess1 implements MidiAccess {
         this.midi = new LinkedList<MidiDevice>();
         this.synths = new LinkedList<Synthesizer>();
         this.sequencers = new LinkedList<Sequencer>();
+        this.midiMap = new HashMap<Integer,MidiDevice>();
+        this.synthsMap = new HashMap<Integer,Synthesizer>();
+        this.sequencersMap = new HashMap<Integer,Sequencer>();
         for (int sy = 0; sy < infos.length; sy++){
             try {
                 System.out.print("SY num >> ["+sy+"] \n");
                 device = MidiSystem.getMidiDevice(infos[sy]);
                 if (device instanceof Synthesizer){
                     this.synths.add((Synthesizer) device);
+                    this.synthsMap.put(sy,(Synthesizer) device);
                     System.out.println("Add new synth ..." + infos[sy].getName() + ", " + infos[sy].getVendor());
                     System.out.println("\t"+ infos[sy].getDescription());
-                }
+                } else
                 if (device instanceof Sequencer){
                     this.sequencers.add((Sequencer) device);
+                    this.sequencersMap.put(sy,(Sequencer) device);
                     System.out.println("Add new sequencer ..." + infos[sy].getName() + ", " + infos[sy].getVendor());
                     System.out.println("\t"+ infos[sy].getDescription());
-                }
+                } else
                 if (device instanceof MidiDevice){
-                    this.midi.add((MidiDevice) device);
+                    this.midi.add(device);
+                    this.midiMap.put(sy,device);
                     System.out.println("Add new midi ..." + infos[sy].getName() + ", " + infos[sy].getVendor());
                     System.out.println("\t"+ infos[sy].getDescription());
                 }

@@ -4,30 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="29e840de-d463-45a5-b5c5-24a1b16d2e24" name="Default Changelist" comment="">
-<<<<<<< HEAD
-      <change afterPath="$PROJECT_DIR$/src/it/comporellen/sound/ux/Seque2DListener.java" afterDir="false" />
+    <list default="true" id="d573a225-4ae4-4051-abe9-10510e318229" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/it/comporellen/sound/gui/GraphSequeText.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/it/comporellen/sound/gui/MainGui.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/it/comporellen/sound/device/AudioAccess1.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/it/comporellen/sound/device/AudioAccess1.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/it/comporellen/sound/device/MidiAccess.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/it/comporellen/sound/device/MidiAccess.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/it/comporellen/sound/device/MidiAccess1.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/it/comporellen/sound/device/MidiAccess1.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/it/comporellen/sound/seque/MainSeque.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/it/comporellen/sound/seque/MainSeque.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/it/comporellen/sound/ux/Seque2d.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/it/comporellen/sound/ux/Seque2d.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/it/comporellen/sound/ux/SequeSwUx.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/it/comporellen/sound/ux/SequeSwUx.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/it/comporellen/sound/ux/SequeUX.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/it/comporellen/sound/ux/SequeUX.java" afterDir="false" />
-=======
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__junit_junit_4_12.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_hamcrest_hamcrest_core_1_3.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__usb_JUSB_1_0_7.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/seque.iml" beforeDir="false" afterPath="$PROJECT_DIR$/seque.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/it/comporellen/sound/device/MidiAccess1.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/it/comporellen/sound/device/MidiAccess1.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/it/comporellen/sound/seque/MainSeque.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/it/comporellen/sound/seque/MainSeque.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/maven-archiver/pom.properties" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-archiver/pom.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
->>>>>>> piano
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,93 +21,33 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Interface" />
         <option value="Class" />
       </list>
     </option>
   </component>
-  <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
-  </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="10" />
-    <option name="y" value="20" />
-    <option name="width" value="1346" />
-    <option name="height" value="688" />
-  </component>
-  <component name="ProjectId" id="1lc5gAXeOqjh5rI10oAZSbvw3zW" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="ignore.virus.scanning.warn.message" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../SequeByZero" />
-    <property name="project.structure.last.edited" value="Modules" />
-    <property name="project.structure.proportion" value="0.15" />
-    <property name="project.structure.side.proportion" value="0.42413792" />
-  </component>
   <component name="RunAnythingCache">
     <option name="myCommands">
-      <command value="mvn clean" />
-      <command value="mvn compile" />
       <command value="mvn clean install" />
-      <command value="mvn clean package" />
     </option>
   </component>
-<<<<<<< HEAD
-  <component name="RunManager">
-    <configuration name="MainSeque" type="Application" factoryName="Application" nameIsGenerated="true">
-      <option name="ALTERNATIVE_JRE_PATH" value="$USER_HOME$/jdk17/openjdk-17_linux-x64_bin/jdk-17" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
-      <option name="MAIN_CLASS_NAME" value="seque.MainSeque" />
-      <module name="seque" />
-      <option name="PROGRAM_PARAMETERS" value="night ./ false" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="Application" factoryName="Application">
-      <option name="ALTERNATIVE_JRE_PATH" value="1.8" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
-      <option name="MAIN_CLASS_NAME" value="seque.MainSeque" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <recent_temporary>
-      <list>
-        <item itemvalue="Application.MainSeque" />
-      </list>
-    </recent_temporary>
-  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
-=======
->>>>>>> piano
-  <component name="SvnConfiguration">
-    <configuration />
-  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="29e840de-d463-45a5-b5c5-24a1b16d2e24" name="Default Changelist" comment="" />
-      <created>1607883647487</created>
+      <changelist id="d573a225-4ae4-4051-abe9-10510e318229" name="Changes" comment="" />
+      <created>1645288626212</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1607883647487</updated>
+      <updated>1645288626212</updated>
     </task>
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
       <map>
-        <entry key="1eb0dc73-9c77-4418-be85-895c7ae90324">
-          <value>
-            <State />
-          </value>
-        </entry>
         <entry key="MAIN">
           <value>
             <State />
@@ -131,104 +55,5 @@
         </entry>
       </map>
     </option>
-<<<<<<< HEAD
-    <option name="RECENT_FILTERS">
-      <map>
-        <entry key="Branch">
-          <value>
-            <list />
-          </value>
-        </entry>
-        <entry key="User">
-          <value>
-            <list />
-          </value>
-        </entry>
-      </map>
-    </option>
-    <option name="oldMeFiltersMigrated" value="true" />
-  </component>
-  <component name="masterDetails">
-    <states>
-      <state key="ArtifactsStructureConfigurable.UI">
-        <settings>
-          <artifact-editor />
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.42413792" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="FacetStructureConfigurable.UI">
-        <settings>
-          <last-edited>No facets are configured</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="GlobalLibrariesConfigurable.UI">
-        <settings>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="JdkListConfigurable.UI">
-        <settings>
-          <last-edited>1.8</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="ModuleStructureConfigurable.UI">
-        <settings>
-          <last-edited>comporellen</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.42413792" />
-                <option value="0.6" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="ProjectLibrariesConfigurable.UI">
-        <settings>
-          <last-edited>Maven: com.thoughtworks.qdox:qdox:2.0-M8</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-    </states>
-  </component>
-  <component name="mavenExecuteGoalHistory">
-    <option value="$PROJECT_DIR$" />
-    <option value="clean package" />
-=======
-    <option name="oldMeFiltersMigrated" value="true" />
->>>>>>> piano
   </component>
 </project>

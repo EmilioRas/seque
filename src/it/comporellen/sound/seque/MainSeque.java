@@ -5,6 +5,7 @@ import device.AudioAccess;
 import device.AudioAccess1;
 import device.MidiAccess;
 import device.MidiAccess1;
+import gui.MainGui;
 
 
 import javax.sound.midi.*;
@@ -27,6 +28,8 @@ public class MainSeque {
 
     public static final String loaderExtName = "sqe";
     public static final String loaderInitTrackSymb = "#>";
+
+    public static final String like_gui = "GUI";
 
     public static final String like_service = "BT";
 
@@ -102,6 +105,8 @@ public class MainSeque {
             System.exit(1);
         }
 
+
+
         if (args.length >= 3 && args[2].equals(MainSeque.like_service)){
             ProcessBuilder builder = new ProcessBuilder();
             builder.command("bash",  "-c", "sudo bluetoothctl");
@@ -145,12 +150,19 @@ public class MainSeque {
                 System.exit(1);
             }
         }
-
-
-
+/*
+        if (args.length >= 3 && args[2].equals(MainSeque.like_gui)){
+            MainGui gui = new MainGui("Seque");
+            gui.setMidiAccess(main.getMidiAccess());
+            boolean initC = gui.initComponents();
+        } else */
 
         if ((args.length >= 3 && args[2].equals(MainSeque.no_like_service)) || args.length >= 2) {
-
+            //
+            MainGui gui = new MainGui("Seque");
+            gui.setMidiAccess(main.getMidiAccess());
+            boolean initC = gui.initComponents();
+            //
             Scanner io = new Scanner(System.in);
             ((MidiAccess1) main.getMidiAccess()).setSqeContext(main);
             try {
@@ -363,7 +375,7 @@ public class MainSeque {
         if (copy != null && copy.getTracks() != null){
             copyF = true;
         }
-		
+
 
 		uploadingTkr:
         while (tt < trackNum ){
@@ -417,6 +429,9 @@ public class MainSeque {
                         }
 
                         sq.setSequence(this.getSqCopy());
+
+                        Track[] tracks = sq.getSequence().getTracks();
+                        System.out.println("Load number :" + tracks.length + " tracks");
 
                         sq.setTempoInBPM(Float.parseFloat(dscParams[1][0]));
                         sq.setTickPosition(Long.parseLong(dscParams[1][1]));
@@ -472,7 +487,7 @@ public class MainSeque {
 	}
 
 	 private synchronized Sequence addSqTracks( FileInputStream ioF,Scanner io,String[][] dscParams, TrackSeque ts, Sequencer sq,Sequence sq1,int jMap,Sequence copy) throws Exception{
-	 	Sequence current = this.addSqTracks(ioF,io,dscParams,ts,sq,sq1,jMap); 
+	 	Sequence current = this.addSqTracks(ioF,io,dscParams,ts,sq,sq1,jMap);
 
 	 	for (int s = 0 ; s < copy.getTracks().length; s++){
 			Track tk = current.createTrack();
@@ -484,7 +499,7 @@ public class MainSeque {
                             }
 
 	 	}
-		System.out.println("End merge!");	
+		System.out.println("End merge!");
 		return current;
 	 }
     private synchronized Sequence addSqTracks( FileInputStream ioF,Scanner io,String[][] dscParams, TrackSeque ts, Sequencer sq,Sequence sq1,int jMap) throws Exception{
@@ -509,15 +524,15 @@ public class MainSeque {
                             System.out.print(">");
                             System.out.println(" "+ 1);
 
-                            sq.setSequence(sq1);
+
 
                         flag = true;
-                this.setSqCopy(sq.getSequence());
+
             }
 
-		
-                
-            if (flag && sq != null && sq.getSequence() != null){
+
+
+            if (flag && sq != null  ){
 
 
 
@@ -529,7 +544,7 @@ public class MainSeque {
                 while(j < tracks.length ){
 
                 System.out.println("ADD New Track in main sequence.");
-                    Track tr = this.getSqCopy().createTrack();
+                    Track tr = sq1.createTrack();
                 int k = 0;
 
                             //System.out.println("...what channel for sequencer out [1..16] ?");
@@ -544,15 +559,14 @@ public class MainSeque {
                 }
 
                 System.out.println("> oK!");
-                sq.setSequence(this.getSqCopy());
+
             }
 		    rs++;
 		}
 
-        tracks = sq.getSequence().getTracks();
-        System.out.println("Load number :" + tracks.length + " tracks");
 
-		return sq.getSequence();
+
+		return sq1;
 
     }
 
@@ -560,7 +574,7 @@ public class MainSeque {
 
 	public Object[][] getM2TransmitterMap(){
 		return this.m2TransmitterMap;
-	}	
+	}
 
     private void singleMidiConnect(int index,Scanner io, MidiAccess midiAccess) throws Exception{
         System.out.println("Do you want connect two midi devices ? (Y/N)");
@@ -591,10 +605,10 @@ public class MainSeque {
             index++;
             synchronized (this.getMidiTransmetter().get((index - 1))) {
                 SingleMidiCommunication smc = new SingleMidiCommunication();
-		
+
 		smc.setMidi1(this.getMidiRecever().get((index - 1)));
 		String con2 = "";
-		while (con2.isEmpty()){ 
+		while (con2.isEmpty()){
 	 		System.out.println("How do you want to call your device ?");
 			con2 = io.next();
 		}
@@ -613,12 +627,12 @@ public class MainSeque {
 				this.m2TransmitterMap[i][1] = tmp[i][1];
 				this.m2TransmitterMap[0][2] = tmp[i][2];
 			}
-			
+
 			this.m2TransmitterMap[index-1][0] = i;
 			this.m2TransmitterMap[index-1][1] = SCon2;
 			this.m2TransmitterMap[index-1][2] = iDC3-1;
 
-       		} 
+       		}
 		smc.setMidi2(this.getMidiTransmetter().get((index - 1)));
                 smc.setCurrCh(iDC3-1);
                 Thread t = new Thread((Runnable) smc);

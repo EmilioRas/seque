@@ -1,12 +1,14 @@
+/home/raptor/IdeaProjects/Seque/seque/src/it/comporellen/sound/gui/MainGui.java
 /home/raptor/IdeaProjects/Seque/seque/src/it/comporellen/sound/bridge/SqeReceiver.java
 /home/raptor/IdeaProjects/Seque/seque/src/it/comporellen/sound/seque/TrackSeque.java
 /home/raptor/IdeaProjects/Seque/seque/src/it/comporellen/sound/bridge/SqeReceiverCh.java
 /home/raptor/IdeaProjects/Seque/seque/src/it/comporellen/sound/bridge/SqeAbsMidiReceiver.java
 /home/raptor/IdeaProjects/Seque/seque/src/it/comporellen/sound/bridge/SqeMessage.java
-/home/raptor/IdeaProjects/Seque/seque/src/it/comporellen/sound/device/MidiAccess1.java
 /home/raptor/IdeaProjects/Seque/seque/src/it/comporellen/sound/seque/Seque.java
 /home/raptor/IdeaProjects/Seque/seque/src/it/comporellen/sound/bridge/SingleMidiCommunication.java
-/home/raptor/IdeaProjects/Seque/seque/src/it/comporellen/sound/seque/MainSeque.java
 /home/raptor/IdeaProjects/Seque/seque/src/it/comporellen/sound/device/AudioAccess.java
-/home/raptor/IdeaProjects/Seque/seque/src/it/comporellen/sound/device/MidiAccess.java
 /home/raptor/IdeaProjects/Seque/seque/src/it/comporellen/sound/device/AudioAccess1.java
+/home/raptor/IdeaProjects/Seque/seque/src/it/comporellen/sound/device/MidiAccess1.java
+/home/raptor/IdeaProjects/Seque/seque/src/it/comporellen/sound/seque/MainSeque.java
+/home/raptor/IdeaProjects/Seque/seque/src/it/comporellen/sound/gui/GraphSequeText.java
+/home/raptor/IdeaProjects/Seque/seque/src/it/comporellen/sound/device/MidiAccess.java
