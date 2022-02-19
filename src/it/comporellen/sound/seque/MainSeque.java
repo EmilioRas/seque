@@ -282,7 +282,7 @@ public class MainSeque {
             Object dnF = null;
             Set<String> listTracksFile = null;
             try {
-                listTracksFile = this.listFilesUsingDirectoryStream(wd + File.separator + startWith, startWith);
+                listTracksFile = this.listFilesUsingDirectoryStream(wd + File.separator + startWith + File.separator, startWith);
             } catch (IOException ioe4){
                 System.err.println("Tracks list not found ");
                 return ts;
@@ -334,8 +334,8 @@ public class MainSeque {
         Set<String> fileList = new HashSet<>();
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(dir))) {
             for (Path path : stream) {
-                if (!Files.isDirectory(path) && path.getFileName().startsWith(startWith)) {
-                    fileList.add(path.toFile().getAbsolutePath());
+                if (!Files.isDirectory(path) && path.getFileName().toString().startsWith(startWith)) {
+                    fileList.add(path.getFileName().toString());
                 }
             }
         }
@@ -368,11 +368,10 @@ public class MainSeque {
 		uploadingTkr:
         while (tt < trackNum ){
 
-            Iterator<String> iListTracksFile = listTracksFile.iterator();
-            while (iListTracksFile.hasNext()) {
-                String currentTrack = iListTracksFile.next();
-                if (currentTrack.endsWith("_" + (tt + 1) + ".mid")) {
-                    System.out.println("Loading midi :" + currentTrack);
+
+                Object[] currentTrack =  listTracksFile.toArray();
+
+                 System.out.println("Loading midi :" + String.valueOf(currentTrack[tt]));
 
                     System.out.println("Do you want to skip for load this midi ? (skip = \"k\") ...");
 
@@ -388,7 +387,7 @@ public class MainSeque {
                     }
 
                     try {
-                        ioF = new FileInputStream(currentTrack);
+                        ioF = new FileInputStream(wd + File.separator + startWith + File.separator + String.valueOf(currentTrack[tt]));
                     } catch (Exception ioe) {
                         tt++;
                         System.out.println("Not found tkr num: " + (tt + 1));
@@ -466,8 +465,8 @@ public class MainSeque {
                             System.err.println("Error in closing ioF!");
                         }
                     }
-                }
-            }
+
+
 		}
 		return sqeNumber;
 	}
