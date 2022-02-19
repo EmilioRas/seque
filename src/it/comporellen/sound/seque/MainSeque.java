@@ -5,23 +5,21 @@ import device.AudioAccess;
 import device.AudioAccess1;
 import device.MidiAccess;
 import device.MidiAccess1;
-import bridge.SqeReceiver;
-import bridge.SqeReceiverCh;
+
 
 import javax.sound.midi.*;
-import javax.sound.midi.spi.MidiFileReader;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Scanner;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Set;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
+
 
 //author emilio.rascazzo
 
@@ -232,7 +230,7 @@ public class MainSeque {
              return null;
             }
 
-	
+
             FileInputStream oneLine = new FileInputStream(new File(wd + File.separator + startWith + File.separator + "seque.ini"));
             StringBuffer dsc = new StringBuffer();
             int len = 0;
@@ -282,8 +280,14 @@ public class MainSeque {
             int dscNameDev = 0;
 
             Object dnF = null;
+            Set<String> listTracksFile = null;
+            try {
+                listTracksFile = this.listFilesUsingDirectoryStream(wd + File.separator + startWith, startWith);
+            } catch (IOException ioe4){
+                System.err.println("Tracks list not found ");
+                return ts;
+            }
 
-	
 	        while (dscNameDev < Integer.parseInt(dscParams[0][3])){
                 String deviceName = dscParams[dscNameDev +2][2];
                         System.out.println("SY num >> [\"" + deviceName + "\"] ...");
@@ -294,29 +298,31 @@ public class MainSeque {
 
                 tt = 0;
 
-       		
-		
-                if (!s1.equalsIgnoreCase("k")){
+
+
+                if (!s1.equalsIgnoreCase("k") && listTracksFile != null){
                     for (int j = 0; j < this.m2TransmitterMap.length; j++){
                         dnF = this.m2TransmitterMap[j][1];
                         String dnFName = (String) dnF;
                         System.out.println("Check... " + dnFName );
                         if (deviceName.equals(dnFName)){
                             sq = ((MidiAccess1) this.getMidiAccess()).getSequencer(0);
-			    //(this.getMidiTransmetter().get((index - 1)))	
+			    //(this.getMidiTransmetter().get((index - 1)))
                             TrackSeque tsCurr = null;
 			    synchronized(this.getMidiTransmetter().get((Integer.parseInt(String.valueOf(this.m2TransmitterMap[j][0]))))){
                             ts.add(tsCurr = new TrackSeque((this.getMidiTransmetter().get((Integer.parseInt(String.valueOf(this.m2TransmitterMap[j][0])))).getReceiver())));
 			    }
 			    synchronized(sq){
-                                sqeNumber = this.updateTracks(wd,startWith,sqeNumber,sq,tsCurr,dscParams,io,tt,j);
+                                sqeNumber = this.updateTracks(wd,startWith,sqeNumber,sq,tsCurr,dscParams,io,tt,j,listTracksFile);
                                 System.out.println("In  device -" + deviceName + "- loaded num.: " + (sqeNumber != -1 ? sqeNumber : 0) +" tracks and planned num.: " + dscParams[dscNameDev][1]);
                             }
                         }
                     }
+                } else if (!s1.equalsIgnoreCase("k")){
+                    System.out.println("Your tracksList is null");
                 }
-		
-		
+
+
 		        dscNameDev++;
 	        }
 
@@ -324,7 +330,20 @@ public class MainSeque {
         return ts;
     }
 
-	private synchronized int updateTracks(String wd,String startWith,int sqeNumber,Sequencer sq,TrackSeque ts,String[][] dscParams,Scanner io,int tt,int jMap){
+    public Set<String> listFilesUsingDirectoryStream(String dir,String startWith) throws IOException {
+        Set<String> fileList = new HashSet<>();
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(dir))) {
+            for (Path path : stream) {
+                if (!Files.isDirectory(path) && path.getFileName().startsWith(startWith)) {
+                    fileList.add(path.toFile().getAbsolutePath());
+                }
+            }
+        }
+        return fileList;
+    }
+
+
+	private synchronized int updateTracks(String wd,String startWith,int sqeNumber,Sequencer sq,TrackSeque ts,String[][] dscParams,Scanner io,int tt,int jMap,Set<String> listTracksFile){
 
 
         System.out.println((sq != null ? "seque ok..." : "seque null..."));
@@ -337,119 +356,118 @@ public class MainSeque {
 
         FileInputStream ioF = null;
 
-
-	//Copy before
-	//
-	boolean copyF = false;
-	Sequence copy = sq.getSequence();
-	if (copy != null && copy.getTracks() != null){
-		copyF = true;
-	}
+        //Copy before
+        //
+        boolean copyF = false;
+        Sequence copy = sq.getSequence();
+        if (copy != null && copy.getTracks() != null){
+            copyF = true;
+        }
 		
 
 		uploadingTkr:
         while (tt < trackNum ){
-            System.out.println("Loading midi :" + wd +  File.separator +startWith + File.separator + startWith + "_" + (tt + 1) + ".mid");
-                
-			System.out.println("Do you want to skip for load this midi ? (skip = \"k\") ...");
-			
-			String skp = io.next();
 
-			if (skp != null && skp.equalsIgnoreCase("k")){
-				tt++;
-				if (tt >= trackNum){
-					
-					return -1;
-				}
-				continue uploadingTkr;
-			}
+            Iterator<String> iListTracksFile = listTracksFile.iterator();
+            while (iListTracksFile.hasNext()) {
+                String currentTrack = iListTracksFile.next();
+                if (currentTrack.endsWith("_" + (tt + 1) + ".mid")) {
+                    System.out.println("Loading midi :" + currentTrack);
 
-			try {
-                    		ioF = new FileInputStream(wd + File.separator +startWith + File.separator + startWith  + "_" + (tt + 1) + ".mid");
-                	} catch (Exception ioe) {
-                    		tt++;
-                    		System.out.println("Not found tkr num: " + (tt + 1));
-				
-                   		return -1;
-                	}
-			
-			
+                    System.out.println("Do you want to skip for load this midi ? (skip = \"k\") ...");
 
-			if (ioF == null){
-				System.out.println("Attention!!! You sequence could be null... Check before your .mid");
-				tt++;
-				
-				return -1;
-			}
+                    String skp = io.next();
 
-		
+                    if (skp != null && skp.equalsIgnoreCase("k")) {
+                        tt++;
+                        if (tt >= trackNum) {
 
-            try {
-                sq.setSequence(ioF);
-                Sequence sq1 = sq.getSequence();
-                
-	
-		//merge sequences
-		if (copyF){
-			this.setSqCopy(this.addSqTracks(ioF,io,dscParams,ts,sq,sq1,jMap,copy));	
-		} else {
-			this.setSqCopy(this.addSqTracks(ioF,io,dscParams,ts,sq,sq1,jMap));	
-		}
+                            return -1;
+                        }
+                        continue uploadingTkr;
+                    }
 
-		sq.setSequence(this.getSqCopy());
+                    try {
+                        ioF = new FileInputStream(currentTrack);
+                    } catch (Exception ioe) {
+                        tt++;
+                        System.out.println("Not found tkr num: " + (tt + 1));
 
-                sq.setTempoInBPM(Float.parseFloat(dscParams[1][0]));
-                sq.setTickPosition(Long.parseLong(dscParams[1][1]));
+                        return -1;
+                    }
 
-                if (dscParams[1].length >= 3){
-                    sq.setLoopCount(Integer.parseInt(dscParams[1][2]));
+
+                    if (ioF == null) {
+                        System.out.println("Attention!!! You sequence could be null... Check before your .mid");
+                        tt++;
+
+                        return -1;
+                    }
+
+
+                    try {
+                        sq.setSequence(ioF);
+                        Sequence sq1 = sq.getSequence();
+
+
+                        //merge sequences
+                        if (copyF) {
+                            this.setSqCopy(this.addSqTracks(ioF, io, dscParams, ts, sq, sq1, jMap, copy));
+                        } else {
+                            this.setSqCopy(this.addSqTracks(ioF, io, dscParams, ts, sq, sq1, jMap));
+                        }
+
+                        sq.setSequence(this.getSqCopy());
+
+                        sq.setTempoInBPM(Float.parseFloat(dscParams[1][0]));
+                        sq.setTickPosition(Long.parseLong(dscParams[1][1]));
+
+                        if (dscParams[1].length >= 3) {
+                            sq.setLoopCount(Integer.parseInt(dscParams[1][2]));
+                        }
+
+                        if (dscParams[1].length >= 4) {
+                            sq.setLoopStartPoint(Long.parseLong(dscParams[1][3]));
+                        }
+
+                        if (dscParams[1].length >= 5) {
+                            sq.setLoopEndPoint(Long.parseLong(dscParams[1][4]));
+                        }
+                        System.out.println("\t tempo in BPM :" + sq.getTempoInBPM());
+                        System.out.println("\t num tracks :" + sq.getSequence().getTracks().length);
+                        System.out.println("\t DivisionType :" + sq.getSequence().getDivisionType());
+                        System.out.println("\t MicrosecondLength :" + sq.getSequence().getMicrosecondLength());
+                        System.out.println("\t Resolution :" + sq.getSequence().getResolution());
+                        System.out.println("\t TickLength :" + sq.getSequence().getTickLength());
+                        System.out.println("\t LoopCount :" + sq.getLoopCount());
+                        System.out.println("\t LoopStartPoint :" + sq.getLoopStartPoint());
+                        System.out.println("\t LoopEndPoint :" + sq.getLoopEndPoint());
+
+
+                        ts.setSeque(sq);
+
+                        ts.setSequeParams(dscParams);
+                    } catch (Exception sqe) {
+                        tt++;
+                        System.out.println("Some error occurred... | skip track ");
+                        continue uploadingTkr;
+                    }
+
+
+                    tt++;
+
+                    sqeNumber++;
+
+
+                    if (ioF != null) {
+                        try {
+                            ioF.close();
+                        } catch (IOException ioe3) {
+                            System.err.println("Error in closing ioF!");
+                        }
+                    }
                 }
-
-                if (dscParams[1].length >= 4)	{
-                    sq.setLoopStartPoint(Long.parseLong(dscParams[1][3]));
-                }
-
-                if (dscParams[1].length >= 5){
-                    sq.setLoopEndPoint(Long.parseLong(dscParams[1][4]));
-                }
-
-                System.out.println("\t num tracks :" + sq.getSequence().getTracks().length );
-                System.out.println("\t DivisionType :" + sq.getSequence().getDivisionType());
-                System.out.println("\t MicrosecondLength :" + sq.getSequence().getMicrosecondLength());
-                System.out.println("\t Resolution :" + sq.getSequence().getResolution());
-                System.out.println("\t TickLength :" + sq.getSequence().getTickLength());
-                System.out.println("\t LoopCount :" + sq.getLoopCount());
-                System.out.println("\t LoopStartPoint :" + sq.getLoopStartPoint());
-                System.out.println("\t LoopEndPoint :" + sq.getLoopEndPoint());
-
-
-
-
-                ts.setSeque(sq);
-
-                ts.setSequeParams(dscParams);
-            } catch (Exception sqe){
-                tt++;
-                System.out.println("Some error occurred... | skip track ");
-                continue uploadingTkr;
             }
-
-
-            tt++;
-
-            sqeNumber++;
-				
-					
-			
-			if (ioF != null) {
-				try {
-					ioF.close();
-				} catch (IOException ioe3){
-					System.err.println("Error in closing ioF!");
-				}
-			}
-		
-		
 		}
 		return sqeNumber;
 	}
