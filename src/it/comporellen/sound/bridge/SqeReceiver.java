@@ -12,4 +12,6 @@ public class SqeReceiver extends SqeAbsMidiReceiver {
     public void close() {
       super.close();
     }
+
+
 }

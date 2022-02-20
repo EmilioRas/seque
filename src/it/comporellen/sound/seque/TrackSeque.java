@@ -8,7 +8,7 @@ import javax.sound.midi.*;
 import java.util.LinkedList;
 import java.util.List;
 //Integer.parseInt(String.valueOf(this.m2TransmitterMap[j][0])));
-public class TrackSeque extends SqeReceiver implements Seque,Runnable{
+public class TrackSeque implements Seque,Runnable{
 
     private String[][] sequeParams;
 
@@ -22,10 +22,16 @@ public class TrackSeque extends SqeReceiver implements Seque,Runnable{
         this.seque = seque;
     }
 
+    private List<SqeReceiver> receivers;
+
     private List<Track> tracks;
 
-    public TrackSeque(Receiver receiver){
-        super(receiver);
+    public List<SqeReceiver> getReceivers() {
+        return receivers;
+    }
+
+    public TrackSeque(){
+        this.receivers = new LinkedList<SqeReceiver>();
         this.tracks = new LinkedList<Track>();
     }
 
@@ -62,19 +68,7 @@ public class TrackSeque extends SqeReceiver implements Seque,Runnable{
         if (this.tracks != null) this.tracks.add(0,tk);
     }
 
-    @Override
-    public MidiEvent overrideCh(MidiEvent message,int ch) {
-        SqeMessage sqe = null;
-        if (message.getMessage().getLength() == 3 && ch != -1){
-            SqeMessage midi = new SqeMessage(new byte[]{(byte) (
-                    message.getMessage().getMessage()[0] | (ch & 0x0F)),
-                    message.getMessage().getMessage()[1], message.getMessage().getMessage()[2]});
-            sqe = new SqeMessage((new MidiEvent(message.getMessage(),message.getTick())).getMessage().getMessage());
-        }
-        sqe = new SqeMessage(message.getMessage().getMessage());
 
-        return new MidiEvent(sqe,message.getTick());
-    }
 
 
     @Override
@@ -82,17 +76,18 @@ public class TrackSeque extends SqeReceiver implements Seque,Runnable{
         synchronized (this){
             try {
 
-		if (this.seque != null){
+		        if (this.seque != null){
                     this.seque.start();
                 }                
                 this.wait(1000);
 
                 if (this.seque != null && this.seque.isOpen() && this.seque.getSequence() != null &&  this.seque.getSequence().getTracks() != null){
                     System.out.println("Seque " + ((MidiDevice) this.seque).getDeviceInfo().getName() + " open...");
-                    this.tracks = new LinkedList<Track>();
+                    /*this.tracks = new LinkedList<Track>();
+
                     for (Track t : this.seque.getSequence().getTracks()){
                         this.tracks.add(t);
-                    }
+                    }*/
                 }
 
 		

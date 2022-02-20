@@ -76,13 +76,13 @@ public final class MidiAccess1 implements MidiAccess {
                     this.synthsMap.put(sy,(Synthesizer) device);
                     System.out.println("Add new synth ..." + infos[sy].getName() + ", " + infos[sy].getVendor());
                     System.out.println("\t"+ infos[sy].getDescription());
-                } else
+                }
                 if (device instanceof Sequencer){
                     this.sequencers.add((Sequencer) device);
                     this.sequencersMap.put(sy,(Sequencer) device);
                     System.out.println("Add new sequencer ..." + infos[sy].getName() + ", " + infos[sy].getVendor());
                     System.out.println("\t"+ infos[sy].getDescription());
-                } else
+                }
                 if (device instanceof MidiDevice){
                     this.midi.add(device);
                     this.midiMap.put(sy,device);
