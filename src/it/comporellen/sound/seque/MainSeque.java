@@ -377,13 +377,7 @@ public class MainSeque {
 
         FileInputStream ioF = null;
 
-        //Copy before
-        //
-        boolean copyF = false;
-        Sequence copy = this.getSqCopy();
-        if (copy != null && copy.getTracks() != null && copy.getTickLength() != 0){
-            copyF = true;
-        }
+
 
 
 		uploadingTkr:
@@ -430,12 +424,9 @@ public class MainSeque {
                         Sequence sq1 = sq.getSequence();
 
 
-                        //merge sequences
-                        if (copyF) {
-                            this.addSqTracks(ioF, io, dscParams, ts, sq, sq1, jMap, copy);
-                        } else {
+
                             this.addSqTracks(ioF, io, dscParams, ts, sq, sq1, jMap);
-                        }
+
 
 
                         //sq.setTickPosition(0L);
@@ -488,21 +479,7 @@ public class MainSeque {
 		return sqeNumber;
 	}
 
-	 private synchronized void addSqTracks( FileInputStream ioF,Scanner io,String[][] dscParams, TrackSeque ts, Sequencer sq,Sequence sq1,int jMap,Sequence copy) throws Exception{
-	 	this.addSqTracks(ioF,io,dscParams,ts,sq,sq1,jMap);
 
-	 	for (int s = 0 ; s < copy.getTracks().length; s++){
-			Track tk = this.getSqCopy().createTrack();
-			int k = 0;
-                	System.out.println("...merging sequence");
-                            while (k < copy.getTracks()[s].size()) {
-                                tk.add(copy.getTracks()[s].get(k));
-                                k++;
-                            }
-
-	 	}
-		System.out.println("End merge!");
-	 }
     private synchronized void addSqTracks( FileInputStream ioF,Scanner io,String[][] dscParams, TrackSeque ts, Sequencer sq,Sequence sq1,int jMap) throws Exception{
 		boolean flag =  false;
 		int rs = 0;
