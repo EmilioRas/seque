@@ -90,50 +90,50 @@ public class TrackSeque implements Seque,Runnable{
                             ((midi.getMessage()[l + 1] & 0xFF) == 0x6B)) {
                         trackblock = true;
                     }
+                }
 
-                    if (l > 21 && trackblock) {
-                        if ((midi.getMessage()[l] & 0xF0) == 0xA0) {
-                            midi.getMessage()[l] = (byte) (
-                                    midi.getMessage()[l] | (ch & 0x0F));
-                            l = l + TrackSeque.eventMidiType[0][1];
+                if (l > 21 && trackblock) {
+                    if ((midi.getMessage()[l] & 0xF0) == 0xA0) {
+                        midi.getMessage()[l] = (byte) (
+                                midi.getMessage()[l] | (ch & 0x0F));
+                        l = l + TrackSeque.eventMidiType[0][1];
 
-                        }
-                        if ((midi.getMessage()[l] & 0xF0) == 0xB0) {
-                            midi.getMessage()[l] = (byte) (
-                                    midi.getMessage()[l] | (ch & 0x0F));
-                            l = l + TrackSeque.eventMidiType[1][1];
+                    }
+                    if ((midi.getMessage()[l] & 0xF0) == 0xB0) {
+                        midi.getMessage()[l] = (byte) (
+                                midi.getMessage()[l] | (ch & 0x0F));
+                        l = l + TrackSeque.eventMidiType[1][1];
 
-                        }
-                        if ((midi.getMessage()[l] & 0xF0) == 0xC0) {
-                            midi.getMessage()[l] = (byte) (
-                                    midi.getMessage()[l] | (ch & 0x0F));
-                            l = l + TrackSeque.eventMidiType[2][1];
+                    }
+                    if ((midi.getMessage()[l] & 0xF0) == 0xC0) {
+                        midi.getMessage()[l] = (byte) (
+                                midi.getMessage()[l] | (ch & 0x0F));
+                        l = l + TrackSeque.eventMidiType[2][1];
 
-                        }
-                        if ((midi.getMessage()[l] & 0xF0) == 0xD0) {
-                            midi.getMessage()[l] = (byte) (
-                                    midi.getMessage()[l] | (ch & 0x0F));
-                            l = l + TrackSeque.eventMidiType[3][1];
+                    }
+                    if ((midi.getMessage()[l] & 0xF0) == 0xD0) {
+                        midi.getMessage()[l] = (byte) (
+                                midi.getMessage()[l] | (ch & 0x0F));
+                        l = l + TrackSeque.eventMidiType[3][1];
 
-                        }
-                        if ((midi.getMessage()[l] & 0xF0) == 0xE0) {
-                            midi.getMessage()[l] = (byte) (
-                                    midi.getMessage()[l] | (ch & 0x0F));
-                            l = l + TrackSeque.eventMidiType[4][1];
+                    }
+                    if ((midi.getMessage()[l] & 0xF0) == 0xE0) {
+                        midi.getMessage()[l] = (byte) (
+                                midi.getMessage()[l] | (ch & 0x0F));
+                        l = l + TrackSeque.eventMidiType[4][1];
 
-                        }
-                        if ((midi.getMessage()[l] & 0xF0) == 0x90) {
-                            midi.getMessage()[l] = (byte) (
-                                    midi.getMessage()[l] | (ch & 0x0F));
-                            l = l + TrackSeque.eventMidiType[5][1];
+                    }
+                    if ((midi.getMessage()[l] & 0xF0) == 0x90) {
+                        midi.getMessage()[l] = (byte) (
+                                midi.getMessage()[l] | (ch & 0x0F));
+                        l = l + TrackSeque.eventMidiType[5][1];
 
-                        }
-                        if ((midi.getMessage()[l] & 0xF0) == 0x80) {
-                            midi.getMessage()[l] = (byte) (
-                                    midi.getMessage()[l] | (ch & 0x0F));
-                            l = l + TrackSeque.eventMidiType[6][1];
+                    }
+                    if ((midi.getMessage()[l] & 0xF0) == 0x80) {
+                        midi.getMessage()[l] = (byte) (
+                                midi.getMessage()[l] | (ch & 0x0F));
+                        l = l + TrackSeque.eventMidiType[6][1];
 
-                        }
                     }
                 }
             }
