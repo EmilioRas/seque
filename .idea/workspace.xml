@@ -4,8 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="61ebe946-ee1c-4d43-a018-2830762d46f2" name="Changes" comment="">
+    <list default="true" id="d573a225-4ae4-4051-abe9-10510e318229" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/it/comporellen/sound/seque/MainSeque.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/it/comporellen/sound/seque/MainSeque.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/it/comporellen/sound/seque/Seque.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/it/comporellen/sound/seque/Seque.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/it/comporellen/sound/seque/TrackSeque.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/it/comporellen/sound/seque/TrackSeque.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -62,6 +65,5 @@
         </entry>
       </map>
     </option>
-    <option name="oldMeFiltersMigrated" value="true" />
   </component>
 </project>

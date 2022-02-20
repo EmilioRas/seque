@@ -481,21 +481,19 @@ public class MainSeque {
 
 
     private synchronized void addSqTracks( FileInputStream ioF,Scanner io,String[][] dscParams, TrackSeque ts, Sequencer sq,Sequence sq1,int jMap) throws Exception{
-		boolean flag =  false;
+
 		int rs = 0;
 		Track[] tracks = sq1.getTracks();
 
 		while (rs < tracks.length){
-	    	if (!flag){
+
  		       	Track tr =  this.getSqCopy().createTrack();
-                System.out.println("ADD New Track . create sequence");
+
                     int k = 0;
-                //System.out.println("...what channel for sequencer out [1..16] ?");
-                  //          String id3 = io.next();
-                            while (k < sq1.getTracks()[0].size()) {
-                                tr.add(sq1.getTracks()[0].get(k));
-				//System.out.println(this.m2TransmitterMap[jMap][2]);
-                                //tr.add(ts.overrideCh(sq1.getTracks()[0].get(k)));
+
+                            while (k < tracks[rs].size()) {
+                                tr.add(ts.overrideCh(sq1.getTracks()[rs].get(k), Integer.parseInt(String.valueOf(this.m2TransmitterMap[jMap][2]))));
+
                                     k++;
                                     System.out.print("=");
                             }
@@ -504,39 +502,6 @@ public class MainSeque {
                 System.out.println("ticks :" + tr.ticks());
 
                         rs++;
-                        flag = true;
-
-            }
-
-
-
-            if (flag && sq != null  ){
-
-
-
-                if (tracks.length > 1){
-                    System.out.println("Your midi contains more than one track...");
-                }
-
-
-
-                System.out.println("ADD New Track in main sequence.");
-                    Track tr =  this.getSqCopy().createTrack();
-                int k = 0;
-
-                            //System.out.println("...what channel for sequencer out [1..16] ?");
-                    //String id3 = io.next();
-                            while (k < sq1.getTracks()[rs].size()) {
-                                tr.add(tracks[rs].get(k));
-                                //tr.add(ts.overrideCh(tracks[j].get(k)));
-                                k++;
-                                System.out.print("=");
-                            }
-
-                rs++;
-                System.out.println("> oK!");
-                System.out.println("ticks :" + tr.ticks());
-            }
 
 		}
 
