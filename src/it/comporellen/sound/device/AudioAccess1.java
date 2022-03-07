@@ -54,19 +54,7 @@ public class AudioAccess1 implements AudioAccess {
         return null;
     }
 
-    private MainSeque context;
 
-    public void setSqeContext(MainSeque context) {
-        this.context = context;
-    }
 
-    @Override
-    public Object getSqeContext() throws Exception {
-        try {
-            return this.getSqeContext();
-        } catch (Exception e){
-            throw new Exception(e);
-        }
 
-    }
 }

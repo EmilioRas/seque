@@ -164,7 +164,7 @@ public class MainSeque {
             boolean initC = gui.initComponents();
             //
             Scanner io = new Scanner(System.in);
-            ((MidiAccess1) main.getMidiAccess()).setSqeContext(main);
+
             try {
                 main.singleMidiConnect(0, io, main.getMidiAccess());
             } catch (Exception e) {
