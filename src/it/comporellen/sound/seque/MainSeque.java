@@ -495,30 +495,9 @@ public class MainSeque {
 
         int rs = 0;
         Track[] tracks = sq1.getTracks();
-        boolean flag = false;
+
         while (rs < tracks.length) {
 
-            Track tr = this.getSqCopy().createTrack();
-
-            int k = 0;
-
-            while (k < tracks[rs].size()) {
-                tr.add(ts.overrideCh(sq1.getTracks()[rs].get(k), Integer.parseInt(String.valueOf(this.m2TransmitterMap[jMap][2]))));
-
-                k++;
-                System.out.print("=");
-            }
-            System.out.print(">");
-            System.out.println("-" + "ok!");
-            System.out.println("ticks :" + tr.ticks());
-
-            rs++;
-            flag = true;
-
-        }
-
-
-        if (flag && sq != null) {
 
 
             if (tracks.length > 1) {
