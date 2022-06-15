@@ -13,7 +13,7 @@
     <bytecodeTargetLevel>
       <module name="JUSB" target="1.7" />
       <module name="jusb" target="1.7" />
-      <module name="seque" target="1.8" />
+      <module name="seque" target="1.7" />
     </bytecodeTargetLevel>
   </component>
 </project>
