@@ -13,11 +13,7 @@ import java.util.Map;
 public final class MidiAccess1 implements MidiAccess {
 
 
-    private MainSeque context;
 
-    public void setSqeContext(MainSeque context) {
-        this.context = context;
-    }
 
     private List<Synthesizer> synths;
     private List<Sequencer> sequencers;
@@ -124,15 +120,7 @@ public final class MidiAccess1 implements MidiAccess {
         return null;
     }
 
-    @Override
-    public Object getSqeContext() throws Exception {
-        try {
-            return this.getSqeContext();
-        } catch (Exception e){
-            throw new Exception(e);
-        }
 
-    }
 
     @Override
     public List<Receiver> getReceivers(int deviceId) {

@@ -22,7 +22,6 @@ public interface MidiAccess {
 
     public MidiDevice getMidiDevice(int index);
 
-    public Object getSqeContext() throws Exception;
 
     public Map<Integer, Synthesizer> getSynthsMap();
 
