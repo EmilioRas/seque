@@ -342,7 +342,7 @@ public class MainSeque {
             System.out.println("\t LoopCount :" + sq.getLoopCount());
             System.out.println("\t LoopStartPoint :" + sq.getLoopStartPoint());
             System.out.println("\t LoopEndPoint :" + sq.getLoopEndPoint());
-
+            this.generalSequenceSetting(sq, dscParams);
 
             ts.setSeque(sq);
 
@@ -429,30 +429,6 @@ public class MainSeque {
 
 
 
-                        //sq.setTickPosition(0L);
-                        Track[] tracks = sq.getSequence().getTracks();
-                        System.out.println("Load number :" + tracks.length + " tracks");
-
-                        sq.setTempoInBPM(Float.parseFloat(dscParams[1][0]));
-                        sq.setTickPosition(Long.parseLong(dscParams[1][1]));
-
-                        if (dscParams[1].length >= 3) {
-                            sq.setLoopCount(Integer.parseInt(dscParams[1][2]));
-                        }
-
-                        if (dscParams[1].length >= 4) {
-                            sq.setLoopStartPoint(Long.parseLong(dscParams[1][3]));
-                        }
-
-                        if (dscParams[1].length >= 5) {
-                            sq.setLoopEndPoint(Long.parseLong(dscParams[1][4]));
-                        }
-                        System.out.println("\t tempo in BPM :" + sq.getTempoInBPM());
-                        System.out.println("\t num tracks :" + sq.getSequence().getTracks().length);
-                        System.out.println("\t DivisionType :" + sq.getSequence().getDivisionType());
-                        System.out.println("\t MicrosecondLength :" + sq.getSequence().getMicrosecondLength());
-                        System.out.println("\t Resolution :" + sq.getSequence().getResolution());
-                        System.out.println("\t TickLength :" + sq.getSequence().getTickLength());
 
                     } catch (Exception sqe) {
                         tt++;
@@ -476,8 +452,43 @@ public class MainSeque {
 
 
 		}
+
+
 		return sqeNumber;
 	}
+
+    private void generalSequenceSetting(Sequencer sq, String[][] dscParams){
+        try {
+            //sq.setTickPosition(0L);
+            Track[] tracks = sq.getSequence().getTracks();
+            System.out.println("Load number :" + tracks.length + " tracks");
+
+            sq.setTempoInBPM(Float.parseFloat(dscParams[1][0]));
+            sq.setTickPosition(Long.parseLong(dscParams[1][1]));
+
+            if (dscParams[1].length >= 3) {
+                sq.setLoopCount(Integer.parseInt(dscParams[1][2]));
+            }
+
+            if (dscParams[1].length >= 4) {
+                sq.setLoopStartPoint(Long.parseLong(dscParams[1][3]));
+            }
+
+            if (dscParams[1].length >= 5) {
+                sq.setLoopEndPoint(Long.parseLong(dscParams[1][4]));
+            }
+            System.out.println("\t tempo in BPM :" + sq.getTempoInBPM());
+            System.out.println("\t num tracks :" + sq.getSequence().getTracks().length);
+            System.out.println("\t DivisionType :" + sq.getSequence().getDivisionType());
+            System.out.println("\t MicrosecondLength :" + sq.getSequence().getMicrosecondLength());
+            System.out.println("\t Resolution :" + sq.getSequence().getResolution());
+            System.out.println("\t TickLength :" + sq.getSequence().getTickLength());
+
+        } catch (Exception e){
+            System.err.println("General Sequencer setting error...");
+
+        }
+    }
 
 
     private synchronized void addSqTracks( FileInputStream ioF,Scanner io,String[][] dscParams, TrackSeque ts, Sequencer sq,Sequence sq1,int jMap) throws Exception{
@@ -529,6 +540,7 @@ public class MainSeque {
                             while (k < sq1.getTracks()[rs].size()) {
                                 tr.add(tracks[rs].get(k));
                                 //tr.add(ts.overrideCh(tracks[j].get(k)));
+
                                 k++;
                                 System.out.print("=");
                             }
@@ -581,7 +593,7 @@ public class MainSeque {
 		smc.setMidi1(this.getMidiRecever().get((index - 1)));
 		String con2 = "";
 		while (con2.isEmpty()){
-	 		System.out.println("How do you want to call your device ?");
+	 		System.out.println("What is the name of your device ?");
 			con2 = io.next();
 		}
 		String SCon2 = con2;
