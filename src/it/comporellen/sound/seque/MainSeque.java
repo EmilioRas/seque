@@ -198,20 +198,36 @@ public class MainSeque {
                 }
 
                 System.out.println("------|------");
-                String e = io.next();
-                synchronized (main.getMidiRecever().get(0)) {
-                    if (e.equals("q")) {
-                        int qt = 0;
-
+                String e = "";
+                do {
+                    e = io.next();
+                    synchronized (main.getMidiRecever().get(0)) {
+                        if (e.equals("q")) {
+                          Sequencer s = ((MidiAccess1) main.getMidiAccess()).getSequencer(0);
+                            if (s != null && s.isOpen() && s.isRunning()) {
+                                s.stop();
+                                System.out.println("Main sequencer " + ((MidiDevice) s).getDeviceInfo().getName() + " stopped and exit!");
+                            }
+                        }
+                        if (e.equals("s")) {
                             Sequencer s = ((MidiAccess1) main.getMidiAccess()).getSequencer(0);
                             if (s != null && s.isOpen() && s.isRunning()) {
                                 s.stop();
                                 System.out.println("Main sequencer " + ((MidiDevice) s).getDeviceInfo().getName() + " stopped!");
                             }
-
-                        System.exit(0);
+                        }
+                        if (e.equals("r")) {
+                            Sequencer s = ((MidiAccess1) main.getMidiAccess()).getSequencer(0);
+                            if (s != null && s.isOpen() && !s.isRunning()) {
+                                s.start();
+                                System.out.println("Main sequencer " + ((MidiDevice) s).getDeviceInfo().getName() + " restarted!");
+                            }
+                        }
                     }
-                }
+                } while (!e.equals("q"));
+
+                System.exit(0);
+
             } else {
                 System.out.println("------|");
                 String e = io.next();
@@ -239,7 +255,7 @@ public class MainSeque {
             System.out.println("What do you want connect one of this midi seque ?");
             System.out.println("number of SY description device...");
 
-            if  (this.getM2TransmitterMap().length == 0){
+            if  (this.getM2TransmitterMap() == null || this.getM2TransmitterMap().length == 0){
              System.out.println("Sorry !!! Not have sequencer device...");
              return null;
             }
@@ -292,10 +308,12 @@ public class MainSeque {
             } catch (IOException io2){
                 System.err.println("Unable to close ini");
             }
-
+            System.out.println("Init Seque tacks...");
             ts = new TrackSeque();
             Sequencer sq = null;
+
             this.setSqCopy(new Sequence(currSequeDivType,Integer.parseInt(dscParams[0][1])));
+
             int sqeNumber = 0;
             int tt = 0;
             int dscNameDev = 0;
@@ -310,7 +328,7 @@ public class MainSeque {
             }
 
             sq = ((MidiAccess1) this.getMidiAccess()).getSequencer(0);
-
+            this.generalSequenceSetting(sq, dscParams);
 	        while (dscNameDev < Integer.parseInt(dscParams[0][3])){
                 String deviceName = dscParams[dscNameDev +2][2];
                         System.out.println("SY num >> [\"" + deviceName + "\"] ...");
@@ -346,15 +364,14 @@ public class MainSeque {
 		        dscNameDev++;
 	        }
             sq.setSequence(this.getSqCopy());
-            System.out.println("\t Sequencer tickLength :" + sq.getTickLength());
-            System.out.println("\t LoopCount :" + sq.getLoopCount());
-            System.out.println("\t LoopStartPoint :" + sq.getLoopStartPoint());
-            System.out.println("\t LoopEndPoint :" + sq.getLoopEndPoint());
-            this.generalSequenceSetting(sq, dscParams);
+
+
 
             ts.setSeque(sq);
 
             ts.setSequeParams(dscParams);
+
+            this.resultGeneralSequenceSetting(sq);
         }
         return ts;
     }
@@ -465,13 +482,11 @@ public class MainSeque {
 		return sqeNumber;
 	}
 
-    private void generalSequenceSetting(Sequencer sq, String[][] dscParams){
+    private synchronized void  generalSequenceSetting(Sequencer sq, String[][] dscParams){
         try {
-            //sq.setTickPosition(0L);
-            Track[] tracks = sq.getSequence().getTracks();
-            System.out.println("Load number :" + tracks.length + " tracks");
 
             sq.setTempoInBPM(Float.parseFloat(dscParams[1][0]));
+            System.out.println("General Sequencer setting BPM :" + sq.getTempoInBPM());
             sq.setTickPosition(Long.parseLong(dscParams[1][1]));
 
             if (dscParams[1].length >= 3) {
@@ -485,16 +500,29 @@ public class MainSeque {
             if (dscParams[1].length >= 5) {
                 sq.setLoopEndPoint(Long.parseLong(dscParams[1][4]));
             }
-            System.out.println("\t tempo in BPM :" + sq.getTempoInBPM());
-            System.out.println("\t num tracks :" + sq.getSequence().getTracks().length);
-            System.out.println("\t DivisionType :" + sq.getSequence().getDivisionType());
-            System.out.println("\t MicrosecondLength :" + sq.getSequence().getMicrosecondLength());
-            System.out.println("\t Resolution :" + sq.getSequence().getResolution());
-            System.out.println("\t TickLength :" + sq.getSequence().getTickLength());
-
         } catch (Exception e){
             System.err.println("General Sequencer setting error...");
 
+        }
+    }
+
+    private synchronized void resultGeneralSequenceSetting(Sequencer sq){
+        //sq.setTickPosition(0L);
+        if ( sq.getSequence() != null &&  sq.getSequence().getTracks() != null) {
+            Track[] tracks = sq.getSequence().getTracks();
+            System.out.println("Load number :" + tracks.length + " tracks");
+        }
+        if ( sq.getSequence() != null){
+        System.out.println("\t Sequencer tickLength :" + sq.getTickLength());
+        System.out.println("\t LoopCount :" + sq.getLoopCount());
+        System.out.println("\t LoopStartPoint :" + sq.getLoopStartPoint());
+        System.out.println("\t LoopEndPoint :" + sq.getLoopEndPoint());
+        System.out.println("\t tempo in BPM :" + sq.getTempoInBPM());
+        System.out.println("\t num tracks :" + sq.getSequence().getTracks().length);
+        System.out.println("\t DivisionType :" + sq.getSequence().getDivisionType());
+        System.out.println("\t MicrosecondLength :" + sq.getSequence().getMicrosecondLength());
+        System.out.println("\t Resolution :" + sq.getSequence().getResolution());
+            System.out.println("\t TickLength :" + sq.getSequence().getTickLength());
         }
     }
 
@@ -565,7 +593,10 @@ public class MainSeque {
                     add(midiAccess.getMidiDevice(iD2));
             this.getMidiRecever().
                     add(midiAccess.getMidiDevice(iD1));
-
+        if (this.getMidiTransmetter() == null || this.getMidiTransmetter().size() == 0 ||
+                this.getMidiRecever() == null || this.getMidiRecever().size() == 0){
+            return;
+        }
             index++;
             synchronized (this.getMidiTransmetter().get((index - 1))) {
                 SingleMidiCommunication smc = new SingleMidiCommunication();

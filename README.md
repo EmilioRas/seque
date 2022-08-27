@@ -22,12 +22,16 @@ https://youtu.be/3Z_Yb8uY5Qo
 To run Seque you before have jvm 1.7 o +
 The command to run Seque have some arguments
 
-java -jar seque-1.0.0.jar [arg1] [arg2]
+java -jar seque-1.0.0.jar [arg1] [arg2] [arg3]
 
 [arg1] is the name of your midi files (without ending string '_1.mid','_2.mid',ecc.)
 
 [arg2] is the path of your working dir (where you have your jar (seque) . It's root for your [arg1] folder for your midi files)
 
+[arg3] (optional). use NO-SRV to no show gui interface. for example in ssh connection to other device
+
+###Quit
+type 'q' to exit, 's' to stop sequencer, 'r' to restart sequencer
 #Sequencer Configuration
 ###seque.ini
 
@@ -57,7 +61,8 @@ The command line is not user easy experience, but you can take in mind that when
 is last phase. Your may be able to connects before your midi IN/OUT ports. And then, ever with sy number , choose tracks for 
 sequencer.
 
-Enjoy
+Enjoy 
+& have a good sound
 
 
 
