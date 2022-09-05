@@ -157,9 +157,9 @@ public class MainSeque {
             boolean initC = gui.initComponents();
         } else */
 
-        if ((args.length >= 3 && args[2].equals(MainSeque.no_like_service)) || args.length >= 2) {
+        if (args.length >= 2) {
             //
-            if (!args[2].equals(MainSeque.no_like_service)) {
+            if (args.length >= 3 && !args[2].equals(MainSeque.no_like_service)) {
                 MainGui gui = new MainGui("Seque");
                 gui.setMidiAccess(main.getMidiAccess());
                 boolean initC = gui.initComponents();
@@ -216,9 +216,17 @@ public class MainSeque {
                                 System.out.println("Main sequencer " + ((MidiDevice) s).getDeviceInfo().getName() + " stopped!");
                             }
                         }
+                        if (e.equals("c")) {
+                            Sequencer s = ((MidiAccess1) main.getMidiAccess()).getSequencer(0);
+                            if (s != null && s.isOpen() && !s.isRunning()) {
+                                s.start();
+                                System.out.println("Main sequencer " + ((MidiDevice) s).getDeviceInfo().getName() + " continued!");
+                            }
+                        }
                         if (e.equals("r")) {
                             Sequencer s = ((MidiAccess1) main.getMidiAccess()).getSequencer(0);
                             if (s != null && s.isOpen() && !s.isRunning()) {
+                                s.setTickPosition(1L);
                                 s.start();
                                 System.out.println("Main sequencer " + ((MidiDevice) s).getDeviceInfo().getName() + " restarted!");
                             }
@@ -332,7 +340,7 @@ public class MainSeque {
 	        while (dscNameDev < Integer.parseInt(dscParams[0][3])){
                 String deviceName = dscParams[dscNameDev +2][2];
                         System.out.println("SY num >> [\"" + deviceName + "\"] ...");
-                System.out.println("Loading... or do you want to skip ? (skip = \"k/n\")");
+                System.out.println("Loading... or do you want to skip ? (skip = \"k/y\")");
 
                         String s1 = io.next();
 
