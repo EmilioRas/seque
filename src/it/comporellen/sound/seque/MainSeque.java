@@ -159,9 +159,11 @@ public class MainSeque {
 
         if ((args.length >= 3 && args[2].equals(MainSeque.no_like_service)) || args.length >= 2) {
             //
-            MainGui gui = new MainGui("Seque");
-            gui.setMidiAccess(main.getMidiAccess());
-            boolean initC = gui.initComponents();
+            if (!args[2].equals(MainSeque.no_like_service)) {
+                MainGui gui = new MainGui("Seque");
+                gui.setMidiAccess(main.getMidiAccess());
+                boolean initC = gui.initComponents();
+            }
             //
             Scanner io = new Scanner(System.in);
 
@@ -283,6 +285,12 @@ public class MainSeque {
                 default:
                     currSequeDivType = Sequence.PPQ; //new Sequence(Sequence.PPQ, Integer.parseInt(dscParams[0][1]), Integer.parseInt(dscParams[0][2]));
                     break;
+            }
+
+            try {
+                oneLine.close();
+            } catch (IOException io2){
+                System.err.println("Unable to close ini");
             }
 
             ts = new TrackSeque();
