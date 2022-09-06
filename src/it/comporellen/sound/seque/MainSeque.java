@@ -39,11 +39,11 @@ public class MainSeque {
 
     public static final String seque_mode_st_end = "ST-END";
 
-    private AudioAccess audioAccess;
-    private MidiAccess midiAccess;
+    protected AudioAccess audioAccess;
+    protected MidiAccess midiAccess;
 
-    private List<MidiDevice> midiTransmetter;
-    private List<MidiDevice> midiRecever;
+    protected List<MidiDevice> midiTransmetter;
+    protected List<MidiDevice> midiRecever;
 
     public List<MidiDevice> getMidiTransmetter() {
         return midiTransmetter;
@@ -75,20 +75,7 @@ public class MainSeque {
     }
 
     public static void main(String[] args) {
-        MainSeque main = new MainSeque();
-        int sequeInd = 0;
-        main.setAudioAccess(AudioAccess1.getInstance());
-        main.setMidiAccess(MidiAccess1.getInstance());
 
-        Synthesizer mainSynth = main.getMidiAccess().getSynthesizer(sequeInd);
-
-        Sequencer mainSeque = main.getMidiAccess().getSequencer(sequeInd);
-
-
-        if (mainSeque == null || mainSynth == null){
-            System.out.println("Missing midi devices. exit!");
-            System.exit(0);
-        }
 
         if (args == null || args.length < 2){
             System.out.println("Missing params. exit!");
@@ -157,13 +144,25 @@ public class MainSeque {
             boolean initC = gui.initComponents();
         } else */
 
-        if (args.length >= 2) {
+        MainSeque main = null;
+
+        if (args.length >= 2  || (args.length >= 3 && args[2].equals(no_like_service))) {
             //
-            if (args.length >= 3 && !args[2].equals(MainSeque.no_like_service)) {
-                MainGui gui = new MainGui("Seque");
-                gui.setMidiAccess(main.getMidiAccess());
-                boolean initC = gui.initComponents();
+            main = new MainSeque();
+            int sequeInd = 0;
+            main.setAudioAccess(AudioAccess1.getInstance());
+            main.setMidiAccess(MidiAccess1.getInstance());
+
+            Synthesizer mainSynth = main.getMidiAccess().getSynthesizer(sequeInd);
+
+            Sequencer mainSeque = main.getMidiAccess().getSequencer(sequeInd);
+
+
+            if (mainSeque == null || mainSynth == null) {
+                System.out.println("Missing midi devices. exit!");
+                System.exit(0);
             }
+
             //
             Scanner io = new Scanner(System.in);
 
@@ -244,9 +243,20 @@ public class MainSeque {
                 }
             }
         }
+
+        MainSequeGui mainSG = null;
+
+        if (args.length >= 3 && args[2].equals(MainSeque.like_gui)) {
+            mainSG = new MainSequeGui(args[0],args[1]);
+            MainGui gui = new MainGui("Seque");
+            gui.setMidiAccess(mainSG.getMidiAccess());
+            boolean initC = gui.initComponents();
+
+
+        }
     }
 
-	private Sequence sqCopy = null;
+	protected Sequence sqCopy = null;
 
 	public void setSqCopy(Sequence copy){
 		this.sqCopy = copy;
@@ -397,7 +407,7 @@ public class MainSeque {
     }
 
 
-	private synchronized int updateTracks(String wd,String startWith,int sqeNumber,Sequencer sq,TrackSeque ts,String[][] dscParams,Scanner io,int tt,int jMap,Set<String> listTracksFile){
+	protected synchronized int updateTracks(String wd,String startWith,int sqeNumber,Sequencer sq,TrackSeque ts,String[][] dscParams,Scanner io,int tt,int jMap,Set<String> listTracksFile){
 
 
         System.out.println((sq != null ? "seque ok..." : "seque null..."));
@@ -490,7 +500,7 @@ public class MainSeque {
 		return sqeNumber;
 	}
 
-    private synchronized void  generalSequenceSetting(Sequencer sq, String[][] dscParams){
+    protected synchronized void  generalSequenceSetting(Sequencer sq, String[][] dscParams){
         try {
 
             sq.setTempoInBPM(Float.parseFloat(dscParams[1][0]));
@@ -514,7 +524,7 @@ public class MainSeque {
         }
     }
 
-    private synchronized void resultGeneralSequenceSetting(Sequencer sq){
+    protected synchronized void resultGeneralSequenceSetting(Sequencer sq){
         //sq.setTickPosition(0L);
         if ( sq.getSequence() != null &&  sq.getSequence().getTracks() != null) {
             Track[] tracks = sq.getSequence().getTracks();
@@ -535,7 +545,7 @@ public class MainSeque {
     }
 
 
-    private synchronized void addSqTracks( FileInputStream ioF,Scanner io,String[][] dscParams, TrackSeque ts, Sequencer sq,Sequence sq1,int jMap) throws Exception {
+    protected synchronized void addSqTracks( FileInputStream ioF,Scanner io,String[][] dscParams, TrackSeque ts, Sequencer sq,Sequence sq1,int jMap) throws Exception {
 
         int rs = 0;
         Track[] tracks = sq1.getTracks();
@@ -570,7 +580,7 @@ public class MainSeque {
 
      }
 
-    private Object[][] m2TransmitterMap = null;
+    protected Object[][] m2TransmitterMap = null;
 
 	public Object[][] getM2TransmitterMap(){
 		return this.m2TransmitterMap;
@@ -678,7 +688,7 @@ public class MainSeque {
         }
     }
 
-    private boolean readTkLoader(byte[] b){
+    protected boolean readTkLoader(byte[] b){
         String c = new String(b,0,2);
         if (c.equals(MainSeque.loaderInitTrackSymb)){
             return true;
@@ -686,7 +696,7 @@ public class MainSeque {
         return false;
     }
 
-    private boolean readTkLoaderEnd(byte[] b){
+    protected boolean readTkLoaderEnd(byte[] b){
         if (b[0] == 0x0D || b[1] == 0x0D){
             return true;
         }
