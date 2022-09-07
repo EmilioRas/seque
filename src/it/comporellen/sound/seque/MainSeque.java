@@ -151,7 +151,7 @@ public class MainSeque {
 
         MainSeque main = null;
 
-        if (args.length >= 2  || (args.length >= 3 && args[2].equals(no_like_service))) {
+        if (args.length == 2 || (args.length >= 3 && args[2].equals(no_like_service))) {
             //
             main = new MainSeque();
             int sequeInd = 0;
@@ -254,17 +254,16 @@ public class MainSeque {
         if (args.length >= 3 && args[2].equals(MainSeque.like_gui)) {
             mainSG = new MainSequeGui(args[0], args[1]);
             MainGui gui = new MainGui("Seque");
+            mainSG.init();
             gui.setMidiAccess(mainSG.getMidiAccess());
-            boolean initC = gui.initComponents();
 
-            if (!initC){
-                System.out.println("No init gui... exit!");
-                System.exit(0);
-            }
 
             mainSG.setMainGui(gui);
+            gui.setMainSG(mainSG);
+
 
             Sequencer s = ((MidiAccess1) mainSG.getMidiAccess()).getSequencer(0);
+
             mainSG.setSqStart(new MainButtonListener(s) {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -320,8 +319,13 @@ public class MainSeque {
 
             mainSG.initListeners();
 
-            TrackSeque ts = mainSG.connect(mainSG.init());
+            TrackSeque ts = mainSG.tracksLoad();
+            boolean initC = gui.initComponents();
 
+            if (!initC){
+                System.out.println("No init gui... exit!");
+                System.exit(0);
+            }
             boolean init_app = false;
 
             do {

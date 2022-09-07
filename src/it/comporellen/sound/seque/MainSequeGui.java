@@ -93,6 +93,8 @@ public final class MainSequeGui extends MainSeque {
         this.sqRestart = sqRestart;
     }
 
+    private static int sequeInd;
+
     public int init() {
         int sequeInd = 0;
         this.setAudioAccess(AudioAccess1.getInstance());
@@ -108,6 +110,8 @@ public final class MainSequeGui extends MainSeque {
             System.exit(0);
         }
 
+        MainSequeGui.sequeInd = sequeInd;
+        MainGui.setSequeInd(sequeInd);
         return sequeInd;
     }
 
@@ -119,15 +123,7 @@ public final class MainSequeGui extends MainSeque {
         this.mainGui.getSqContinue().addActionListener(this.sqContinue);
     }
 
-    public TrackSeque connect(int sequeInd) {
-
-        try {
-            this.singleMidiConnect(0, this.getMidiAccess());
-
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-
-        }
+    public TrackSeque tracksLoad() {
 
         TrackSeque ts = null;
         try {
@@ -156,13 +152,8 @@ public final class MainSequeGui extends MainSeque {
         return null;
     }
 
-    private void singleMidiConnect(int index, MidiAccess midiAccess) throws Exception {
-        int iD1 = Integer.parseInt(d1);
+    public void singleMidiConnect(int index, MidiAccess midiAccess, int iD1,int iD2,int iDC3,String con2) throws Exception {
 
-        int iD2 = Integer.parseInt(d2);
-
-
-        int iDC3 = Integer.parseInt(dc3);
 
         this.getMidiTransmetter().
                 add(midiAccess.getMidiDevice(iD2));
@@ -177,11 +168,7 @@ public final class MainSequeGui extends MainSeque {
             SingleMidiCommunication smc = new SingleMidiCommunication();
 
             smc.setMidi1(this.getMidiRecever().get((index - 1)));
-            String con2 = "";
-            while (con2.isEmpty()){
-                System.out.println("What is the name of your device ?");
-                con2 = io.next();
-            }
+
             String SCon2 = con2;
             if (index == 1){
                 this.m2TransmitterMap = new Object[1][3];
@@ -207,7 +194,7 @@ public final class MainSequeGui extends MainSeque {
             smc.setCurrCh(iDC3-1);
             Thread t = new Thread((Runnable) smc);
             t.start();
-            this.singleMidiConnect(index,midiAccess);
+
         }
     }
 
