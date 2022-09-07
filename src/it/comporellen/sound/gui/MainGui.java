@@ -80,6 +80,7 @@ public class MainGui extends JFrame {
 
         connection.addActionListener(this.connectorListener);
         connPanel.add(connection);
+
         JPanel midiInP = new JPanel();
         Label midiIn = new Label("Midi In");
         this.inputPort = new JTextField();
@@ -109,14 +110,26 @@ public class MainGui extends JFrame {
         connPanel.add(midiChP);
         connPanel.add(intrumP);
 
+
+
+
+        JPanel yesOrSkipP = new JPanel();
+        this.sqYes.setActionCommand("yes");
+        this.sqYes.addActionListener(this.yesOrSkip);
+        this.sqSkip.setActionCommand("skip");
+        this.sqSkip.addActionListener(this.yesOrSkip);
+        yesOrSkipP.add(this.sqYes);
+        yesOrSkipP.add(this.sqSkip);
+        this.add(yesOrSkipP);
+
+        this.connectedTable = new JTable(10,4);
+        connPanel.add(this.connectedTable);
         this.add(connPanel);
         this.add(this.sqContinue);
         this.add(this.sqRestart);
         this.add(this.sqStop);
         this.add(this.sqStart);
         this.add(this.sqQuit);
-        this.connectedTable = new JTable(0,4);
-        this.add(this.connectedTable);
         return true;
     }
 
@@ -169,6 +182,28 @@ public class MainGui extends JFrame {
             }
         }
     };
+
+    private ActionListener yesOrSkip = new YesOrSkip() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (e.getActionCommand().equals("yes")){
+                mainSG.setSkp("y");
+                synchronized (mainSG.getSkp()){
+                    mainSG.getSkp().notify();
+                }
+            } else {
+                //skip
+                mainSG.setSkp("k");
+                synchronized (mainSG.getSkp()){
+                    mainSG.getSkp().notify();
+                }
+            }
+        }
+    };
+
+    private Button sqYes= new Button("Yes");
+
+    private Button sqSkip = new Button("Skip");
 
     private Button sqStart = new Button("Start");
 

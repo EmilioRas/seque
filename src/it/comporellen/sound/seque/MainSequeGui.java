@@ -4,14 +4,17 @@ import bridge.SingleMidiCommunication;
 import device.AudioAccess1;
 import device.MidiAccess;
 import device.MidiAccess1;
+import gui.ConnectorListener;
+import gui.GraphSequeText2;
 import gui.MainGui;
 
 
 import javax.sound.midi.Sequence;
 import javax.sound.midi.Sequencer;
 import javax.sound.midi.Synthesizer;
+import javax.sound.midi.Track;
 import java.awt.event.ActionListener;
-import java.io.FileInputStream;
+import java.io.*;
 
 import java.util.Set;
 
@@ -94,6 +97,10 @@ public final class MainSequeGui extends MainSeque {
     }
 
     private static int sequeInd;
+
+    public static void setSequeInd(int sequeInd) {
+        MainSequeGui.sequeInd = sequeInd;
+    }
 
     public int init() {
         int sequeInd = 0;
@@ -194,24 +201,185 @@ public final class MainSequeGui extends MainSeque {
             smc.setCurrCh(iDC3-1);
             Thread t = new Thread((Runnable) smc);
             t.start();
-
+            MainSequeGui.setSequeInd(index);
+            ConnectorListener.setIndex(index);
         }
     }
 
-    public synchronized int updateTracks(String wd, String startWith, int sqeNumber, Sequencer sq, TrackSeque ts, String[][] dscParams,   int tt, int jMap, Set<String> listTracksFile) {
+    public void connectW2(){
+        try {
+            this.forWText2.connect(this.for2);
+        } catch (IOException io){
+            System.err.println(io.getMessage() + " , connectW2");
+        }
+    }
 
-        return 0;
+
+
+    private PipedInputStream for2 = new PipedInputStream();
+
+    private PipedOutputStream forWText2 = new PipedOutputStream();
+
+    private BufferedInputStream forText2 = new BufferedInputStream(for2);
+
+    private GraphSequeText2 text2 = new GraphSequeText2(forText2);
+
+    private String skp;
+
+    public void setSkp(String skp) {
+        this.skp = skp;
+    }
+
+    public String getSkp() {
+        return skp;
+    }
+
+    public synchronized int updateTracks(String wd, String startWith, int sqeNumber, Sequencer sq, TrackSeque ts, String[][] dscParams, int tt, int jMap, Set<String> listTracksFile) throws IOException,InterruptedException {
+        if (sq != null)
+            MainSequeGui.writeW2("seque ok...",this.forWText2);
+        else {
+            MainSequeGui.writeW2("seque Null...",this.forWText2);
+        }
+        MainSequeGui.writeW2("tracks loading...",this.forWText2);
+
+
+        int trackNum = Integer.parseInt(dscParams[0][2]);
+
+        MainSequeGui.writeW2(trackNum + " tracks...",this.forWText2);
+
+        FileInputStream ioF = null;
+
+
+
+
+        uploadingTkr:
+        while (tt < trackNum ){
+
+
+            Object[] currentTrack =  listTracksFile.toArray();
+
+
+
+            MainSequeGui.writeW2("Loading midi :" + String.valueOf(currentTrack[tt]), this.forWText2);
+
+            MainSequeGui.writeW2("Do you want to skip for load this midi ? ...", this.forWText2);
+
+            skp = "";
+
+            synchronized (skp){
+                this.skp.wait();
+            }
+
+            if (skp.isEmpty())
+                return sqeNumber;
+
+            if (skp != null && skp.equalsIgnoreCase("k")) {
+                tt++;
+                if (tt >= trackNum) {
+
+                    return -1;
+                }
+                continue uploadingTkr;
+            }
+
+            try {
+                ioF = new FileInputStream(wd + File.separator + startWith + File.separator + String.valueOf(currentTrack[tt]));
+            } catch (Exception ioe) {
+                tt++;
+                MainSequeGui.writeW2("Not found tkr num: " + (tt + 1),this.forWText2);
+
+                return -1;
+            }
+
+
+            if (ioF == null) {
+                MainSequeGui.writeW2("Attention!!! You sequence could be null... Check before your .mid",this.forWText2);
+                tt++;
+
+                return -1;
+            }
+
+
+            try {
+                sq.setSequence(ioF);
+                Sequence sq1 = sq.getSequence();
+
+
+
+                this.addSqTracks(ioF, dscParams, ts, sq, sq1, jMap);
+
+
+
+
+            } catch (Exception sqe) {
+                tt++;
+                MainSequeGui.writeW2("Some error occurred... | skip track ",this.forWText2);
+                continue uploadingTkr;
+            }
+
+
+            tt++;
+
+            sqeNumber++;
+
+
+            if (ioF != null) {
+                try {
+                    ioF.close();
+                } catch (IOException ioe3) {
+                    System.err.println("Error in closing ioF!");
+                }
+            }
+
+
+        }
+
+
+        return sqeNumber;
     }
 
     public synchronized void generalSequenceSetting(Sequencer sq, String[][] dscParams) {
-
+        super.generalSequenceSetting(sq,dscParams);
     }
 
     public synchronized void resultGeneralSequenceSetting(Sequencer sq) {
-
+        super.resultGeneralSequenceSetting(sq);
     }
 
     public synchronized void addSqTracks(FileInputStream ioF, String[][] dscParams, TrackSeque ts, Sequencer sq, Sequence sq1, int jMap) throws Exception {
+        int rs = 0;
+        Track[] tracks = sq1.getTracks();
 
+        while (rs < tracks.length) {
+
+
+
+            if (tracks.length > 1) {
+                MainSequeGui.writeW2("Your midi contains more than one track...",this.forWText2);
+            }
+
+
+            MainSequeGui.writeW2("ADD New Track in main sequence.",this.forWText2);
+            Track tr = this.getSqCopy().createTrack();
+            int k = 0;
+
+
+            while (k < sq1.getTracks()[rs].size()) {
+                tr.add(tracks[rs].get(k));
+
+                k++;
+                MainSequeGui.writeW2("=",this.forWText2);
+            }
+
+            rs++;
+            MainSequeGui.writeW2("> oK!",this.forWText2);
+            MainSequeGui.writeW2("ticks :" + tr.ticks(),this.forWText2);
+        }
+    }
+
+    public static void writeW2(String s, PipedOutputStream forWText2) throws IOException{
+        if (s != null){
+            forWText2.write(s.getBytes());
+        }
     }
 }

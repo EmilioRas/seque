@@ -318,7 +318,8 @@ public class MainSeque {
             });
 
             mainSG.initListeners();
-
+            mainSG.connectW2();
+            
             TrackSeque ts = mainSG.tracksLoad();
             boolean initC = gui.initComponents();
 
