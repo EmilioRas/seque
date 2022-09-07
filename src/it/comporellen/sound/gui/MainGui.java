@@ -4,6 +4,7 @@ import device.MidiAccess;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 
 public class MainGui extends JFrame {
 
@@ -58,5 +59,35 @@ public class MainGui extends JFrame {
 
 
         return true;
+    }
+
+    private Button sqStart = new Button("Start");
+
+    private Button sqQuit = new Button("Quit");
+
+    private Button sqStop = new Button("Stop");
+
+    private Button sqContinue = new Button("Continue");
+
+    private Button sqRestart = new Button("Restart");
+
+    public Button getSqStart() {
+        return sqStart;
+    }
+
+    public Button getSqQuit() {
+        return sqQuit;
+    }
+
+    public Button getSqStop() {
+        return sqStop;
+    }
+
+    public Button getSqContinue() {
+        return sqContinue;
+    }
+
+    public Button getSqRestart() {
+        return sqRestart;
     }
 }

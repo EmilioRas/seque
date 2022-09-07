@@ -6,10 +6,14 @@ import device.AudioAccess;
 import device.AudioAccess1;
 import device.MidiAccess;
 import device.MidiAccess1;
+import gui.MainButtonListener;
 import gui.MainGui;
 
 
 import javax.sound.midi.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -20,6 +24,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.List;
 
 
 //author emilio.rascazzo
@@ -247,14 +252,102 @@ public class MainSeque {
         MainSequeGui mainSG = null;
 
         if (args.length >= 3 && args[2].equals(MainSeque.like_gui)) {
-            mainSG = new MainSequeGui(args[0],args[1]);
+            mainSG = new MainSequeGui(args[0], args[1]);
             MainGui gui = new MainGui("Seque");
             gui.setMidiAccess(mainSG.getMidiAccess());
             boolean initC = gui.initComponents();
 
+            if (!initC){
+                System.out.println("No init gui... exit!");
+                System.exit(0);
+            }
 
+            mainSG.setMainGui(gui);
+
+            Sequencer s = ((MidiAccess1) mainSG.getMidiAccess()).getSequencer(0);
+            mainSG.setSqStart(new MainButtonListener(s) {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                   if (this.getTs() != null) {
+                       Button button = (Button) e.getSource();
+                       Thread t = new Thread((Runnable) this.getTs());
+                       synchronized (this.getTs()) {
+                           t.start();
+                           button.setBackground(Color.BLUE);
+                       }
+                       button.setEnabled(false);
+                   }
+                }
+            });
+
+            mainSG.setSqQuit(new MainButtonListener(s) {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (this.getS() != null && this.getS().isOpen() && this.getS().isRunning()) {
+                        this.getS().stop();
+                        MainSequeGui.setQuitSeque("q");
+                    }
+                }
+            });
+
+            mainSG.setSqStop(new MainButtonListener(s) {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (this.getS() != null && this.getS().isOpen() && this.getS().isRunning()) {
+                        this.getS().stop();
+                    }
+                }
+            });
+
+            mainSG.setSqContinue(new MainButtonListener(s) {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (this.getS() != null && this.getS().isOpen() && !this.getS().isRunning()) {
+                        this.getS().start();
+                    }
+                }
+            });
+
+            mainSG.setSqRestart(new MainButtonListener(s) {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (this.getS() != null && this.getS().isOpen() && !this.getS().isRunning()) {
+                        this.getS().setTickPosition(1L);
+                        this.getS().start();
+                    }
+                }
+            });
+
+            mainSG.initListeners();
+
+            TrackSeque ts = mainSG.connect(mainSG.init());
+
+            boolean init_app = false;
+
+            do {
+                synchronized (mainSG.getMidiRecever().get(0)) {
+                    if (!init_app) {
+                        ((MainButtonListener) mainSG.getSqStart()).setTs(ts);
+
+                        ((MainButtonListener) mainSG.getSqQuit()).setTs(ts);
+
+
+                        ((MainButtonListener) mainSG.getSqStop()).setTs(ts);
+
+
+                        ((MainButtonListener) mainSG.getSqContinue()).setTs(ts);
+
+
+                        ((MainButtonListener) mainSG.getSqRestart()).setTs(ts);
+                        init_app = true;
+                    }
+                }
+            } while (!MainSequeGui.getQuitSeque().equals("q"));
+            System.exit(0);
         }
     }
+
+
 
 	protected Sequence sqCopy = null;
 
