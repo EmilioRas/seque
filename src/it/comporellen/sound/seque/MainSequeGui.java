@@ -1,6 +1,7 @@
 package seque;
 
 import bridge.SingleMidiCommunication;
+import bridge.SqeReceiver;
 import device.AudioAccess1;
 import device.MidiAccess;
 import device.MidiAccess1;
@@ -128,12 +129,15 @@ public final class MainSequeGui extends MainSeque {
         this.mainGui.getSqRestart().addActionListener(this.sqRestart);
         this.mainGui.getSqStop().addActionListener(this.sqStop);
         this.mainGui.getSqContinue().addActionListener(this.sqContinue);
+
+        this.mainGui.setText2(this.text2);
     }
 
     public TrackSeque tracksLoad() {
 
         TrackSeque ts = null;
         try {
+
             ts = this.singleSequeLoad(sequeInd, this.getMidiAccess(), this.wd, this.pwd);
 
         } catch (Exception e) {
@@ -154,9 +158,152 @@ public final class MainSequeGui extends MainSeque {
         return this.sqCopy;
     }
 
+    private String loadTracks = "";
+
+    public String getLoadTracks() {
+        return loadTracks;
+    }
+
+    public void setLoadTracks(String loadTracks) {
+        this.loadTracks = loadTracks;
+    }
+
     private TrackSeque singleSequeLoad(int index, MidiAccess midiAccess, String startWith, String wd) throws Exception {
 
-        return null;
+        skp = "";
+
+
+
+        TrackSeque ts = null;
+
+            MainSequeGui.writeW2("What do you want connect one of this midi seque ?",this.forWText2);
+            MainSequeGui.writeW2("number of SY description device...",this.forWText2);
+
+            if  (this.getM2TransmitterMap() == null || this.getM2TransmitterMap().length == 0){
+                MainSequeGui.writeW2("Sorry !!! Not have sequencer device...",this.forWText2);
+                return null;
+            }
+
+
+            FileInputStream oneLine = new FileInputStream(new File(wd + File.separator + startWith + File.separator + "seque.ini"));
+            StringBuffer dsc = new StringBuffer();
+            int len = 0;
+            byte[] b = new byte[128];
+            String ini = "";
+            while ((len = oneLine.read(b)) != -1) {
+                System.out.println(ini = new String(b, 0, len));
+                dsc.append(ini);
+            }
+
+
+
+            String[] dscParamsRow = dsc.toString().split("\\#");
+            String[][] dscParams = new String[dscParamsRow.length][8];
+            for (int r = 0 ; r < dscParamsRow.length; r++){
+                dscParams[r] = dscParamsRow[r].split("\\,");
+            }
+            for (int a = 0; a < dscParams.length;a++){
+                for (int b2 = 0; b2 < dscParams[a].length; b2++){
+                    System.out.print(dscParams[a][b2] + ",");
+                }
+            }
+
+            float currSequeDivType = 0f;
+            switch (dscParams[0][0]){
+                case "SMPTE_24":
+                    currSequeDivType = Sequence.SMPTE_24; //new Sequence(Sequence.SMPTE_24, Integer.parseInt(dscParams[0][1]), Integer.parseInt(dscParams[0][2]));
+                    break;
+                case "SMTPE_25":
+                    currSequeDivType = Sequence.SMPTE_25; //new Sequence(Sequence.SMPTE_25, Integer.parseInt(dscParams[0][1]), Integer.parseInt(dscParams[0][2]));
+                    break;
+                case "SMPTE_30":
+                    currSequeDivType = Sequence.SMPTE_30; //new Sequence(Sequence.SMPTE_30, Integer.parseInt(dscParams[0][1]), Integer.parseInt(dscParams[0][2]));
+                    break;
+                case "SMPTE_30DROP":
+                    currSequeDivType = Sequence.SMPTE_30DROP; //new Sequence(Sequence.SMPTE_30DROP, Integer.parseInt(dscParams[0][1]), Integer.parseInt(dscParams[0][2]));
+                    break;
+                default:
+                    currSequeDivType = Sequence.PPQ; //new Sequence(Sequence.PPQ, Integer.parseInt(dscParams[0][1]), Integer.parseInt(dscParams[0][2]));
+                    break;
+            }
+
+            try {
+                oneLine.close();
+            } catch (IOException io2){
+                System.err.println("Unable to close ini");
+            }
+            MainSequeGui.writeW2("Init Seque tacks...",this.forWText2);
+            ts = new TrackSeque();
+            Sequencer sq = null;
+
+            this.setSqCopy(new Sequence(currSequeDivType,Integer.parseInt(dscParams[0][1])));
+
+            int sqeNumber = 0;
+            int tt = 0;
+            int dscNameDev = 0;
+
+            Object dnF = null;
+            Set<String> listTracksFile = null;
+            try {
+                listTracksFile = this.listFilesUsingDirectoryStream(wd + File.separator + startWith + File.separator, startWith);
+            } catch (IOException ioe4){
+                System.err.println("Tracks list not found ");
+                return ts;
+            }
+
+            sq = ((MidiAccess1) this.getMidiAccess()).getSequencer(0);
+            this.generalSequenceSetting(sq, dscParams);
+            while (dscNameDev < Integer.parseInt(dscParams[0][3])){
+                String deviceName = dscParams[dscNameDev +2][2];
+                MainSequeGui.writeW2("SY num >> [\"" + deviceName + "\"] ...",this.forWText2);
+                MainSequeGui.writeW2("Loading... or do you want to skip ? (skip = \"k/y\")",this.forWText2);
+
+                skp = "";
+
+                synchronized (this.getText2()){
+                    this.text2.repaint();
+                    this.text2.wait();
+                }
+
+
+                tt = 0;
+
+
+
+                if (!skp.equalsIgnoreCase("k") && listTracksFile != null){
+                    for (int j = 0; j < this.m2TransmitterMap.length; j++){
+                        dnF = this.m2TransmitterMap[j][1];
+                        String dnFName = (String) dnF;
+                        MainSequeGui.writeW2("Check... " + dnFName ,this.forWText2);
+                        if (deviceName.equals(dnFName)){
+
+                            ts.getReceivers().add(new SqeReceiver(this.getMidiTransmetter().get((Integer.parseInt(String.valueOf(this.m2TransmitterMap[j][0])))).getReceiver()));
+
+                            synchronized(this.getSqCopy()){
+                                sqeNumber = this.updateTracks(wd,startWith,sqeNumber,sq,ts,dscParams,tt,j,listTracksFile);
+                                MainSequeGui.writeW2("In  device -" + deviceName + "- loaded num.: " + (sqeNumber != -1 ? sqeNumber : 0) +" tracks and planned num.: " + dscParams[dscNameDev][1],this.forWText2);
+                            }
+                        }
+                    }
+                } else if (!skp.equalsIgnoreCase("k")){
+                    MainSequeGui.writeW2("Your tracksList is null",this.forWText2);
+                }
+
+
+                dscNameDev++;
+            }
+            sq.setSequence(this.getSqCopy());
+
+
+
+            ts.setSeque(sq);
+
+            ts.setSequeParams(dscParams);
+
+            this.resultGeneralSequenceSetting(sq);
+            this.text2.repaint();
+
+        return ts;
     }
 
     public void singleMidiConnect(int index, MidiAccess midiAccess, int iD1,int iD2,int iDC3,String con2) throws Exception {
@@ -201,28 +348,26 @@ public final class MainSequeGui extends MainSeque {
             smc.setCurrCh(iDC3-1);
             Thread t = new Thread((Runnable) smc);
             t.start();
+
             MainSequeGui.setSequeInd(index);
+
             ConnectorListener.setIndex(index);
         }
     }
 
-    public void connectW2(){
-        try {
-            this.forWText2.connect(this.for2);
-        } catch (IOException io){
-            System.err.println(io.getMessage() + " , connectW2");
-        }
+
+
+
+
+    private StringBuilder forWText2 = new StringBuilder();
+
+
+
+    private GraphSequeText2 text2 = new GraphSequeText2(forWText2);
+
+    public GraphSequeText2 getText2() {
+        return text2;
     }
-
-
-
-    private PipedInputStream for2 = new PipedInputStream();
-
-    private PipedOutputStream forWText2 = new PipedOutputStream();
-
-    private BufferedInputStream forText2 = new BufferedInputStream(for2);
-
-    private GraphSequeText2 text2 = new GraphSequeText2(forText2);
 
     private String skp;
 
@@ -262,16 +407,16 @@ public final class MainSequeGui extends MainSeque {
 
             MainSequeGui.writeW2("Loading midi :" + String.valueOf(currentTrack[tt]), this.forWText2);
 
-            MainSequeGui.writeW2("Do you want to skip for load this midi ? ...", this.forWText2);
+            MainSequeGui.writeW2("Do you want to skip or load this midi ? ...", this.forWText2);
 
             skp = "";
 
-            synchronized (skp){
-                this.skp.wait();
+            synchronized (this.getText2()){
+                this.text2.repaint();
+                this.text2.wait();
             }
 
-            if (skp.isEmpty())
-                return sqeNumber;
+
 
             if (skp != null && skp.equalsIgnoreCase("k")) {
                 tt++;
@@ -331,7 +476,7 @@ public final class MainSequeGui extends MainSeque {
                 }
             }
 
-
+            this.text2.repaint();
         }
 
 
@@ -374,12 +519,14 @@ public final class MainSequeGui extends MainSeque {
             rs++;
             MainSequeGui.writeW2("> oK!",this.forWText2);
             MainSequeGui.writeW2("ticks :" + tr.ticks(),this.forWText2);
+            this.text2.repaint();
         }
     }
 
-    public static void writeW2(String s, PipedOutputStream forWText2) throws IOException{
+    public static void writeW2(String s, StringBuilder forWText2) throws IOException{
         if (s != null){
-            forWText2.write(s.getBytes());
+            forWText2.append(s.getBytes());
+
         }
     }
 }

@@ -8,26 +8,27 @@ import java.io.InputStream;
 
 public class GraphSequeText2 extends Canvas {
 
-    private InputStream input;
+    private StringBuilder input;
 
-    public void setInput(InputStream input) {
+    public void setInput(StringBuilder input) {
         this.input = input;
     }
 
-    public GraphSequeText2(InputStream input){
+    public GraphSequeText2(StringBuilder input){
         super();
         this.input = input;
         this.setBackground(Color.WHITE);
         this.setSize(500,500);
         
     }
+    private int i = 1;
 
     @Override
     public void paint(Graphics g){
 
         g.setFont(Font.getFont("Courier"));
         g.setColor(Color.GRAY);
-        int i = 1;
+
         int j = 1;
         String n = "";
         g.drawString((n = "Seque messages :") , i * 15, j *10);
@@ -35,14 +36,9 @@ public class GraphSequeText2 extends Canvas {
         int len = 0;
         byte[] b = new byte[64];
         try {
-            if (this.input != null) {
-                while ((len = this.input.read(b)) != -1) {
-                    n += new String(b,0,len);
-                    i++;
-                }
-            }
-            g.drawString(n, i * 15, j *10);
-        } catch (IOException e){
+
+            g.drawString(this.input.toString(), i * 15, j *10);
+        } catch (Exception e){
             System.err.println(e.getMessage() + " , paint Text2");
         }
 
@@ -57,7 +53,7 @@ public class GraphSequeText2 extends Canvas {
     public void update(Graphics g){
         g.setFont(Font.getFont("Courier"));
         g.setColor(Color.GRAY);
-        int i = 1;
+
         int j = 1;
         String n = "";
         g.drawString((n = "Seque messages :") , i * 15, j *10);
@@ -65,14 +61,9 @@ public class GraphSequeText2 extends Canvas {
         int len = 0;
         byte[] b = new byte[64];
         try {
-            if (this.input != null) {
-                while ((len = this.input.read(b)) != -1) {
-                    n += new String(b,0,len);
-                    i++;
-                }
-            }
-            g.drawString(n, i * 15, j *10);
-        } catch (IOException e){
+
+            g.drawString(this.input.toString(), i * 15, j *10);
+        } catch (Exception e){
             System.err.println(e.getMessage() + " , paint Text2");
         }
 

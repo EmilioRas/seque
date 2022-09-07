@@ -22,6 +22,12 @@ public class MainGui extends JFrame {
 
     GraphSequeText textArea = null;
 
+    GraphSequeText2 text2 = null;
+
+    public void setText2(GraphSequeText2 text2) {
+        this.text2 = text2;
+    }
+
     private MainSequeGui mainSG;
 
     public void setMainSG(MainSequeGui mainSG) {
@@ -112,6 +118,9 @@ public class MainGui extends JFrame {
 
 
 
+        JScrollPane scrollPane2 = new JScrollPane(text2);
+
+        this.add(scrollPane2);
 
         JPanel yesOrSkipP = new JPanel();
         this.sqYes.setActionCommand("yes");
@@ -130,8 +139,13 @@ public class MainGui extends JFrame {
         this.add(this.sqStop);
         this.add(this.sqStart);
         this.add(this.sqQuit);
+        ((LoadListener)this.sqLoadListener).setMainSG(mainSG);
+        this.sqLoad.addActionListener(this.sqLoadListener);
+        this.add(this.sqLoad);
         return true;
     }
+
+
 
     private static JTextField channel;
 
@@ -186,17 +200,30 @@ public class MainGui extends JFrame {
     private ActionListener yesOrSkip = new YesOrSkip() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (e.getActionCommand().equals("yes")){
-                mainSG.setSkp("y");
-                synchronized (mainSG.getSkp()){
-                    mainSG.getSkp().notify();
+            synchronized (this.getMainSG().getText2()) {
+                if (e.getActionCommand().equals("yes")) {
+
+                    this.getMainSG().setSkp("y");
+                    this.getMainSG().getText2().notify();
+
+                } else {
+                    //skip
+
+                    this.getMainSG().setSkp("k");
+                    this.getMainSG().getText2().notify();
+
                 }
-            } else {
-                //skip
-                mainSG.setSkp("k");
-                synchronized (mainSG.getSkp()){
-                    mainSG.getSkp().notify();
-                }
+            }
+        }
+    };
+
+    private ActionListener sqLoadListener = new LoadListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+            if (e.getSource() instanceof Button)
+            synchronized (this.getMainSG().getLoadTracks()){
+                this.getMainSG().getLoadTracks().notify();
             }
         }
     };
@@ -214,6 +241,8 @@ public class MainGui extends JFrame {
     private Button sqContinue = new Button("Continue");
 
     private Button sqRestart = new Button("Restart");
+
+    private Button sqLoad = new Button("Load");
 
     public Button getSqStart() {
         return sqStart;
@@ -233,5 +262,9 @@ public class MainGui extends JFrame {
 
     public Button getSqRestart() {
         return sqRestart;
+    }
+
+    public Button getSqLoad() {
+        return sqLoad;
     }
 }

@@ -318,37 +318,25 @@ public class MainSeque {
             });
 
             mainSG.initListeners();
-            mainSG.connectW2();
+
             
-            TrackSeque ts = mainSG.tracksLoad();
-            boolean initC = gui.initComponents();
-
-            if (!initC){
-                System.out.println("No init gui... exit!");
-                System.exit(0);
-            }
-            boolean init_app = false;
-
-            do {
-                synchronized (mainSG.getMidiRecever().get(0)) {
-                    if (!init_app) {
-                        ((MainButtonListener) mainSG.getSqStart()).setTs(ts);
-
-                        ((MainButtonListener) mainSG.getSqQuit()).setTs(ts);
 
 
-                        ((MainButtonListener) mainSG.getSqStop()).setTs(ts);
+            SequeLoadRun sqR = new SequeLoadRun();
+            sqR.setGui(gui);
+            sqR.setMainSG(mainSG);
+            Thread tLoad = new Thread((Runnable) sqR );
 
 
-                        ((MainButtonListener) mainSG.getSqContinue()).setTs(ts);
+            synchronized (sqR.getMainSG().getLoadTracks()){
+                try {
 
-
-                        ((MainButtonListener) mainSG.getSqRestart()).setTs(ts);
-                        init_app = true;
-                    }
+                    tLoad.start();
+                    sqR.getMainSG().getLoadTracks().wait();
+                } catch (InterruptedException i){
+                    System.err.println(i.getMessage() + " , Wait for Load... Error!!!");
                 }
-            } while (!MainSequeGui.getQuitSeque().equals("q"));
-            System.exit(0);
+            }
         }
     }
 
