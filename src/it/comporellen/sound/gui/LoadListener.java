@@ -17,7 +17,17 @@ public abstract class LoadListener implements ActionListener {
         this.mainSG = mainSG;
     }
 
-    public LoadListener(){}
+    private MainGui gui;
+
+    public void setGui(MainGui gui) {
+        this.gui = gui;
+    }
+
+    public MainGui getGui() {
+        return gui;
+    }
+
+    public LoadListener(){ }
 
 
 

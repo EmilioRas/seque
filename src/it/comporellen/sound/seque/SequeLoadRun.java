@@ -2,6 +2,7 @@ package seque;
 
 import gui.MainButtonListener;
 import gui.MainGui;
+import gui.YesOrSkip;
 
 public class SequeLoadRun implements Runnable{
 
@@ -32,7 +33,9 @@ public class SequeLoadRun implements Runnable{
         try {
 
             boolean initC = false;
+            ((YesOrSkip)this.gui.getYesOrSkip()).setMainSG(mainSG);
 
+            mainSG.initListeners();
             initC = this.gui.initComponents();
 
 
@@ -41,11 +44,14 @@ public class SequeLoadRun implements Runnable{
                 System.out.println("No init gui o not sq... exit!");
                 System.exit(0);
             }
-            synchronized (this.getMainSG().getLoadTracks()) {
-                this.getMainSG().getLoadTracks().wait();
+            synchronized (this.mainSG){
+                this.getMainSG().wait();
+                this.getMainSG().setTsFinish(this.mainSG.getTs());
             }
             synchronized (mainSG.getMidiRecever().get(0)) {
                 if (mainSG.getMidiRecever() != null && mainSG.getMidiRecever().size() > 0) {
+
+
                     do {
                         if (!init_app) {
                             ((MainButtonListener) mainSG.getSqStart()).setTs(ts);
@@ -63,7 +69,7 @@ public class SequeLoadRun implements Runnable{
                             init_app = true;
                         }
                     } while (!MainSequeGui.getQuitSeque().equals("q"));
-                    this.getMainSG().getLoadTracks().notify();
+                    this.getMainSG().notify();
                     System.exit(0);
                 } else {
                     System.out.println("TBD");

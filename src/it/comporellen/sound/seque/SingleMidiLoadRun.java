@@ -2,6 +2,8 @@ package seque;
 
 import bridge.SqeReceiver;
 import device.MidiAccess1;
+import gui.MainGui;
+import gui.YesOrSkip;
 
 import javax.sound.midi.Sequence;
 import javax.sound.midi.Sequencer;
@@ -10,14 +12,13 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Set;
 
-public class SingleMidiLoad implements Runnable{
+public class SingleMidiLoadRun implements Runnable{
     private String startWith;
 
     private String wd;
 
     private TrackSeque ts;
 
-    private String skp;
 
     public TrackSeque getTs() {
         return ts;
@@ -35,9 +36,7 @@ public class SingleMidiLoad implements Runnable{
         this.ts = ts;
     }
 
-    public void setSkp(String skp) {
-        this.skp = skp;
-    }
+
 
     private MainSequeGui mainSG;
 
@@ -49,15 +48,25 @@ public class SingleMidiLoad implements Runnable{
         this.mainSG = mainSG;
     }
 
+    private MainGui gui;
+
+    public void setGui(MainGui gui) {
+        this.gui = gui;
+    }
+
+
+
     @Override
     public void run() {
-        synchronized (this.mainSG.getLoadTracks()){
+        synchronized (this.mainSG){
             try {
-                MainSequeGui.writeW2("What do you want connect one of this midi seque ?",this.getMainSG().getForWText2());
-                MainSequeGui.writeW2("number of SY description device...",this.getMainSG().getForWText2());
+
+                MainSequeGui.writeW2("Connect one of this midi seque ?",this.getMainSG().getForWText2());
+                MainSequeGui.writeW2("Number of SY description device...",this.getMainSG().getForWText2());
 
                 if  (this.getMainSG().getM2TransmitterMap() == null || this.getMainSG().getM2TransmitterMap().length == 0){
                     MainSequeGui.writeW2("Sorry !!! Not have sequencer device...",this.getMainSG().getForWText2());
+                    this.mainSG.notify();
                     return;
                 }
 
@@ -125,50 +134,57 @@ public class SingleMidiLoad implements Runnable{
                     listTracksFile = this.getMainSG().listFilesUsingDirectoryStream(wd + File.separator + startWith + File.separator, startWith);
                 } catch (IOException ioe4){
                     System.err.println("Tracks list not found ");
+                    this.mainSG.notify();
                     return;
                 }
 
                 sq = ((MidiAccess1) this.getMainSG().getMidiAccess()).getSequencer(0);
+
+                ((YesOrSkip)this.gui.getYesOrSkip()).setSq(sq);
+
                 this.getMainSG().generalSequenceSetting(sq, dscParams);
-                while (dscNameDev < Integer.parseInt(dscParams[0][3])){
-                    String deviceName = dscParams[dscNameDev +2][2];
-                    MainSequeGui.writeW2("SY num >> [\"" + deviceName + "\"] ...",this.getMainSG().getForWText2());
-                    MainSequeGui.writeW2("Loading... or do you want to skip ? (skip = \"k/y\")",this.getMainSG().getForWText2());
 
-                    skp = "";
 
-                    synchronized (this.getMainSG().getText2()){
-                        this.getMainSG().getText2().repaint();
-                        this.getMainSG().getText2().wait();
+                    TrackLoadRun tlr = new TrackLoadRun();
+                    tlr.setMainSG(mainSG);
+                    tlr.setListTracksFile(listTracksFile);
+                    tlr.setDnF(dnF);
+
+                    tlr.setTs(ts);
+                    tlr.setSq(sq);
+                    tlr.setSqeNumber(sqeNumber);
+                    tlr.setTt(tt);
+                    tlr.setDscParams(dscParams);
+                    tlr.setDscNameDev(dscNameDev);
+                    tlr.setWd(wd);
+                    tlr.setStartWith(startWith);
+
+
+                    Thread t3 = new Thread((Runnable) tlr);
+
+                    synchronized (this.mainSG) {
+                        t3.start();
+                        this.mainSG.wait();
+
+                    }
+                    synchronized (tlr.getSq()){
+                        tlr.getSq().wait();
+                        ts = tlr.getTs();
+                        sq = tlr.getSq();
+                        this.mainSG.setTs(ts);
+
+                        listTracksFile = tlr.getListTracksFile();
+                        dnF = tlr.getDnF();
+
+                        ts = tlr.getTs();
+                        sq = tlr.getSq();
+                        sqeNumber = tlr.getSqeNumber();
+                        tt = 0;
+
                     }
 
 
-                    tt = 0;
 
-
-
-                    if (!skp.equalsIgnoreCase("k") && listTracksFile != null){
-                        for (int j = 0; j < this.getMainSG().m2TransmitterMap.length; j++){
-                            dnF = this.getMainSG().m2TransmitterMap[j][1];
-                            String dnFName = (String) dnF;
-                            MainSequeGui.writeW2("Check... " + dnFName ,this.getMainSG().getForWText2());
-                            if (deviceName.equals(dnFName)){
-
-                                ts.getReceivers().add(new SqeReceiver(this.getMainSG().getMidiTransmetter().get((Integer.parseInt(String.valueOf(this.getMainSG().m2TransmitterMap[j][0])))).getReceiver()));
-
-                                synchronized(this.getMainSG().getSqCopy()){
-                                    sqeNumber = this.getMainSG().updateTracks(wd,startWith,sqeNumber,sq,ts,dscParams,tt,j,listTracksFile);
-                                    MainSequeGui.writeW2("In  device -" + deviceName + "- loaded num.: " + (sqeNumber != -1 ? sqeNumber : 0) +" tracks and planned num.: " + dscParams[dscNameDev][1],this.getMainSG().getForWText2());
-                                }
-                            }
-                        }
-                    } else if (!skp.equalsIgnoreCase("k")){
-                        MainSequeGui.writeW2("Your tracksList is null",this.getMainSG().getForWText2());
-                    }
-
-
-                    dscNameDev++;
-                }
                 sq.setSequence(this.getMainSG().getSqCopy());
 
 
@@ -179,9 +195,10 @@ public class SingleMidiLoad implements Runnable{
 
                 this.getMainSG().resultGeneralSequenceSetting(sq);
                 this.getMainSG().getText2().repaint();
-                this.mainSG.getLoadTracks().notify();
+                this.mainSG.notify();
             } catch (Exception e){
                 System.err.println(e.getMessage());
+                this.mainSG.notify();
             }
         }
     }

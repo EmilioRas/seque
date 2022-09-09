@@ -8,6 +8,7 @@ import device.MidiAccess1;
 import gui.ConnectorListener;
 import gui.GraphSequeText2;
 import gui.MainGui;
+import gui.SequeText2;
 
 
 import javax.sound.midi.Sequence;
@@ -21,6 +22,16 @@ import java.util.Set;
 
 
 public final class MainSequeGui extends MainSeque {
+
+    private String skp;
+
+    public String getSkp() {
+        return skp;
+    }
+
+    public void setSkp(String skp) {
+        this.skp = skp;
+    }
 
     public MainSequeGui(String wd, String pwd) {
         super();
@@ -214,27 +225,18 @@ public final class MainSequeGui extends MainSeque {
 
 
 
-    private StringBuffer forWText2 = new StringBuffer();
+    private static  StringBuffer forWText2 = new StringBuffer();
 
-    public StringBuffer getForWText2() {
-        return forWText2;
+    public static  StringBuffer getForWText2() {
+        return MainSequeGui.forWText2;
     }
 
-    private GraphSequeText2 text2 = new GraphSequeText2(forWText2);
+    private static SequeText2 text2 = new SequeText2(MainSequeGui.forWText2);
 
-    public GraphSequeText2 getText2() {
+    public SequeText2 getText2() {
         return text2;
     }
 
-    private String skp;
-
-    public void setSkp(String skp) {
-        this.skp = skp;
-    }
-
-    public String getSkp() {
-        return skp;
-    }
 
     public synchronized int updateTracks(String wd, String startWith, int sqeNumber, Sequencer sq, TrackSeque ts, String[][] dscParams, int tt, int jMap, Set<String> listTracksFile) throws IOException,InterruptedException {
         if (sq != null)
@@ -266,11 +268,11 @@ public final class MainSequeGui extends MainSeque {
 
             MainSequeGui.writeW2("Do you want to skip or load this midi ? ...", this.forWText2);
 
-            skp = "";
 
-            synchronized (this.getText2()){
-                this.text2.repaint();
-                this.text2.wait();
+            synchronized (this.mainGui){
+
+                this.mainGui.wait();
+
             }
 
 
@@ -384,7 +386,7 @@ public final class MainSequeGui extends MainSeque {
         if (s != null){
             forWText2.append(s);
             forWText2.append(RETR_FEED);
-
+            MainSequeGui.text2.writeOnArea();
         }
     }
 

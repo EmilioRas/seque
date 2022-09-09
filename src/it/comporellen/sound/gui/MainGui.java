@@ -2,7 +2,7 @@ package gui;
 
 import device.MidiAccess;
 import seque.MainSequeGui;
-import seque.SingleMidiLoad;
+import seque.SingleMidiLoadRun;
 import seque.TrackSeque;
 
 import javax.swing.*;
@@ -25,9 +25,9 @@ public class MainGui extends JFrame {
 
     GraphSequeText textArea = null;
 
-    GraphSequeText2 text2 = null;
+    SequeText2 text2 = null;
 
-    public void setText2(GraphSequeText2 text2) {
+    public void setText2(SequeText2 text2) {
         this.text2 = text2;
     }
 
@@ -127,6 +127,7 @@ public class MainGui extends JFrame {
 
         this.add(scrollPane2);
 
+        ((LoadListener)this.sqLoadListener).setGui(this);
         JPanel yesOrSkipP = new JPanel();
         this.sqYes.setActionCommand("yes");
         this.sqYes.addActionListener(this.yesOrSkip);
@@ -220,23 +221,37 @@ public class MainGui extends JFrame {
         }
     };
 
-    private ActionListener yesOrSkip = new YesOrSkip() {
+    public ActionListener getYesOrSkip() {
+        return yesOrSkip;
+    }
+
+    private ActionListener yesOrSkip = new YesOrSkip(mainSG) {
         @Override
         public void actionPerformed(ActionEvent e) {
-            synchronized (this.getMainSG().getText2()) {
-                if (e.getActionCommand().equals("yes")) {
 
-                    this.getMainSG().setSkp("y");
-                    this.getMainSG().getText2().notify();
+                if (e.getActionCommand().equals("yes") && this.getSq() != null
+                    && this.getMainSG() != null) {
+                    synchronized (this.getSq()){
 
-                } else {
+                        this.getSq().notify();
+                    }
+                    synchronized (this.getMainSG()) {
+                       this.getMainSG().setSkp("y");
+                        this.getMainSG().notify();
+                    }
+                } else if (e.getActionCommand().equals("skip") && this.getSq() != null
+                        && this.getMainSG() != null){
                     //skip
+                    synchronized (this.getMainSG()){
+                       this.getMainSG().setSkp("k");
+                        this.getMainSG().notify();
+                    }
+                    synchronized (this.getSq()) {
 
-                    this.getMainSG().setSkp("k");
-                    this.getMainSG().getText2().notify();
-
+                        this.getSq().notify();
+                    }
                 }
-            }
+
         }
     };
 
@@ -259,27 +274,25 @@ public class MainGui extends JFrame {
             TrackSeque ts = null;
             try {
 
-               String  skp = "";
 
 
 
 
-                SingleMidiLoad sml = new SingleMidiLoad();
 
-                sml.setTs(ts);
-                sml.setSkp(skp);
+                SingleMidiLoadRun sml = new SingleMidiLoadRun();
+                sml.setGui(this.getGui());
+
                 sml.setMainSG(this.getMainSG());
                 sml.setStartWith(startWith);
                 sml.setWd(wd);
 
                 Thread t = new Thread((Runnable) sml);
 
-                synchronized (this.getMainSG().getLoadTracks()){
+                synchronized (this.getMainSG()){
 
 
                     t.start();
-                    this.getMainSG().getLoadTracks().wait();
-                    this.getMainSG().setTsFinish(sml.getTs());
+
 
                 }
 

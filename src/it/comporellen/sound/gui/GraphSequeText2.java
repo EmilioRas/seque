@@ -27,7 +27,7 @@ public class GraphSequeText2 extends Canvas {
         super();
         this.input = input;
         this.setBackground(Color.WHITE);
-        this.setSize(600,200);
+        this.setSize(600,600);
         
     }
     private int j = 1;

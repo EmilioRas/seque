@@ -8,6 +8,7 @@ import device.MidiAccess;
 import device.MidiAccess1;
 import gui.MainButtonListener;
 import gui.MainGui;
+import gui.YesOrSkip;
 
 
 import javax.sound.midi.*;
@@ -319,7 +320,7 @@ public class MainSeque {
                 }
             });
 
-            mainSG.initListeners();
+
 
 
 
@@ -333,12 +334,13 @@ public class MainSeque {
             Thread tLoad = new Thread((Runnable) sqR );
 
 
-            synchronized (mainSG.getLoadTracks()){
+            synchronized (mainSG){
                 try {
 
                     tLoad.start();
-                    mainSG.getLoadTracks().wait();
-                } catch (InterruptedException i){
+
+
+                } catch (Exception i){
                     System.err.println(i.getMessage() + " , Wait for Load... Error!!!");
                 }
             }
@@ -621,6 +623,16 @@ public class MainSeque {
             System.err.println("General Sequencer setting error...");
 
         }
+    }
+
+    protected TrackSeque ts;
+
+    public TrackSeque getTs() {
+        return ts;
+    }
+
+    public void setTs(TrackSeque ts) {
+        this.ts = ts;
     }
 
     protected synchronized void resultGeneralSequenceSetting(Sequencer sq){
