@@ -1,27 +1,36 @@
 package gui;
 
-import device.MidiAccess;
+
+import seque.MainSequeGui;
 
 import java.awt.*;
-import java.io.IOException;
-import java.io.InputStream;
 
 public class GraphSequeText2 extends Canvas {
 
-    private StringBuilder input;
+    private StringBuffer input;
 
-    public void setInput(StringBuilder input) {
+    private static int atInputCurrent = 0;
+
+    public static int getAtInputCurrent() {
+        return atInputCurrent;
+    }
+
+    public static void setAtInputCurrent(int atInputCurrent) {
+        GraphSequeText2.atInputCurrent = atInputCurrent;
+    }
+
+    public void setInput(StringBuffer input) {
         this.input = input;
     }
 
-    public GraphSequeText2(StringBuilder input){
+    public GraphSequeText2(StringBuffer input){
         super();
         this.input = input;
         this.setBackground(Color.WHITE);
-        this.setSize(500,500);
+        this.setSize(600,200);
         
     }
-    private int i = 1;
+    private int j = 1;
 
     @Override
     public void paint(Graphics g){
@@ -29,15 +38,24 @@ public class GraphSequeText2 extends Canvas {
         g.setFont(Font.getFont("Courier"));
         g.setColor(Color.GRAY);
 
-        int j = 1;
+        int i = 1;
         String n = "";
-        g.drawString((n = "Seque messages :") , i * 15, j *10);
-        int k = 0;
-        int len = 0;
-        byte[] b = new byte[64];
+        g.drawString((n = "Seque messages :") , i * 15, j);
         try {
 
-            g.drawString(this.input.toString(), i * 15, j *10);
+            for (Byte b :this.input.toString().getBytes()){
+                if (b.byteValue() != MainSequeGui.RETR_FEED){
+                    g.drawString(new String(new byte[]{b.byteValue()},0,1), i, j *15);
+                    i = i+9;
+
+                } else {
+                    i = 0;
+                    j++;
+                }
+            }
+            j++;
+
+
         } catch (Exception e){
             System.err.println(e.getMessage() + " , paint Text2");
         }
@@ -54,15 +72,20 @@ public class GraphSequeText2 extends Canvas {
         g.setFont(Font.getFont("Courier"));
         g.setColor(Color.GRAY);
 
-        int j = 1;
-        String n = "";
-        g.drawString((n = "Seque messages :") , i * 15, j *10);
-        int k = 0;
-        int len = 0;
-        byte[] b = new byte[64];
-        try {
+        int i = 1;
 
-            g.drawString(this.input.toString(), i * 15, j *10);
+        try {
+            for (Byte b :this.input.toString().getBytes()){
+                if (b.byteValue() != MainSequeGui.RETR_FEED){
+                    g.drawString(new String(new byte[]{b.byteValue()},0,1), i, j *15);
+                    i = i+9;
+                } else {
+                    i = 0;
+                    j++;
+                }
+            }
+            j++;
+
         } catch (Exception e){
             System.err.println(e.getMessage() + " , paint Text2");
         }

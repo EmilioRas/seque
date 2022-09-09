@@ -20,13 +20,17 @@ public class SequeLoadRun implements Runnable{
     public void setGui(MainGui gui) {
         this.gui = gui;
     }
+    private TrackSeque ts;
 
+    public void setTs(TrackSeque ts) {
+        this.ts = ts;
+    }
     @Override
     public void run() {
         boolean init_app = false;
 
         try {
-            TrackSeque ts = this.mainSG.tracksLoad();
+
             boolean initC = false;
 
             initC = this.gui.initComponents();
@@ -40,9 +44,9 @@ public class SequeLoadRun implements Runnable{
             synchronized (this.getMainSG().getLoadTracks()) {
                 this.getMainSG().getLoadTracks().wait();
             }
-            if (mainSG.getMidiRecever() != null && mainSG.getMidiRecever().size() > 0) {
-                do {
-                    synchronized (mainSG.getMidiRecever().get(0)) {
+            synchronized (mainSG.getMidiRecever().get(0)) {
+                if (mainSG.getMidiRecever() != null && mainSG.getMidiRecever().size() > 0) {
+                    do {
                         if (!init_app) {
                             ((MainButtonListener) mainSG.getSqStart()).setTs(ts);
 
@@ -58,16 +62,16 @@ public class SequeLoadRun implements Runnable{
                             ((MainButtonListener) mainSG.getSqRestart()).setTs(ts);
                             init_app = true;
                         }
-                    }
-                } while (!MainSequeGui.getQuitSeque().equals("q"));
-                this.getMainSG().getLoadTracks().notify();
-                System.exit(0);
-            } else {
-                System.out.println("TBD");
+                    } while (!MainSequeGui.getQuitSeque().equals("q"));
+                    this.getMainSG().getLoadTracks().notify();
+                    System.exit(0);
+                } else {
+                    System.out.println("TBD");
+                }
             }
         } catch (Exception e){
             System.out.println("TBD Error");
-            this.getMainSG().getLoadTracks().notify();
+            e.printStackTrace();
         }
     }
 }

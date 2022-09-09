@@ -13,7 +13,7 @@ public abstract class LoadListener implements ActionListener {
         return mainSG;
     }
 
-    public void setMainSG(MainSequeGui mainSG) {
+    public void setMainSG(MainSequeGui mainSG,String startWith,String wd) {
         this.mainSG = mainSG;
     }
 

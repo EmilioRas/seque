@@ -2,8 +2,11 @@ package gui;
 
 import device.MidiAccess;
 import seque.MainSequeGui;
+import seque.SingleMidiLoad;
+import seque.TrackSeque;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,8 +14,8 @@ import java.lang.reflect.Method;
 
 public class MainGui extends JFrame {
 
-    private static final int X = 600;
-    private static final int Y = 600;
+    private static final int X = 300;
+    private static final int Y = 300;
 
     private MidiAccess midiAccess;
 
@@ -72,7 +75,8 @@ public class MainGui extends JFrame {
     public boolean initComponents(){
 
         this.textArea = new GraphSequeText(this.midiAccess);
-        JScrollPane scrollPane = new JScrollPane(textArea);
+        JScrollPane scrollPane = new JScrollPane(textArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
 
 
@@ -118,7 +122,8 @@ public class MainGui extends JFrame {
 
 
 
-        JScrollPane scrollPane2 = new JScrollPane(text2);
+        JScrollPane scrollPane2 = new JScrollPane(text2, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
         this.add(scrollPane2);
 
@@ -130,8 +135,13 @@ public class MainGui extends JFrame {
         yesOrSkipP.add(this.sqYes);
         yesOrSkipP.add(this.sqSkip);
         this.add(yesOrSkipP);
+        this.connectedTable = new JTable(1,4);
+        this.tModel = (DefaultTableModel) this.connectedTable.getModel();
+        this.tModel.setValueAt("Input->Port",0,0);
+        this.tModel.setValueAt("Output<-Port",0,1);
+        this.tModel.setValueAt("Channel",0,2);
+        this.tModel.setValueAt("Instrument",0,3);
 
-        this.connectedTable = new JTable(10,4);
         connPanel.add(this.connectedTable);
         this.add(connPanel);
         this.add(this.sqContinue);
@@ -139,7 +149,7 @@ public class MainGui extends JFrame {
         this.add(this.sqStop);
         this.add(this.sqStart);
         this.add(this.sqQuit);
-        ((LoadListener)this.sqLoadListener).setMainSG(mainSG);
+        ((LoadListener)this.sqLoadListener).setMainSG(mainSG,this.startWith,this.wd);
         this.sqLoad.addActionListener(this.sqLoadListener);
         this.add(this.sqLoad);
         return true;
@@ -175,6 +185,19 @@ public class MainGui extends JFrame {
 
     public static void setSequeInd(int sequeInd) {
         MainGui.sequeInd = sequeInd;
+    }
+
+    private DefaultTableModel tModel;
+
+
+
+    public void addRowTOConnetedTable(int iD1,int iD2,int iDC3,String con2){
+        this.tModel.addRow(new Object[]{this.inputPort.getText(),this.outPort.getText(),this.channel.getText(),this.instrumentName.getText()});
+        this.inputPort.setText("");
+        this.outPort.setText("");
+        this.channel.setText("");
+        this.instrumentName.setText("");
+
     }
 
     private ActionListener connectorListener = new ConnectorListener(MainGui.sequeInd) {
@@ -217,14 +240,54 @@ public class MainGui extends JFrame {
         }
     };
 
-    private ActionListener sqLoadListener = new LoadListener() {
+    private String startWith;
+
+    private String wd;
+
+    public void setStartWith(String startWith) {
+        this.startWith = startWith;
+    }
+
+    public void setWd(String wd) {
+        this.wd = wd;
+    }
+
+    public ActionListener sqLoadListener = new LoadListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
 
-            if (e.getSource() instanceof Button)
-            synchronized (this.getMainSG().getLoadTracks()){
-                this.getMainSG().getLoadTracks().notify();
+            TrackSeque ts = null;
+            try {
+
+               String  skp = "";
+
+
+
+
+                SingleMidiLoad sml = new SingleMidiLoad();
+
+                sml.setTs(ts);
+                sml.setSkp(skp);
+                sml.setMainSG(this.getMainSG());
+                sml.setStartWith(startWith);
+                sml.setWd(wd);
+
+                Thread t = new Thread((Runnable) sml);
+
+                synchronized (this.getMainSG().getLoadTracks()){
+
+
+                    t.start();
+                    this.getMainSG().getLoadTracks().wait();
+                    this.getMainSG().setTsFinish(sml.getTs());
+
+                }
+
+            } catch (Exception ex) {
+                System.err.println(ex.getMessage());
+
             }
+
         }
     };
 

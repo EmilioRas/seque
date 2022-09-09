@@ -254,6 +254,8 @@ public class MainSeque {
         if (args.length >= 3 && args[2].equals(MainSeque.like_gui)) {
             mainSG = new MainSequeGui(args[0], args[1]);
             MainGui gui = new MainGui("Seque");
+            gui.setStartWith(args[0]);
+            gui.setWd(args[1]);
             mainSG.init();
             gui.setMidiAccess(mainSG.getMidiAccess());
 
@@ -319,20 +321,23 @@ public class MainSeque {
 
             mainSG.initListeners();
 
-            
+
+
+
 
 
             SequeLoadRun sqR = new SequeLoadRun();
             sqR.setGui(gui);
             sqR.setMainSG(mainSG);
+            sqR.setTs(mainSG.getTsFinish());
             Thread tLoad = new Thread((Runnable) sqR );
 
 
-            synchronized (sqR.getMainSG().getLoadTracks()){
+            synchronized (mainSG.getLoadTracks()){
                 try {
 
                     tLoad.start();
-                    sqR.getMainSG().getLoadTracks().wait();
+                    mainSG.getLoadTracks().wait();
                 } catch (InterruptedException i){
                     System.err.println(i.getMessage() + " , Wait for Load... Error!!!");
                 }
@@ -340,9 +345,17 @@ public class MainSeque {
         }
     }
 
+    protected   TrackSeque tsFinish = null;
 
+    public TrackSeque getTsFinish() {
+        return tsFinish;
+    }
 
-	protected Sequence sqCopy = null;
+    public void setTsFinish(TrackSeque tsFinish) {
+        this.tsFinish = tsFinish;
+    }
+
+    protected Sequence sqCopy = null;
 
 	public void setSqCopy(Sequence copy){
 		this.sqCopy = copy;
