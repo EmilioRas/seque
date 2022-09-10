@@ -20,8 +20,8 @@ public abstract class MainButtonListener implements ActionListener {
         return ts;
     }
 
-    public MainButtonListener(Sequencer s){
-        this.s = s;
+    public MainButtonListener(Sequencer s,TrackSeque ts){
+        this.s = s;this.ts = ts;
     }
 
     public Sequencer getS() {

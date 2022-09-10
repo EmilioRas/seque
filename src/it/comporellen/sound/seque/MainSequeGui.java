@@ -20,6 +20,8 @@ import java.util.Set;
 
 public final class MainSequeGui extends MainSeque {
 
+
+
     private String skp;
 
     public String getSkp() {
@@ -66,6 +68,26 @@ public final class MainSequeGui extends MainSeque {
 
     private ActionListener sqRestart;
 
+    public ActionListener gSqStart(){
+        return this.sqStart;
+    }
+
+    public ActionListener gSqQuit(){
+        return this.sqQuit;
+    }
+
+    public ActionListener gSqStop(){
+        return this.sqStop;
+    }
+
+    public ActionListener gSqContinue(){
+        return this.sqContinue;
+    }
+
+    public ActionListener gSqRestart(){
+        return this.sqRestart;
+    }
+
     public ActionListener getSqStart() {
         return sqStart;
     }
@@ -105,6 +127,8 @@ public final class MainSequeGui extends MainSeque {
     public void setSqRestart(ActionListener sqRestart) {
         this.sqRestart = sqRestart;
     }
+
+
 
     private static int sequeInd;
 
@@ -381,10 +405,13 @@ public final class MainSequeGui extends MainSeque {
         }
     }
 
+
+
     public static void writeW2(String s, StringBuffer forWText2) throws IOException{
         if (s != null){
             forWText2.append(s);
-            forWText2.append(RETR_FEED);
+            if (s.length() != 1)
+                forWText2.append(RETR_FEED);
             MainSequeGui.text2.writeOnArea();
         }
     }

@@ -24,7 +24,7 @@ public class SequeText2 extends JTextArea {
     }
 
     public SequeText2(StringBuffer input){
-        super(20,50);
+        super(22,52);
         this.input = input;
         this.setBackground(Color.WHITE);
         this.setSize(600,600);
@@ -40,7 +40,7 @@ public class SequeText2 extends JTextArea {
         try {
 
             for (Byte b :this.input.toString().getBytes()){
-                if (b.byteValue() != MainSequeGui.RETR_FEED || b.byteValue() ==  "=".getBytes()[0]){
+                if (b.byteValue() != MainSequeGui.RETR_FEED ){
                     this.setText(this.getText() + new String(new byte[]{b.byteValue()},0,1));
 
 

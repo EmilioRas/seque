@@ -283,7 +283,7 @@ public class MainSeque {
                     ts = mainSG.getTsFinish();
                     Sequencer s = ((MidiAccess1) mainSG.getMidiAccess()).getSequencer(0);
 
-                    mainSG.setSqStart(new MainButtonListener(s) {
+                    mainSG.setSqStart(new MainButtonListener(s,ts) {
                         @Override
                         public void actionPerformed(ActionEvent e) {
                             if (this.getTs() != null) {
@@ -298,7 +298,7 @@ public class MainSeque {
                         }
                     });
 
-                    mainSG.setSqQuit(new MainButtonListener(s) {
+                    mainSG.setSqQuit(new MainButtonListener(s,ts) {
                         @Override
                         public void actionPerformed(ActionEvent e) {
                             if (this.getS() != null && this.getS().isOpen() && this.getS().isRunning()) {
@@ -308,7 +308,7 @@ public class MainSeque {
                         }
                     });
 
-                    mainSG.setSqStop(new MainButtonListener(s) {
+                    mainSG.setSqStop(new MainButtonListener(s,ts) {
                         @Override
                         public void actionPerformed(ActionEvent e) {
                             if (this.getS() != null && this.getS().isOpen() && this.getS().isRunning()) {
@@ -317,7 +317,7 @@ public class MainSeque {
                         }
                     });
 
-                    mainSG.setSqContinue(new MainButtonListener(s) {
+                    mainSG.setSqContinue(new MainButtonListener(s,ts) {
                         @Override
                         public void actionPerformed(ActionEvent e) {
                             if (this.getS() != null && this.getS().isOpen() && !this.getS().isRunning()) {
@@ -326,7 +326,7 @@ public class MainSeque {
                         }
                     });
 
-                    mainSG.setSqRestart(new MainButtonListener(s) {
+                    mainSG.setSqRestart(new MainButtonListener(s,ts) {
                         @Override
                         public void actionPerformed(ActionEvent e) {
                             if (this.getS() != null && this.getS().isOpen() && !this.getS().isRunning()) {
@@ -336,43 +336,20 @@ public class MainSeque {
                         }
                     });
 
-                    ((MainButtonListener)mainSG.getSqStart()).setTs(ts);
-                    ((MainButtonListener)mainSG.getSqStart()).setS(s);
-
-                    ((MainButtonListener)mainSG.getSqStop()).setTs(ts);
-                    ((MainButtonListener)mainSG.getSqStop()).setS(s);
-
-                    ((MainButtonListener)mainSG.getSqRestart()).setTs(ts);
-                    ((MainButtonListener)mainSG.getSqRestart()).setS(s);
-
-                    ((MainButtonListener)mainSG.getSqContinue()).setTs(ts);
-                    ((MainButtonListener)mainSG.getSqContinue()).setS(s);
-
-                    ((MainButtonListener)mainSG.getSqQuit()).setTs(ts);
-                    ((MainButtonListener)mainSG.getSqQuit()).setS(s);
+                    gui.getSqContinue().addActionListener(mainSG.gSqContinue());
+                    gui.getSqRestart().addActionListener(mainSG.gSqRestart());
+                    gui.getSqStop().addActionListener(mainSG.gSqStop());
+                    gui.getSqStart().addActionListener(mainSG.gSqStart());
+                    gui.getSqQuit().addActionListener(mainSG.gSqQuit());
                 }
-                    boolean init_app = false;
-                    if (mainSG.getMidiRecever().size() > 0)
+
+
                     synchronized (mainSG.getMidiRecever().get(0)) {
                         if (mainSG.getMidiRecever() != null && mainSG.getMidiRecever().size() > 0) {
 
-
+                            System.out.println("seque start...");
                             do {
-                                if (!init_app) {
-                                    ((MainButtonListener) mainSG.getSqStart()).setTs(ts);
 
-                                    ((MainButtonListener) mainSG.getSqQuit()).setTs(ts);
-
-
-                                    ((MainButtonListener) mainSG.getSqStop()).setTs(ts);
-
-
-                                    ((MainButtonListener) mainSG.getSqContinue()).setTs(ts);
-
-
-                                    ((MainButtonListener) mainSG.getSqRestart()).setTs(ts);
-                                    init_app = true;
-                                }
                             } while (!MainSequeGui.getQuitSeque().equals("q"));
 
                             System.exit(0);
@@ -388,6 +365,8 @@ public class MainSeque {
 
 
     }
+
+
 
     protected TrackSeque tsFinish;
 
