@@ -44,37 +44,8 @@ public class SequeLoadRun implements Runnable{
                 System.out.println("No init gui o not sq... exit!");
                 System.exit(0);
             }
-            synchronized (this.mainSG){
-                this.getMainSG().wait();
-                this.getMainSG().setTsFinish(this.mainSG.getTs());
-            }
-            synchronized (mainSG.getMidiRecever().get(0)) {
-                if (mainSG.getMidiRecever() != null && mainSG.getMidiRecever().size() > 0) {
 
 
-                    do {
-                        if (!init_app) {
-                            ((MainButtonListener) mainSG.getSqStart()).setTs(ts);
-
-                            ((MainButtonListener) mainSG.getSqQuit()).setTs(ts);
-
-
-                            ((MainButtonListener) mainSG.getSqStop()).setTs(ts);
-
-
-                            ((MainButtonListener) mainSG.getSqContinue()).setTs(ts);
-
-
-                            ((MainButtonListener) mainSG.getSqRestart()).setTs(ts);
-                            init_app = true;
-                        }
-                    } while (!MainSequeGui.getQuitSeque().equals("q"));
-                    this.getMainSG().notify();
-                    System.exit(0);
-                } else {
-                    System.out.println("TBD");
-                }
-            }
         } catch (Exception e){
             System.out.println("TBD Error");
             e.printStackTrace();

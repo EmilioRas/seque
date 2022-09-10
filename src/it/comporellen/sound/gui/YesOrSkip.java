@@ -1,6 +1,7 @@
 package gui;
 
 import seque.MainSequeGui;
+import seque.TrackLoadRun;
 import seque.TrackSeque;
 
 import javax.sound.midi.Sequencer;
@@ -9,9 +10,9 @@ import java.awt.event.ActionListener;
 
 public abstract class YesOrSkip implements ActionListener {
 
-    public YesOrSkip(MainSequeGui Sg){
+    public YesOrSkip(){
         super();
-        this.mainSG = Sg;
+
     }
 
     private Sequencer sq;
@@ -45,4 +46,14 @@ public abstract class YesOrSkip implements ActionListener {
     }
 
     public abstract void actionPerformed(ActionEvent e);
+
+    private TrackLoadRun tlr;
+
+    public TrackLoadRun getTlr() {
+        return tlr;
+    }
+
+    public void setTlr(TrackLoadRun tlr) {
+        this.tlr = tlr;
+    }
 }

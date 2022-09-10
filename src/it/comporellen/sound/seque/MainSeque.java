@@ -264,6 +264,54 @@ public class MainSeque {
             mainSG.setMainGui(gui);
             gui.setMainSG(mainSG);
 
+            SequeLoadRun sqR = new SequeLoadRun();
+            sqR.setGui(gui);
+            sqR.setMainSG(mainSG);
+            sqR.setTs(mainSG.getTsFinish());
+            Thread tLoad = new Thread((Runnable) sqR );
+
+            TrackSeque ts = null;
+            tLoad.start();
+            synchronized (mainSG.getTsFinish()){
+                try {
+
+
+                    mainSG.getTsFinish().wait();
+                    ts = mainSG.getTs();
+
+                    boolean init_app = false;
+                    if (mainSG.getMidiRecever().size() > 0)
+                    synchronized (mainSG.getMidiRecever().get(0)) {
+                        if (mainSG.getMidiRecever() != null && mainSG.getMidiRecever().size() > 0) {
+
+
+                            do {
+                                if (!init_app) {
+                                    ((MainButtonListener) mainSG.getSqStart()).setTs(ts);
+
+                                    ((MainButtonListener) mainSG.getSqQuit()).setTs(ts);
+
+
+                                    ((MainButtonListener) mainSG.getSqStop()).setTs(ts);
+
+
+                                    ((MainButtonListener) mainSG.getSqContinue()).setTs(ts);
+
+
+                                    ((MainButtonListener) mainSG.getSqRestart()).setTs(ts);
+                                    init_app = true;
+                                }
+                            } while (!MainSequeGui.getQuitSeque().equals("q"));
+
+                            System.exit(0);
+                        } else {
+                            System.out.println("TBD");
+                        }
+                    }
+                } catch (Exception i){
+                    System.err.println(i.getMessage() + " , Wait for Load... Error!!!");
+                }
+            }
 
             Sequencer s = ((MidiAccess1) mainSG.getMidiAccess()).getSequencer(0);
 
@@ -320,34 +368,10 @@ public class MainSeque {
                 }
             });
 
-
-
-
-
-
-
-
-            SequeLoadRun sqR = new SequeLoadRun();
-            sqR.setGui(gui);
-            sqR.setMainSG(mainSG);
-            sqR.setTs(mainSG.getTsFinish());
-            Thread tLoad = new Thread((Runnable) sqR );
-
-
-            synchronized (mainSG){
-                try {
-
-                    tLoad.start();
-
-
-                } catch (Exception i){
-                    System.err.println(i.getMessage() + " , Wait for Load... Error!!!");
-                }
-            }
         }
     }
 
-    protected   TrackSeque tsFinish = null;
+    protected TrackSeque tsFinish;
 
     public TrackSeque getTsFinish() {
         return tsFinish;

@@ -1,6 +1,7 @@
 package gui;
 
 import seque.MainSequeGui;
+import seque.SingleMidiLoadRun;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -29,8 +30,15 @@ public abstract class LoadListener implements ActionListener {
 
     public LoadListener(){ }
 
+    private  SingleMidiLoadRun sml;
 
+    public void setSml(SingleMidiLoadRun sml) {
+        this.sml = sml;
+    }
 
+    public SingleMidiLoadRun getSml() {
+        return sml;
+    }
 
     public abstract void actionPerformed(ActionEvent e);
 }

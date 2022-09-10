@@ -1,16 +1,24 @@
 package gui;
 
 import device.MidiAccess;
+import device.MidiAccess1;
 import seque.MainSequeGui;
 import seque.SingleMidiLoadRun;
+import seque.TrackLoadRun;
 import seque.TrackSeque;
 
+import javax.sound.midi.Sequence;
+import javax.sound.midi.Sequencer;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.Set;
 
 public class MainGui extends JFrame {
 
@@ -126,7 +134,7 @@ public class MainGui extends JFrame {
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
         this.add(scrollPane2);
-
+        this.sqLoad.setActionCommand("miditracks");
         ((LoadListener)this.sqLoadListener).setGui(this);
         JPanel yesOrSkipP = new JPanel();
         this.sqYes.setActionCommand("yes");
@@ -153,6 +161,10 @@ public class MainGui extends JFrame {
         ((LoadListener)this.sqLoadListener).setMainSG(mainSG,this.startWith,this.wd);
         this.sqLoad.addActionListener(this.sqLoadListener);
         this.add(this.sqLoad);
+        sml.setGui(this);
+
+        sml.setMainSG(mainSG);
+        ((LoadListener)this.sqLoadListener).setSml(sml);
         return true;
     }
 
@@ -225,31 +237,25 @@ public class MainGui extends JFrame {
         return yesOrSkip;
     }
 
-    private ActionListener yesOrSkip = new YesOrSkip(mainSG) {
+    private ActionListener yesOrSkip = new YesOrSkip() {
         @Override
         public void actionPerformed(ActionEvent e) {
 
-                if (e.getActionCommand().equals("yes") && this.getSq() != null
-                    && this.getMainSG() != null) {
-                    synchronized (this.getSq()){
+                if (e.getActionCommand().equals("yes")
+                    && this.getTlr() != null) {
 
-                        this.getSq().notify();
-                    }
-                    synchronized (this.getMainSG()) {
+                    synchronized (this.getTlr()) {
                        this.getMainSG().setSkp("y");
-                        this.getMainSG().notify();
+                        this.getTlr().notify();
                     }
-                } else if (e.getActionCommand().equals("skip") && this.getSq() != null
-                        && this.getMainSG() != null){
+                } else if (e.getActionCommand().equals("skip")
+                        && this.getTlr() != null){
                     //skip
-                    synchronized (this.getMainSG()){
+                    synchronized (this.getTlr()){
                        this.getMainSG().setSkp("k");
-                        this.getMainSG().notify();
+                        this.getTlr().notify();
                     }
-                    synchronized (this.getSq()) {
 
-                        this.getSq().notify();
-                    }
                 }
 
         }
@@ -267,40 +273,177 @@ public class MainGui extends JFrame {
         this.wd = wd;
     }
 
+
+    private SingleMidiLoadRun sml = new SingleMidiLoadRun();
+
     public ActionListener sqLoadListener = new LoadListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-
-            TrackSeque ts = null;
-            try {
-
+            if (e.getActionCommand().equals("miditracks")) {
+                TrackSeque ts = null;
 
 
 
 
-
-                SingleMidiLoadRun sml = new SingleMidiLoadRun();
-                sml.setGui(this.getGui());
-
-                sml.setMainSG(this.getMainSG());
-                sml.setStartWith(startWith);
-                sml.setWd(wd);
-
-                Thread t = new Thread((Runnable) sml);
-
-                synchronized (this.getMainSG()){
+                    this.getSml().setStartWith(startWith);
+                this.getSml().setWd(wd);
 
 
-                    t.start();
+                try {
+
+                    MainSequeGui.writeW2("Connect one of this midi seque ?",this.getMainSG().getForWText2());
+                    MainSequeGui.writeW2("Number of SY description device...",this.getMainSG().getForWText2());
+
+                    if  (this.getMainSG().getM2TransmitterMap() == null || this.getMainSG().getM2TransmitterMap().length == 0){
+                        MainSequeGui.writeW2("Sorry !!! Not have sequencer device...",this.getMainSG().getForWText2());
+
+                        return;
+                    }
 
 
+                    FileInputStream oneLine = new FileInputStream(new File(wd + File.separator + startWith + File.separator + "seque.ini"));
+                    StringBuffer dsc = new StringBuffer();
+                    int len = 0;
+                    byte[] b = new byte[128];
+                    String ini = "";
+                    while ((len = oneLine.read(b)) != -1) {
+                        System.out.println(ini = new String(b, 0, len));
+                        dsc.append(ini);
+                    }
+
+
+
+                    String[] dscParamsRow = dsc.toString().split("\\#");
+                    String[][] dscParams = new String[dscParamsRow.length][8];
+                    for (int r = 0 ; r < dscParamsRow.length; r++){
+                        dscParams[r] = dscParamsRow[r].split("\\,");
+                    }
+                    for (int a = 0; a < dscParams.length;a++){
+                        for (int b2 = 0; b2 < dscParams[a].length; b2++){
+                            System.out.print(dscParams[a][b2] + ",");
+                        }
+                    }
+
+                    float currSequeDivType = 0f;
+                    switch (dscParams[0][0]){
+                        case "SMPTE_24":
+                            currSequeDivType = Sequence.SMPTE_24; //new Sequence(Sequence.SMPTE_24, Integer.parseInt(dscParams[0][1]), Integer.parseInt(dscParams[0][2]));
+                            break;
+                        case "SMTPE_25":
+                            currSequeDivType = Sequence.SMPTE_25; //new Sequence(Sequence.SMPTE_25, Integer.parseInt(dscParams[0][1]), Integer.parseInt(dscParams[0][2]));
+                            break;
+                        case "SMPTE_30":
+                            currSequeDivType = Sequence.SMPTE_30; //new Sequence(Sequence.SMPTE_30, Integer.parseInt(dscParams[0][1]), Integer.parseInt(dscParams[0][2]));
+                            break;
+                        case "SMPTE_30DROP":
+                            currSequeDivType = Sequence.SMPTE_30DROP; //new Sequence(Sequence.SMPTE_30DROP, Integer.parseInt(dscParams[0][1]), Integer.parseInt(dscParams[0][2]));
+                            break;
+                        default:
+                            currSequeDivType = Sequence.PPQ; //new Sequence(Sequence.PPQ, Integer.parseInt(dscParams[0][1]), Integer.parseInt(dscParams[0][2]));
+                            break;
+                    }
+
+                    try {
+                        oneLine.close();
+                    } catch (IOException io2){
+                        System.err.println("Unable to close ini");
+                    }
+                    MainSequeGui.writeW2("Init Seque tacks...",this.getMainSG().getForWText2());
+                    ts = new TrackSeque();
+                    Sequencer sq = null;
+
+                    this.getMainSG().setSqCopy(new Sequence(currSequeDivType,Integer.parseInt(dscParams[0][1])));
+
+                    int sqeNumber = 0;
+                    int tt = 0;
+                    int dscNameDev = 0;
+
+                    Object dnF = null;
+                    Set<String> listTracksFile = null;
+                    try {
+                        listTracksFile = this.getMainSG().listFilesUsingDirectoryStream(wd + File.separator + startWith + File.separator, startWith);
+                    } catch (IOException ioe4){
+                        System.err.println("Tracks list not found ");
+
+                        return;
+                    }
+
+                    sq = ((MidiAccess1) this.getMainSG().getMidiAccess()).getSequencer(0);
+
+                    ((YesOrSkip)this.getGui().getYesOrSkip()).setSq(sq);
+
+                    this.getMainSG().generalSequenceSetting(sq, dscParams);
+
+
+                    TrackLoadRun tlr = new TrackLoadRun();
+                    tlr.setMainSG(mainSG);
+                    tlr.setListTracksFile(listTracksFile);
+                    tlr.setDnF(dnF);
+
+                    tlr.setTs(ts);
+                    tlr.setSq(sq);
+                    tlr.setSqeNumber(sqeNumber);
+                    tlr.setTt(tt);
+                    tlr.setDscParams(dscParams);
+                    tlr.setDscNameDev(dscNameDev);
+                    tlr.setWd(wd);
+                    tlr.setStartWith(startWith);
+
+                    ((YesOrSkip)this.getGui().getYesOrSkip()).setTlr(tlr);
+                    Thread t3 = new Thread((Runnable) tlr);
+
+
+                    t3.start();
+
+                    synchronized (tlr) {
+
+                        ts = tlr.getTs();
+                        sq = tlr.getSq();
+                        this.getMainSG().setTs(ts);
+
+                        listTracksFile = tlr.getListTracksFile();
+                        dnF = tlr.getDnF();
+
+                        ts = tlr.getTs();
+                        sq = tlr.getSq();
+                        sqeNumber = tlr.getSqeNumber();
+                        tt = 0;
+
+
+
+
+
+                    sq.setSequence(this.getMainSG().getSqCopy());
+
+
+
+                    ts.setSeque(sq);
+
+                    ts.setSequeParams(dscParams);
+
+                    this.getMainSG().resultGeneralSequenceSetting(sq);
+
+
+
+                    }
+                    synchronized (this.getMainSG()) {
+                        this.getMainSG().wait();
+                        this.getMainSG().setTsFinish(ts);
+
+                    }
+                    synchronized (this.getMainSG().getTsFinish()){
+                        this.getMainSG().getTsFinish().notify();
+
+                        System.out.println("Ready to st");
+                    }
+                } catch (Exception ex){
+                    System.err.println(ex.getMessage());
+                    ex.printStackTrace();
                 }
 
-            } catch (Exception ex) {
-                System.err.println(ex.getMessage());
+
 
             }
-
         }
     };
 

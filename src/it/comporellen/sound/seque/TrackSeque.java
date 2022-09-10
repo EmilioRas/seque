@@ -33,6 +33,7 @@ public class TrackSeque implements Seque,Runnable{
         return receivers;
     }
 
+
     public TrackSeque(){
         this.receivers = new LinkedList<SqeReceiver>();
         this.tracks = new LinkedList<Track>();

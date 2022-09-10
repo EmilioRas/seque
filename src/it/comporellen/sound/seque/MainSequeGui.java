@@ -5,10 +5,7 @@ import bridge.SqeReceiver;
 import device.AudioAccess1;
 import device.MidiAccess;
 import device.MidiAccess1;
-import gui.ConnectorListener;
-import gui.GraphSequeText2;
-import gui.MainGui;
-import gui.SequeText2;
+import gui.*;
 
 
 import javax.sound.midi.Sequence;
@@ -37,6 +34,7 @@ public final class MainSequeGui extends MainSeque {
         super();
         this.wd = wd;
         this.pwd = pwd;
+        this.tsFinish = new TrackSeque();
     }
 
     private String wd;
@@ -239,106 +237,101 @@ public final class MainSequeGui extends MainSeque {
 
 
     public synchronized int updateTracks(String wd, String startWith, int sqeNumber, Sequencer sq, TrackSeque ts, String[][] dscParams, int tt, int jMap, Set<String> listTracksFile) throws IOException,InterruptedException {
-        if (sq != null)
-            MainSequeGui.writeW2("seque ok...",this.forWText2);
-        else {
-            MainSequeGui.writeW2("seque Null...",this.forWText2);
-        }
-        MainSequeGui.writeW2("tracks loading...",this.forWText2);
-
-
-        int trackNum = Integer.parseInt(dscParams[0][2]);
-
-        MainSequeGui.writeW2(trackNum + " tracks...",this.forWText2);
-
-        FileInputStream ioF = null;
-
-
-
-
-        uploadingTkr:
-        while (tt < trackNum ){
-
-
-            Object[] currentTrack =  listTracksFile.toArray();
-
-
-
-            MainSequeGui.writeW2("Loading midi :" + String.valueOf(currentTrack[tt]), this.forWText2);
-
-            MainSequeGui.writeW2("Do you want to skip or load this midi ? ...", this.forWText2);
-
-
-            synchronized (this.mainGui){
-
-                this.mainGui.wait();
-
+       try {
+            if (sq != null)
+                MainSequeGui.writeW2("seque ok...", this.forWText2);
+            else {
+                MainSequeGui.writeW2("seque Null...", this.forWText2);
             }
+            MainSequeGui.writeW2("tracks loading...", this.forWText2);
 
 
+            int trackNum = Integer.parseInt(dscParams[0][2]);
 
-            if (skp != null && skp.equalsIgnoreCase("k")) {
-                tt++;
-                if (tt >= trackNum) {
+            MainSequeGui.writeW2(trackNum + " tracks...", this.forWText2);
+
+            FileInputStream ioF = null;
+
+
+            uploadingTkr:
+            while (tt < trackNum) {
+
+
+                Object[] currentTrack = listTracksFile.toArray();
+
+
+                MainSequeGui.writeW2("Loading midi :" + String.valueOf(currentTrack[tt]), this.forWText2);
+
+                MainSequeGui.writeW2("Do you want to skip or load this midi ? ...", this.forWText2);
+
+
+                synchronized (((YesOrSkip) mainGui.getYesOrSkip()).getTlr()) {
+
+                    ((YesOrSkip) mainGui.getYesOrSkip()).getTlr().wait();
+
+                }
+
+
+                if (skp != null && skp.equalsIgnoreCase("k")) {
+                    tt++;
+                    if (tt >= trackNum) {
+
+                        return -1;
+                    }
+                    continue uploadingTkr;
+                }
+
+                try {
+                    ioF = new FileInputStream(wd + File.separator + startWith + File.separator + String.valueOf(currentTrack[tt]));
+                } catch (Exception ioe) {
+                    tt++;
+                    MainSequeGui.writeW2("Not found tkr num: " + (tt + 1), this.forWText2);
 
                     return -1;
                 }
-                continue uploadingTkr;
-            }
-
-            try {
-                ioF = new FileInputStream(wd + File.separator + startWith + File.separator + String.valueOf(currentTrack[tt]));
-            } catch (Exception ioe) {
-                tt++;
-                MainSequeGui.writeW2("Not found tkr num: " + (tt + 1),this.forWText2);
-
-                return -1;
-            }
 
 
-            if (ioF == null) {
-                MainSequeGui.writeW2("Attention!!! You sequence could be null... Check before your .mid",this.forWText2);
-                tt++;
+                if (ioF == null) {
+                    MainSequeGui.writeW2("Attention!!! You sequence could be null... Check before your .mid", this.forWText2);
+                    tt++;
 
-                return -1;
-            }
-
-
-            try {
-                sq.setSequence(ioF);
-                Sequence sq1 = sq.getSequence();
-
-
-
-                this.addSqTracks(ioF, dscParams, ts, sq, sq1, jMap);
-
-
-
-
-            } catch (Exception sqe) {
-                tt++;
-                MainSequeGui.writeW2("Some error occurred... | skip track ",this.forWText2);
-                continue uploadingTkr;
-            }
-
-
-            tt++;
-
-            sqeNumber++;
-
-
-            if (ioF != null) {
-                try {
-                    ioF.close();
-                } catch (IOException ioe3) {
-                    System.err.println("Error in closing ioF!");
+                    return -1;
                 }
+
+
+                try {
+                    sq.setSequence(ioF);
+                    Sequence sq1 = sq.getSequence();
+
+
+                    this.addSqTracks(ioF, dscParams, ts, sq, sq1, jMap);
+
+
+                } catch (Exception sqe) {
+                    tt++;
+                    MainSequeGui.writeW2("Some error occurred... | skip track ", this.forWText2);
+                    continue uploadingTkr;
+                }
+
+
+                tt++;
+
+                sqeNumber++;
+
+
+                if (ioF != null) {
+                    try {
+                        ioF.close();
+                    } catch (IOException ioe3) {
+                        System.err.println("Error in closing ioF!");
+                    }
+                }
+
             }
-
-            this.text2.repaint();
+        } catch (Exception ex)  {
+            System.err.println(ex.getMessage());
+            ex.printStackTrace();
         }
-
-
         return sqeNumber;
     }
 
@@ -388,6 +381,10 @@ public final class MainSequeGui extends MainSeque {
             forWText2.append(RETR_FEED);
             MainSequeGui.text2.writeOnArea();
         }
+    }
+
+    public static void setForWText2(StringBuffer forWText2) {
+        MainSequeGui.forWText2 = forWText2;
     }
 
     public static final char RETR_FEED = 0x13;

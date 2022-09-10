@@ -40,13 +40,16 @@ public class SequeText2 extends JTextArea {
         try {
 
             for (Byte b :this.input.toString().getBytes()){
-                if (b.byteValue() != MainSequeGui.RETR_FEED){
+                if (b.byteValue() != MainSequeGui.RETR_FEED || b.byteValue() ==  "=".getBytes()[0]){
                     this.setText(this.getText() + new String(new byte[]{b.byteValue()},0,1));
 
 
                 } else {
                     this.setText(this.getText() + "\n");
                 }
+
+                this.input = new StringBuffer();
+                MainSequeGui.setForWText2(this.input);
             }
 
 
