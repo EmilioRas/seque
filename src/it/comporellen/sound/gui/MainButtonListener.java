@@ -28,6 +28,10 @@ public abstract class MainButtonListener implements ActionListener {
         return s;
     }
 
+    public void setS(Sequencer s) {
+        this.s = s;
+    }
+
     public abstract void actionPerformed(ActionEvent e);
 
 }

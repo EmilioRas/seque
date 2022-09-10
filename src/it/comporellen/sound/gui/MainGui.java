@@ -2,10 +2,7 @@ package gui;
 
 import device.MidiAccess;
 import device.MidiAccess1;
-import seque.MainSequeGui;
-import seque.SingleMidiLoadRun;
-import seque.TrackLoadRun;
-import seque.TrackSeque;
+import seque.*;
 
 import javax.sound.midi.Sequence;
 import javax.sound.midi.Sequencer;
@@ -80,7 +77,12 @@ public class MainGui extends JFrame {
         this.connectedTable = connectedTable;
     }
 
-    public boolean initComponents(){
+
+
+
+
+    public boolean initComponents(SequeLoadRun seque){
+        ((LoadListener)this.sqLoadListener).setSeque(seque);
 
         this.textArea = new GraphSequeText(this.midiAccess);
         JScrollPane scrollPane = new JScrollPane(textArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
@@ -375,7 +377,7 @@ public class MainGui extends JFrame {
                     this.getMainSG().generalSequenceSetting(sq, dscParams);
 
 
-                    TrackLoadRun tlr = new TrackLoadRun();
+                    TrackLoadRun tlr = mainSG.getTlr();
                     tlr.setMainSG(mainSG);
                     tlr.setListTracksFile(listTracksFile);
                     tlr.setDnF(dnF);
@@ -388,54 +390,14 @@ public class MainGui extends JFrame {
                     tlr.setDscNameDev(dscNameDev);
                     tlr.setWd(wd);
                     tlr.setStartWith(startWith);
-
+                    tlr.setSeque(this.getSeque());
                     ((YesOrSkip)this.getGui().getYesOrSkip()).setTlr(tlr);
                     Thread t3 = new Thread((Runnable) tlr);
 
-
                     t3.start();
 
-                    synchronized (tlr) {
-
-                        ts = tlr.getTs();
-                        sq = tlr.getSq();
-                        this.getMainSG().setTs(ts);
-
-                        listTracksFile = tlr.getListTracksFile();
-                        dnF = tlr.getDnF();
-
-                        ts = tlr.getTs();
-                        sq = tlr.getSq();
-                        sqeNumber = tlr.getSqeNumber();
-                        tt = 0;
 
 
-
-
-
-                    sq.setSequence(this.getMainSG().getSqCopy());
-
-
-
-                    ts.setSeque(sq);
-
-                    ts.setSequeParams(dscParams);
-
-                    this.getMainSG().resultGeneralSequenceSetting(sq);
-
-
-
-                    }
-                    synchronized (this.getMainSG()) {
-                        this.getMainSG().wait();
-                        this.getMainSG().setTsFinish(ts);
-
-                    }
-                    synchronized (this.getMainSG().getTsFinish()){
-                        this.getMainSG().getTsFinish().notify();
-
-                        System.out.println("Ready to st");
-                    }
                 } catch (Exception ex){
                     System.err.println(ex.getMessage());
                     ex.printStackTrace();

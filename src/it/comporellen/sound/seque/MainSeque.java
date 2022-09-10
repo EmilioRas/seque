@@ -272,13 +272,85 @@ public class MainSeque {
 
             TrackSeque ts = null;
             tLoad.start();
-            synchronized (mainSG.getTsFinish()){
-                try {
+            try {
 
+                TrackLoadRun tlr = new TrackLoadRun();
+                synchronized (sqR) {
+                    mainSG.setTlr(tlr);
+                    sqR.wait();
 
-                    mainSG.getTsFinish().wait();
-                    ts = mainSG.getTs();
+                    System.out.println("Sequencer ...");
+                    ts = mainSG.getTsFinish();
+                    Sequencer s = ((MidiAccess1) mainSG.getMidiAccess()).getSequencer(0);
 
+                    mainSG.setSqStart(new MainButtonListener(s) {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            if (this.getTs() != null) {
+                                Button button = (Button) e.getSource();
+                                Thread t = new Thread((Runnable) this.getTs());
+                                synchronized (this.getTs()) {
+                                    t.start();
+                                    button.setBackground(Color.BLUE);
+                                }
+                                button.setEnabled(false);
+                            }
+                        }
+                    });
+
+                    mainSG.setSqQuit(new MainButtonListener(s) {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            if (this.getS() != null && this.getS().isOpen() && this.getS().isRunning()) {
+                                this.getS().stop();
+                                MainSequeGui.setQuitSeque("q");
+                            }
+                        }
+                    });
+
+                    mainSG.setSqStop(new MainButtonListener(s) {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            if (this.getS() != null && this.getS().isOpen() && this.getS().isRunning()) {
+                                this.getS().stop();
+                            }
+                        }
+                    });
+
+                    mainSG.setSqContinue(new MainButtonListener(s) {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            if (this.getS() != null && this.getS().isOpen() && !this.getS().isRunning()) {
+                                this.getS().start();
+                            }
+                        }
+                    });
+
+                    mainSG.setSqRestart(new MainButtonListener(s) {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            if (this.getS() != null && this.getS().isOpen() && !this.getS().isRunning()) {
+                                this.getS().setTickPosition(1L);
+                                this.getS().start();
+                            }
+                        }
+                    });
+
+                    ((MainButtonListener)mainSG.getSqStart()).setTs(ts);
+                    ((MainButtonListener)mainSG.getSqStart()).setS(s);
+
+                    ((MainButtonListener)mainSG.getSqStop()).setTs(ts);
+                    ((MainButtonListener)mainSG.getSqStop()).setS(s);
+
+                    ((MainButtonListener)mainSG.getSqRestart()).setTs(ts);
+                    ((MainButtonListener)mainSG.getSqRestart()).setS(s);
+
+                    ((MainButtonListener)mainSG.getSqContinue()).setTs(ts);
+                    ((MainButtonListener)mainSG.getSqContinue()).setS(s);
+
+                    ((MainButtonListener)mainSG.getSqQuit()).setTs(ts);
+                    ((MainButtonListener)mainSG.getSqQuit()).setS(s);
+                }
                     boolean init_app = false;
                     if (mainSG.getMidiRecever().size() > 0)
                     synchronized (mainSG.getMidiRecever().get(0)) {
@@ -308,67 +380,13 @@ public class MainSeque {
                             System.out.println("TBD");
                         }
                     }
+
                 } catch (Exception i){
                     System.err.println(i.getMessage() + " , Wait for Load... Error!!!");
                 }
             }
 
-            Sequencer s = ((MidiAccess1) mainSG.getMidiAccess()).getSequencer(0);
 
-            mainSG.setSqStart(new MainButtonListener(s) {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                   if (this.getTs() != null) {
-                       Button button = (Button) e.getSource();
-                       Thread t = new Thread((Runnable) this.getTs());
-                       synchronized (this.getTs()) {
-                           t.start();
-                           button.setBackground(Color.BLUE);
-                       }
-                       button.setEnabled(false);
-                   }
-                }
-            });
-
-            mainSG.setSqQuit(new MainButtonListener(s) {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    if (this.getS() != null && this.getS().isOpen() && this.getS().isRunning()) {
-                        this.getS().stop();
-                        MainSequeGui.setQuitSeque("q");
-                    }
-                }
-            });
-
-            mainSG.setSqStop(new MainButtonListener(s) {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    if (this.getS() != null && this.getS().isOpen() && this.getS().isRunning()) {
-                        this.getS().stop();
-                    }
-                }
-            });
-
-            mainSG.setSqContinue(new MainButtonListener(s) {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    if (this.getS() != null && this.getS().isOpen() && !this.getS().isRunning()) {
-                        this.getS().start();
-                    }
-                }
-            });
-
-            mainSG.setSqRestart(new MainButtonListener(s) {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    if (this.getS() != null && this.getS().isOpen() && !this.getS().isRunning()) {
-                        this.getS().setTickPosition(1L);
-                        this.getS().start();
-                    }
-                }
-            });
-
-        }
     }
 
     protected TrackSeque tsFinish;

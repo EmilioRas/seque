@@ -1,6 +1,6 @@
 package seque;
 
-import gui.MainButtonListener;
+
 import gui.MainGui;
 import gui.YesOrSkip;
 
@@ -33,22 +33,26 @@ public class SequeLoadRun implements Runnable{
         try {
 
             boolean initC = false;
-            ((YesOrSkip)this.gui.getYesOrSkip()).setMainSG(mainSG);
-
-            mainSG.initListeners();
-            initC = this.gui.initComponents();
 
 
 
-            if (!initC){
-                System.out.println("No init gui o not sq... exit!");
-                System.exit(0);
-            }
+
+                ((YesOrSkip) this.gui.getYesOrSkip()).setMainSG(mainSG);
+
+                mainSG.initListeners();
+                initC = this.gui.initComponents(this);
+
+
+                if (!initC) {
+                    System.out.println("No init gui o not sq... exit!");
+                    System.exit(0);
+                }
 
 
         } catch (Exception e){
             System.out.println("TBD Error");
             e.printStackTrace();
+
         }
     }
 }

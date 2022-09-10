@@ -1,12 +1,23 @@
 package gui;
 
 import seque.MainSequeGui;
+import seque.SequeLoadRun;
 import seque.SingleMidiLoadRun;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public abstract class LoadListener implements ActionListener {
+
+    private SequeLoadRun seque;
+
+    public void setSeque(SequeLoadRun seque) {
+        this.seque = seque;
+    }
+
+    public SequeLoadRun getSeque() {
+        return seque;
+    }
 
     private MainSequeGui mainSG;
 

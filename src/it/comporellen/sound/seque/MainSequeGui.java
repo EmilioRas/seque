@@ -219,9 +219,15 @@ public final class MainSequeGui extends MainSeque {
         }
     }
 
+    private TrackLoadRun tlr;
 
+    public TrackLoadRun getTlr() {
+        return tlr;
+    }
 
-
+    public void setTlr(TrackLoadRun tlr) {
+        this.tlr = tlr;
+    }
 
     private static  StringBuffer forWText2 = new StringBuffer();
 

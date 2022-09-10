@@ -117,52 +117,73 @@ public class TrackLoadRun implements Runnable{
         this.dscNameDev = dscNameDev;
     }
 
+    private SequeLoadRun seque;
+
+    public void setSeque(SequeLoadRun seque) {
+        this.seque = seque;
+    }
+
     @Override
     public void run() {
         synchronized (this) {
             try {
+                boolean finish = false;
                 while (dscNameDev < Integer.parseInt(dscParams[0][3])) {
+                    finish = false;
                     String deviceName = dscParams[dscNameDev + 2][2];
                     MainSequeGui.writeW2("SY num >> [\"" + deviceName + "\"] ...", this.getMainSG().getForWText2());
                     MainSequeGui.writeW2("Loading... or do you want to skip ? (skip = \"k/y\")", this.getMainSG().getForWText2());
                     tt = 0;
 
-                        this.wait();
+                    this.wait();
 
-                        if (listTracksFile != null && !this.mainSG.getSkp().equals("k")) {
-                            for (int j = 0; j < this.getMainSG().m2TransmitterMap.length; j++) {
-                                dnF = this.getMainSG().m2TransmitterMap[j][1];
-                                String dnFName = (String) dnF;
-                                MainSequeGui.writeW2("Check... " + dnFName, this.getMainSG().getForWText2());
-                                if (deviceName.equals(dnFName)) {
+                    if (listTracksFile != null && !this.mainSG.getSkp().equals("k")) {
+                        for (int j = 0; j < this.getMainSG().m2TransmitterMap.length; j++) {
+                            dnF = this.getMainSG().m2TransmitterMap[j][1];
+                            String dnFName = (String) dnF;
+                            MainSequeGui.writeW2("Check... " + dnFName, this.getMainSG().getForWText2());
+                            if (deviceName.equals(dnFName)) {
 
-                                    ts.getReceivers().add(new SqeReceiver(this.getMainSG().getMidiTransmetter().get((Integer.parseInt(String.valueOf(this.getMainSG().m2TransmitterMap[j][0])))).getReceiver()));
+                                ts.getReceivers().add(new SqeReceiver(this.getMainSG().getMidiTransmetter().get((Integer.parseInt(String.valueOf(this.getMainSG().m2TransmitterMap[j][0])))).getReceiver()));
 
-                                    synchronized (this.getMainSG().getSqCopy()) {
-                                        sqeNumber = this.getMainSG().updateTracks(wd, startWith, sqeNumber, sq, ts, dscParams, tt, j, listTracksFile);
-                                        MainSequeGui.writeW2("In  device -" + deviceName + "- loaded num.: " + (sqeNumber != -1 ? sqeNumber : 0) + " tracks and planned num.: " + dscParams[dscNameDev][1], this.getMainSG().getForWText2());
-                                    }
+                                synchronized (this.getMainSG().getSqCopy()) {
+                                    sqeNumber = this.getMainSG().updateTracks(wd, startWith, sqeNumber, sq, ts, dscParams, tt, j, listTracksFile);
+                                    MainSequeGui.writeW2("In  device -" + deviceName + "- loaded num.: " + (sqeNumber != -1 ? sqeNumber : 0) + " tracks and planned num.: " + dscParams[dscNameDev][1], this.getMainSG().getForWText2());
                                 }
                             }
-                        } else if (!this.mainSG.getSkp().equals("k")){
-                            MainSequeGui.writeW2("Your tracksList is null", this.getMainSG().getForWText2());
                         }
-
-                        dscNameDev++;
+                    } else if (!this.mainSG.getSkp().equals("k")) {
+                        MainSequeGui.writeW2("Your tracksList is null", this.getMainSG().getForWText2());
                     }
 
+                    dscNameDev++;
+                    finish = true;
+                }
+                synchronized (this.seque) {
+                    if (finish) {
+                        this.getMainSG().setTs(ts);
+
+
+                        sq.setSequence(this.getMainSG().getSqCopy());
+
+
+                        ts.setSeque(sq);
+
+
+                        this.getMainSG().resultGeneralSequenceSetting(sq);
+
+
+                        this.getMainSG().setTsFinish(ts);
+                        System.out.println("Ready to st");
+                        this.seque.notify();
+                    }
+                }
             } catch (Exception ex) {
                 System.err.println(ex.getMessage() + " , Trackloadrun");
                 ex.printStackTrace();
 
             }
         }
-        synchronized (this.mainSG){
-            try {
-                this.mainSG.notify();
-            } catch (Exception ex){
-                System.err.println("Not wait for st");
-            }
-        }
+
     }
 }
