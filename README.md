@@ -28,7 +28,8 @@ java -jar seque-1.0.0.jar [arg1] [arg2] [arg3]
 
 [arg2] is the path of your working dir (where you have your jar (seque) . It's root for your [arg1] folder for your midi files)
 
-[arg3] (optional). use NO-SRV to no show gui interface. for example in ssh connection to other device
+[arg3] (optional). use NO-SRV to no show gui interface. for example in ssh connection to other device. Instead if you use GUI Seque can show its gui.
+. In order to nothing in arg3 Seque shell work in command line.
 
 ###Quit
 type 'q' to exit, 's' to stop sequencer, 'r' to restart sequencer
