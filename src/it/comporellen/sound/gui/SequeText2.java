@@ -24,17 +24,17 @@ public class SequeText2 extends JTextArea {
     }
 
     public SequeText2(StringBuffer input){
-        super(22,52);
+        super(8,52);
         this.input = input;
-        this.setBackground(Color.WHITE);
-        this.setSize(600,600);
+        this.setBackground(Color.DARK_GRAY);
+        this.setSize(400,100);
         int i = 1;
         String n = "";
         this.setText((n = "Seque messages :"));
     }
 
     public void writeOnArea(){
-        this.setForeground(Color.GRAY);
+        this.setForeground(Color.WHITE);
 
 
         try {

@@ -11,8 +11,8 @@ public class GraphSequeText extends Canvas {
     public GraphSequeText(MidiAccess midiAccess){
         super();
         this.midiAccess = midiAccess;
-        this.setBackground(Color.WHITE);
-        this.setSize(400,350);
+        this.setBackground(Color.DARK_GRAY);
+        this.setSize(400,300);
         
     }
 
@@ -20,7 +20,7 @@ public class GraphSequeText extends Canvas {
     public void paint(Graphics g){
 
         g.setFont(Font.getFont("Courier"));
-        g.setColor(Color.GRAY);
+        g.setColor(Color.WHITE);
         int i = 1;
         int j = 1;
         String n = "";

@@ -19,8 +19,8 @@ import java.util.Set;
 
 public class MainGui extends JFrame {
 
-    private static final int X = 300;
-    private static final int Y = 300;
+    private static final int X = 700;
+    private static final int Y = 700;
 
     private MidiAccess midiAccess;
 
@@ -42,23 +42,18 @@ public class MainGui extends JFrame {
         this.mainSG = mainSG;
     }
 
-    private JRootPane rootPan;
-
     public MainGui(String title){
         super(title);
 
-        LayoutManager lay = new FlowLayout(FlowLayout.LEFT);
+        LayoutManager lay = new BorderLayout();
 
         this.setLayout(lay);
 
-        this.rootPan = new JRootPane();
-
-        this.rootPan.setBounds(0,0,X,Y);
         this.setBounds(0,0,X,Y);
-        this.rootPan.setVisible(true);
-        this.rootPan.setBackground(Color.BLACK);
-        this.rootPan.setForeground(Color.BLUE);
-        this.add(this.rootPan);
+        this.setVisible(true);
+        this.setBackground(Color.BLACK);
+        this.setForeground(Color.BLUE);
+
 
         this.setPreferredSize(new Dimension(X, Y));
 
@@ -89,8 +84,8 @@ public class MainGui extends JFrame {
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
 
-
-        this.add(scrollPane);
+        textArea.setMaximumSize(new Dimension(400,300));
+        this.add(scrollPane,BorderLayout.EAST);
         Label lConn = new Label("Connectors");
         JPanel connPanel = new JPanel();
         connPanel.add(lConn);
@@ -134,8 +129,9 @@ public class MainGui extends JFrame {
 
         JScrollPane scrollPane2 = new JScrollPane(text2, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane2.setMaximumSize(new Dimension(400,100));
+        this.add(scrollPane2,BorderLayout.SOUTH);
 
-        this.add(scrollPane2);
         this.sqLoad.setActionCommand("miditracks");
         ((LoadListener)this.sqLoadListener).setGui(this);
         JPanel yesOrSkipP = new JPanel();
@@ -145,7 +141,7 @@ public class MainGui extends JFrame {
         this.sqSkip.addActionListener(this.yesOrSkip);
         yesOrSkipP.add(this.sqYes);
         yesOrSkipP.add(this.sqSkip);
-        this.add(yesOrSkipP);
+
         this.connectedTable = new JTable(1,4);
         this.tModel = (DefaultTableModel) this.connectedTable.getModel();
         this.tModel.setValueAt("Input->Port",0,0);
@@ -153,16 +149,26 @@ public class MainGui extends JFrame {
         this.tModel.setValueAt("Channel",0,2);
         this.tModel.setValueAt("Instrument",0,3);
 
-        connPanel.add(this.connectedTable);
-        this.add(connPanel);
-        this.add(this.sqContinue);
-        this.add(this.sqRestart);
-        this.add(this.sqStop);
-        this.add(this.sqStart);
-        this.add(this.sqQuit);
+
+        this.add(connPanel,BorderLayout.NORTH);
+        JRootPane ctlRPanel = new JRootPane();
+        JPanel ctlPanel = new JPanel();
+        LayoutManager ctlLay = new FlowLayout(FlowLayout.LEFT);
+        ctlRPanel.setLayout(ctlLay);
+        ctlPanel.add(this.sqContinue);
+        ctlPanel.add(this.sqRestart);
+        ctlPanel.add(this.sqStop);
+        ctlPanel.add(this.sqStart);
+        ctlPanel.add(this.sqQuit);
         ((LoadListener)this.sqLoadListener).setMainSG(mainSG,this.startWith,this.wd);
         this.sqLoad.addActionListener(this.sqLoadListener);
-        this.add(this.sqLoad);
+        ctlPanel.add(this.sqLoad);
+        JPanel ctl2Panel = new JPanel();
+        ctl2Panel.add(this.connectedTable);
+        ctlRPanel.add(ctlPanel);
+        ctlRPanel.add(ctl2Panel);
+        ctlRPanel.add(yesOrSkipP);
+        this.add(ctlRPanel,BorderLayout.CENTER);
         sml.setGui(this);
 
         sml.setMainSG(mainSG);
