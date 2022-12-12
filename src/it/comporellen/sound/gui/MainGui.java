@@ -19,7 +19,7 @@ import java.util.Set;
 
 public class MainGui extends JFrame {
 
-    private static final int X = 700;
+    private static final int X = 1200;
     private static final int Y = 700;
 
     private MidiAccess midiAccess;
@@ -59,7 +59,7 @@ public class MainGui extends JFrame {
 
 
 
-        this.setVisible(true);
+
     }
 
     private JTable connectedTable;
@@ -73,10 +73,13 @@ public class MainGui extends JFrame {
     }
 
 
-
+    private JPanel principal;
 
 
     public boolean initComponents(SequeLoadRun seque){
+        this.principal = new JPanel();
+        LayoutManager prinLay = new FlowLayout(FlowLayout.LEFT);
+        this.principal.setLayout(prinLay);
         ((LoadListener)this.sqLoadListener).setSeque(seque);
 
         this.textArea = new GraphSequeText(this.midiAccess);
@@ -129,8 +132,8 @@ public class MainGui extends JFrame {
 
         JScrollPane scrollPane2 = new JScrollPane(text2, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scrollPane2.setMaximumSize(new Dimension(400,100));
-        this.add(scrollPane2,BorderLayout.SOUTH);
+        scrollPane2.setMaximumSize(new Dimension(550,400));
+        this.principal.add(scrollPane2);
 
         this.sqLoad.setActionCommand("miditracks");
         ((LoadListener)this.sqLoadListener).setGui(this);
@@ -168,11 +171,13 @@ public class MainGui extends JFrame {
         ctlRPanel.add(ctlPanel);
         ctlRPanel.add(ctl2Panel);
         ctlRPanel.add(yesOrSkipP);
-        this.add(ctlRPanel,BorderLayout.CENTER);
+        this.principal.add(ctlRPanel);
+        this.add(this.principal,BorderLayout.CENTER);
         sml.setGui(this);
 
         sml.setMainSG(mainSG);
         ((LoadListener)this.sqLoadListener).setSml(sml);
+        this.setVisible(true);
         return true;
     }
 

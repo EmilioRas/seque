@@ -24,7 +24,7 @@ public class SequeText2 extends JTextArea {
     }
 
     public SequeText2(StringBuffer input){
-        super(8,52);
+        super(25,60);
         this.input = input;
         this.setBackground(Color.DARK_GRAY);
         this.setSize(400,100);

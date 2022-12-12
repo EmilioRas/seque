@@ -55,8 +55,9 @@ In this file, seque.ini, Seque read how to play your midi track on sequencer:
 
 #other lines (max 12,min 1)
 - i.e: 
--       ,5,keys#				(5, your track numbers on that device)
--         ,keys#				(keys. for example your rely "device name" by track)
+-       ,5,keys,1#				(5, your track numbers on that device)
+-         ,keys,1#				(keys. for example your rely "device name" by track)
+-              ,1#              (on midi channel 1)
 
 The command line is not user easy experience, but you can take in mind that when you run seque the Sequencer 
 is last phase. Your may be able to connects before your midi IN/OUT ports. And then, ever with sy number , choose tracks for 
