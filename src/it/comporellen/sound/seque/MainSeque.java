@@ -8,13 +8,13 @@ import device.MidiAccess;
 import device.MidiAccess1;
 import gui.MainButtonListener;
 import gui.MainGui;
-import gui.YesOrSkip;
+
 
 
 import javax.sound.midi.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -698,8 +698,24 @@ public class MainSeque {
             //System.out.println("...what channel for sequencer out [1..16] ?");
             //String id3 = io.next();
             while (k < sq1.getTracks()[rs].size()) {
-                tr.add(tracks[rs].get(k));
-                //tr.add(ts.overrideCh(tracks[j].get(k)));
+                //tr.add(tracks[rs].get(k));
+                int rowch = 2;
+                int checkInst = 0;
+                instName:
+                for (int r = 0; r < dscParams.length ; r++){
+                    String[] rname = dscParams[r];
+                    if (checkInst <= 1) {
+                        checkInst++;
+                        continue instName;
+                    }
+                    if (rname[2].equals(this.m2TransmitterMap[jMap][1])){
+                        rowch = Integer.parseInt(rname[3]);
+                        break instName;
+                    }
+                    checkInst++;
+                }
+
+                tr.add(ts.overrideCh(tracks[rs].get(k),rowch));
 
                 k++;
                 System.out.print("=");

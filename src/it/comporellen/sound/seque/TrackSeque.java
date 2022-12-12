@@ -9,9 +9,9 @@ import java.util.List;
 
 public class TrackSeque implements Seque,Runnable{
 
-    private static int[][] eventMidiType = {
+    /*private static int[][] eventMidiType = {
             {0xA0,3},{0xB0,3},{0xC0,2},{0xD0,2},{0xE0,3},{0x90,3},{0x80,3}
-    };
+    };*/
 
     private String[][] sequeParams;
 
@@ -77,63 +77,62 @@ public class TrackSeque implements Seque,Runnable{
         //status
         MidiMessage midi = event.getMessage();
         int l = 0;
-        boolean trackblock = false;
-        int eventMidi = 0;
+        boolean messageblock = false;
         parseTrack:
         while (l < midi.getMessage().length) {
             if (ch >= 0 && ch <= 15) {
                 //override track
-                if (l > 13 && !trackblock) {
-
-                    if (((midi.getMessage()[l] & 0xFF) == 0x4D) &&
+                if (l > 0 && !messageblock) {
+                    messageblock = true;
+                    /*if (((midi.getMessage()[l] & 0xFF) == 0x4D) &&
                             ((midi.getMessage()[l + 1] & 0xFF) == 0x54) &&
                             ((midi.getMessage()[l + 1] & 0xFF) == 0x72) &&
                             ((midi.getMessage()[l + 1] & 0xFF) == 0x6B)) {
-                        trackblock = true;
-                    }
+
+                    }*/
                 }
 
-                if (l > 21 && trackblock) {
-                    if ((midi.getMessage()[l] & 0xF0) == 0xA0) {
+                if (messageblock) {
+                    if ((midi.getMessage()[l] & 0xF0) == 140) {
                         midi.getMessage()[l] = (byte) (
                                 midi.getMessage()[l] | (ch & 0x0F));
-                        l = l + TrackSeque.eventMidiType[0][1];
+                        messageblock = false;
 
                     }
-                    if ((midi.getMessage()[l] & 0xF0) == 0xB0) {
+                    if ((midi.getMessage()[l] & 0xF0) == 130) {
                         midi.getMessage()[l] = (byte) (
                                 midi.getMessage()[l] | (ch & 0x0F));
-                        l = l + TrackSeque.eventMidiType[1][1];
+                        messageblock = false;
 
                     }
-                    if ((midi.getMessage()[l] & 0xF0) == 0xC0) {
+                    if ((midi.getMessage()[l] & 0xF0) == 120) {
                         midi.getMessage()[l] = (byte) (
                                 midi.getMessage()[l] | (ch & 0x0F));
-                        l = l + TrackSeque.eventMidiType[2][1];
+                        messageblock = false;
 
                     }
-                    if ((midi.getMessage()[l] & 0xF0) == 0xD0) {
+                    if ((midi.getMessage()[l] & 0xF0) == 110) {
                         midi.getMessage()[l] = (byte) (
                                 midi.getMessage()[l] | (ch & 0x0F));
-                        l = l + TrackSeque.eventMidiType[3][1];
+                        messageblock = false;
 
                     }
-                    if ((midi.getMessage()[l] & 0xF0) == 0xE0) {
+                    if ((midi.getMessage()[l] & 0xF0) == 100) {
                         midi.getMessage()[l] = (byte) (
                                 midi.getMessage()[l] | (ch & 0x0F));
-                        l = l + TrackSeque.eventMidiType[4][1];
+                        messageblock = false;
 
                     }
-                    if ((midi.getMessage()[l] & 0xF0) == 0x90) {
+                    if ((midi.getMessage()[l] & 0xF0) == 90) {
                         midi.getMessage()[l] = (byte) (
                                 midi.getMessage()[l] | (ch & 0x0F));
-                        l = l + TrackSeque.eventMidiType[5][1];
+                        messageblock = false;
 
                     }
-                    if ((midi.getMessage()[l] & 0xF0) == 0x80) {
+                    if ((midi.getMessage()[l] & 0xF0) == 80) {
                         midi.getMessage()[l] = (byte) (
                                 midi.getMessage()[l] | (ch & 0x0F));
-                        l = l + TrackSeque.eventMidiType[6][1];
+                        messageblock = false;
 
                     }
                 }

@@ -392,8 +392,23 @@ public final class MainSequeGui extends MainSeque {
 
 
             while (k < sq1.getTracks()[rs].size()) {
-                tr.add(tracks[rs].get(k));
-
+                //tr.add(tracks[rs].get(k));
+                int rowch = 2;
+                int checkInst = 0;
+                instName:
+                for (int r = 0; r < dscParams.length ; r++){
+                    String[] rname = dscParams[r];
+                    if (checkInst <= 1) {
+                        checkInst++;
+                        continue instName;
+                    }
+                    if (rname[2].equals(this.m2TransmitterMap[jMap][1])){
+                        rowch = Integer.parseInt(rname[3]);
+                        break instName;
+                    }
+                    checkInst++;
+                }
+                tr.add(ts.overrideCh(tracks[rs].get(k),rowch ));
                 k++;
                 MainSequeGui.writeW2("=",this.forWText2);
             }
