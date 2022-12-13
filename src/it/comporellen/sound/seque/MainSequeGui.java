@@ -403,7 +403,7 @@ public final class MainSequeGui extends MainSeque {
                         continue instName;
                     }
                     if (rname[2].equals(this.m2TransmitterMap[jMap][1])){
-                        rowch = Integer.parseInt(rname[3]);
+                        rowch = Integer.parseInt(rname[3]) -1;
                         break instName;
                     }
                     checkInst++;

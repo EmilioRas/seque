@@ -101,47 +101,47 @@ public class TrackSeque implements Seque,Runnable{
                     //A0
                     if ((midi.getMessage()[l] & 0xF0) == 160) {
                         midi.getMessage()[l] = (byte) (
-                                midi.getMessage()[l] | (ch & 0x0F));
+                                (midi.getMessage()[l] & 0xF0) | (ch & 0x0F));
                         messageblock = false;
 
                     }
                     //B0
                     if ((midi.getMessage()[l] & 0xF0) == 176) {
                         midi.getMessage()[l] = (byte) (
-                                midi.getMessage()[l] | (ch & 0x0F));
+                                (midi.getMessage()[l] & 0xF0) | (ch & 0x0F));
                         messageblock = false;
 
                     }
                     //C0
                     if ((midi.getMessage()[l] & 0xF0) == 192) {
                         midi.getMessage()[l] = (byte) (
-                                midi.getMessage()[l] | (ch & 0x0F));
+                                (midi.getMessage()[l] & 0xF0) | (ch & 0x0F));
                         messageblock = false;
 
                     }
                     //D0
                     if ((midi.getMessage()[l] & 0xF0) == 208) {
                         midi.getMessage()[l] = (byte) (
-                                midi.getMessage()[l] | (ch & 0x0F));
+                                (midi.getMessage()[l] & 0xF0) | (ch & 0x0F));
                         messageblock = false;
 
                     }
                     //E0
                     if ((midi.getMessage()[l] & 0xF0) == 224) {
                         midi.getMessage()[l] = (byte) (
-                                midi.getMessage()[l] | (ch & 0x0F));
+                                (midi.getMessage()[l] & 0xF0) | (ch & 0x0F));
                         messageblock = false;
 
                     }
                     if ((midi.getMessage()[l] & 0xF0) == 90) {
                         midi.getMessage()[l] = (byte) (
-                                midi.getMessage()[l] | (ch & 0x0F));
+                                (midi.getMessage()[l] & 0xF0) | (ch & 0x0F));
                         messageblock = false;
 
                     }
                     if ((midi.getMessage()[l] & 0xF0) == 80) {
                         midi.getMessage()[l] = (byte) (
-                                midi.getMessage()[l] | (ch & 0x0F));
+                                (midi.getMessage()[l] & 0xF0) | (ch & 0x0F));
                         messageblock = false;
 
                     }
