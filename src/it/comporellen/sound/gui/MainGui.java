@@ -75,11 +75,15 @@ public class MainGui extends JFrame {
 
     private JPanel principal;
 
+    private JPanel westPanel;
+
 
     public boolean initComponents(SequeLoadRun seque){
         this.principal = new JPanel();
+        this.westPanel = new JPanel();
         LayoutManager prinLay = new FlowLayout(FlowLayout.LEFT);
         this.principal.setLayout(prinLay);
+        this.westPanel.setLayout(prinLay);
         ((LoadListener)this.sqLoadListener).setSeque(seque);
 
         this.textArea = new GraphSequeText(this.midiAccess);
@@ -154,25 +158,23 @@ public class MainGui extends JFrame {
 
 
         this.add(connPanel,BorderLayout.NORTH);
-        JRootPane ctlRPanel = new JRootPane();
-        JPanel ctlPanel = new JPanel();
-        LayoutManager ctlLay = new FlowLayout(FlowLayout.LEFT);
-        ctlRPanel.setLayout(ctlLay);
-        ctlPanel.add(this.sqContinue);
-        ctlPanel.add(this.sqRestart);
-        ctlPanel.add(this.sqStop);
-        ctlPanel.add(this.sqStart);
-        ctlPanel.add(this.sqQuit);
+
+
+        this.westPanel.add(this.sqContinue);
+        this.westPanel.add(this.sqRestart);
+        this.westPanel.add(this.sqStop);
+        this.westPanel.add(this.sqStart);
+        this.westPanel.add(this.sqQuit);
         ((LoadListener)this.sqLoadListener).setMainSG(mainSG,this.startWith,this.wd);
         this.sqLoad.addActionListener(this.sqLoadListener);
-        ctlPanel.add(this.sqLoad);
-        JPanel ctl2Panel = new JPanel();
-        ctl2Panel.add(this.connectedTable);
-        ctlRPanel.add(ctlPanel);
-        ctlRPanel.add(ctl2Panel);
-        ctlRPanel.add(yesOrSkipP);
-        this.principal.add(ctlRPanel);
+        this.westPanel.add(this.sqLoad);
+
+        this.principal.add(this.connectedTable);
+
+        this.westPanel.add(yesOrSkipP);
+
         this.add(this.principal,BorderLayout.CENTER);
+        this.add( this.westPanel,BorderLayout.WEST);
         sml.setGui(this);
 
         sml.setMainSG(mainSG);

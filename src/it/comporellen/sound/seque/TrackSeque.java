@@ -92,7 +92,7 @@ public class TrackSeque implements Seque,Runnable{
                 }
                 //override track
                 //4 byte header + 4 byte track length
-                if (l > 7 && !messageblock) {
+                if (l > 0 && !messageblock) {
                     messageblock = true;
 
                 }
