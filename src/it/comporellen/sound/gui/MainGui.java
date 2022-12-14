@@ -50,7 +50,7 @@ public class MainGui extends JFrame {
         this.setLayout(lay);
 
         this.setBounds(0,0,X,Y);
-        this.setVisible(true);
+
         this.setBackground(Color.BLACK);
         this.setForeground(Color.BLUE);
 
@@ -81,6 +81,11 @@ public class MainGui extends JFrame {
     public boolean initComponents(SequeLoadRun seque){
         this.principal = new JPanel();
         this.westPanel = new JPanel();
+        LayoutManager westManager = new FlowLayout(FlowLayout.LEFT);
+        this.westPanel.setLayout(westManager);
+
+        this.westPanel.setBounds(0,0,150,300);
+        this.westPanel.setMaximumSize(new Dimension(150,300));
         LayoutManager prinLay = new FlowLayout(FlowLayout.LEFT);
         this.principal.setLayout(prinLay);
         this.westPanel.setLayout(prinLay);
@@ -142,6 +147,7 @@ public class MainGui extends JFrame {
         this.sqLoad.setActionCommand("miditracks");
         ((LoadListener)this.sqLoadListener).setGui(this);
         JPanel yesOrSkipP = new JPanel();
+
         this.sqYes.setActionCommand("yes");
         this.sqYes.addActionListener(this.yesOrSkip);
         this.sqSkip.setActionCommand("skip");

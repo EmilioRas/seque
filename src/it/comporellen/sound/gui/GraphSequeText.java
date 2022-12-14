@@ -12,7 +12,7 @@ public class GraphSequeText extends Canvas {
         super();
         this.midiAccess = midiAccess;
         this.setBackground(Color.DARK_GRAY);
-        this.setSize(400,300);
+        this.setSize(300,300);
         
     }
 

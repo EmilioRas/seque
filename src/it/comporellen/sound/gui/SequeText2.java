@@ -3,6 +3,7 @@ package gui;
 import seque.MainSequeGui;
 
 import javax.swing.*;
+import javax.swing.text.DefaultCaret;
 import java.awt.*;
 
 public class SequeText2 extends JTextArea {
@@ -24,13 +25,15 @@ public class SequeText2 extends JTextArea {
     }
 
     public SequeText2(StringBuffer input){
-        super(25,60);
+        super(25,50);
         this.input = input;
         this.setBackground(Color.DARK_GRAY);
-        this.setSize(400,100);
+        this.setSize(500,100);
         int i = 1;
         String n = "";
+        this.setAutoscrolls(true);
         this.setText((n = "Seque messages :"));
+        ((DefaultCaret)this.getCaret()).setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
     }
 
     public void writeOnArea(){
