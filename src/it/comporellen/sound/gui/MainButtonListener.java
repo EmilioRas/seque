@@ -3,6 +3,7 @@ package gui;
 import seque.TrackSeque;
 
 import javax.sound.midi.Sequencer;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 

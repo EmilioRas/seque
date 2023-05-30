@@ -6,6 +6,10 @@ import device.AudioAccess;
 import device.AudioAccess1;
 import device.MidiAccess;
 import device.MidiAccess1;
+import equalize.Equalize;
+import equalize.SinEqualize;
+import equalize.SoundEqualize;
+import equalize.Start;
 import gui.MainButtonListener;
 import gui.MainGui;
 
@@ -14,7 +18,7 @@ import gui.MainGui;
 import javax.sound.midi.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-
+import javax.swing.JFrame;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -96,6 +100,61 @@ public class MainSeque {
         if (!wd.isDirectory()){
             System.err.println("WORKDIR not correct!");
             System.exit(1);
+        }
+        MainGui gui = null;
+        if (args.length >= 3 && args[2].equals(MainSeque.like_gui) && !args[3].equals("none")) {
+            /**
+             Equalize start
+             */
+                gui = new MainGui("Seque");
+                Equalize eq = new Equalize("Seque - activation");
+                synchronized (eq) {
+                    if (args.length >= 7) {
+                        try {
+                        Thread tEq = new Thread((Runnable) eq);
+                        String[] eqArgs = new String[]{args[3], args[4], args[5]};
+                        eq.setEquaArgs(eqArgs);
+                        eq.setGui(gui);
+                                tEq.start();
+                                eq.wait();
+                                Start st = new Start();
+                                Class soundEqualize = null;
+                                Object textArea = null;
+                                if (args[6] != null && !args[6].isEmpty()) {
+                                    soundEqualize = Class.forName(args[6]);
+                                    textArea = soundEqualize.newInstance();
+                                    //main.textArea = new GraphEqualize();
+                                }
+				                JFrame equalizer = new JFrame("Seque > Sound");
+                                equalizer.setBackground(Color.BLACK);
+                                LayoutManager equSound = new BorderLayout();
+                                equalizer.setLayout(equSound);
+                                equalizer.setBounds(250,250,320,320);
+                              equalizer.setDefaultCloseOperation(3); //exit on close
+                                equalizer.setExtendedState(Frame.MAXIMIZED_BOTH);
+                                equalizer.setUndecorated(true);
+                                equalizer.add((Canvas)textArea,BorderLayout.CENTER);
+                                 equalizer.addComponentListener(((SoundEqualize)textArea).getResizeListener());
+				equalizer.setVisible(true);
+                                st.setTextArea((SoundEqualize) textArea);
+                                st.setLineCapture(eq.getLineCapture());
+                                st.setLineSourceCapture(eq.getLineSourceCapture());
+                                st.setListener(eq.getListener());
+                                st.setEquaArgs(eqArgs);
+
+                                Thread tStart = new Thread((Runnable) st);
+                                tStart.start();
+
+                        } catch (Exception e) {
+                            System.err.println(e.getMessage());
+                        }
+                    }
+            }
+            /**
+             END Equalize start
+             */
+        } else if (args.length >= 3 && args[2].equals(MainSeque.like_gui) ){
+            gui = new MainGui("Seque");
         }
 
 
@@ -253,8 +312,9 @@ public class MainSeque {
         MainSequeGui mainSG = null;
 
         if (args.length >= 3 && args[2].equals(MainSeque.like_gui)) {
+
             mainSG = new MainSequeGui(args[0], args[1]);
-            MainGui gui = new MainGui("Seque");
+
             gui.setStartWith(args[0]);
             gui.setWd(args[1]);
             mainSG.init();
@@ -423,6 +483,8 @@ public class MainSeque {
                     System.out.print(dscParams[a][b2] + ",");
                 }
             }
+
+		System.out.println("");
 
 	 	    float currSequeDivType = 0f;
             switch (dscParams[0][0]){
@@ -850,4 +912,6 @@ public class MainSeque {
         }
         return false;
     }
+
+
 }

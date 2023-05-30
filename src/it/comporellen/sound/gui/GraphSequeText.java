@@ -13,14 +13,15 @@ public class GraphSequeText extends Canvas {
         this.midiAccess = midiAccess;
         this.setBackground(Color.DARK_GRAY);
         this.setSize(300,300);
-        
+
+        this.setForeground(Color.GRAY);
     }
 
     @Override
     public void paint(Graphics g){
 
         g.setFont(Font.getFont("Courier"));
-        g.setColor(Color.WHITE);
+        g.setColor(Color.GRAY);
         int i = 1;
         int j = 1;
         String n = "";
