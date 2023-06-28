@@ -24,6 +24,11 @@
     <build>
         <testSourceDirectory>src/it/comporellen/sound/test</testSourceDirectory>
         <sourceDirectory>src/it/comporellen/sound</sourceDirectory>
+        <resources>
+            <resource>
+                <directory>src/it/comporellen/sound/resources</directory>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
 

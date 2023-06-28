@@ -35,6 +35,8 @@ public class SequeText2 extends JTextArea {
         String n = "";
         this.setAutoscrolls(true);
         this.setText((n = "Seque messages :"));
+
+
         ((DefaultCaret)this.getCaret()).setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
     }
 

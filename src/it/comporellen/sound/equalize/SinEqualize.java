@@ -43,7 +43,7 @@ public class SinEqualize extends Canvas implements SoundEqualize {
 
             int initT = XY[1];
 
-            int initW = 500;
+            int initW = ResizeListener.rWidth;
 
 
             int p = 1;
@@ -98,7 +98,7 @@ public class SinEqualize extends Canvas implements SoundEqualize {
 
             int initT = XY[1];
 
-            int initW = 500;
+            int initW = ResizeListener.rWidth;
 
             int sR = 15;
 

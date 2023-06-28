@@ -36,6 +36,10 @@ public class ResizeListener extends ComponentAdapter {
             return clearY;
             }
 
+            public static final int rWidth = 200;
+
+    public static final int rHeight = 200;
+
     public void componentResized(ComponentEvent componentEvent) {
             int[] newXY = new int[4];
             newXY[0] = 0;
@@ -43,11 +47,11 @@ public class ResizeListener extends ComponentAdapter {
 
             newXY[2] = componentEvent.getComponent().getWidth();
             newXY[3] = componentEvent.getComponent().getHeight();
-            if (componentEvent.getComponent().getWidth() > 320){
-            newXY[0] = componentEvent.getComponent().getWidth() / 2 - 500 / 2;
+            if (componentEvent.getComponent().getWidth() > rWidth){
+            newXY[0] = componentEvent.getComponent().getWidth() / 2 - rHeight / 2;
             }
-            if (componentEvent.getComponent().getHeight() > 320){
-            newXY[1] = componentEvent.getComponent().getHeight() / 4 - 500 / 4;
+            if (componentEvent.getComponent().getHeight() > rWidth){
+            newXY[1] = componentEvent.getComponent().getHeight() / 4 - rHeight / 4;
             }
 
 

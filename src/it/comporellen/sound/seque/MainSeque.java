@@ -18,7 +18,7 @@ import gui.MainGui;
 import javax.sound.midi.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import javax.swing.JFrame;
+import javax.swing.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -125,17 +125,19 @@ public class MainSeque {
                                     textArea = soundEqualize.newInstance();
                                     //main.textArea = new GraphEqualize();
                                 }
-				                JFrame equalizer = new JFrame("Seque > Sound");
+				                //JFrame equalizer = new JFrame("Seque > Sound");
+                            JPanel equalizer = new JPanel();
                                 equalizer.setBackground(Color.BLACK);
                                 LayoutManager equSound = new BorderLayout();
                                 equalizer.setLayout(equSound);
-                                equalizer.setBounds(250,250,320,320);
-                              equalizer.setDefaultCloseOperation(3); //exit on close
+                                equalizer.setBounds(150,150,220,220);
+                                /*equalizer.setDefaultCloseOperation(3); //exit on close
                                 equalizer.setExtendedState(Frame.MAXIMIZED_BOTH);
-                                equalizer.setUndecorated(true);
+                                equalizer.setUndecorated(true);*/
                                 equalizer.add((Canvas)textArea,BorderLayout.CENTER);
-                                 equalizer.addComponentListener(((SoundEqualize)textArea).getResizeListener());
+                                equalizer.addComponentListener(((SoundEqualize)textArea).getResizeListener());
 				equalizer.setVisible(true);
+                                gui.add(equalizer,BorderLayout.SOUTH);
                                 st.setTextArea((SoundEqualize) textArea);
                                 st.setLineCapture(eq.getLineCapture());
                                 st.setLineSourceCapture(eq.getLineSourceCapture());

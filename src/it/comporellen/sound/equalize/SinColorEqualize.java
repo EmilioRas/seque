@@ -43,7 +43,7 @@ public class SinColorEqualize extends Canvas implements SoundEqualize {
 
             int initT = XY[1];
 
-            int initW = 700;
+            int initW = ResizeListener.rWidth;
 
 
             int p = 1;
@@ -99,17 +99,16 @@ public class SinColorEqualize extends Canvas implements SoundEqualize {
 
             int initT = XY[1];
 
-            int initW = 500;
+            int initW = ResizeListener.rWidth;
 
             int sR = 15;
 
             int p = 1;
             equalize:
             while (p < rPCM.length ) {
- Color line = Color.BLACK;
+                Color line = Color.BLACK;
 
-
-                    line = lineBackColor[ p % 5  ];
+                line = lineColor[ p % 5  ];
 
 
                	back = Color.BLACK;

@@ -81,6 +81,8 @@ public class MainGui extends JFrame {
 
 
     public boolean initComponents(SequeLoadRun seque){
+        ImageIcon mainIcon = new ImageIcon(this.getClass().getResource("/a3896961812_16.jpg").getPath());
+        this.setIconImage(mainIcon.getImage());
         this.principal = new JPanel();
         this.principal.setBackground(Color.DARK_GRAY);
         this.westPanel = new JPanel();
@@ -101,10 +103,12 @@ public class MainGui extends JFrame {
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
         this.textArea.setBackground(Color.DARK_GRAY);
+
         textArea.setMaximumSize(new Dimension(200,200));
         JFrame textFrame = new JFrame(this.title + " > Midi devices");
+        textFrame.setIconImage(mainIcon.getImage());
         textFrame.add(scrollPane);
-        textFrame.setBounds(900,0,200,300);
+        textFrame.setBounds(500,0,200,300);
         textFrame.setVisible(true);
         Label lConn = new Label("Connectors");
         lConn.setBackground(Color.DARK_GRAY);
@@ -180,8 +184,9 @@ public class MainGui extends JFrame {
         scrollPane2.setMaximumSize(new Dimension(550,400));
 
         JFrame textFrame2 = new JFrame(this.title + " > Messages");
+        textFrame2.setIconImage(mainIcon.getImage());
         textFrame2.add(scrollPane2);
-        textFrame2.setBounds(900,400,300,400);
+        textFrame2.setBounds(500,400,300,400);
         textFrame2.setVisible(true);
         this.sqLoad.setActionCommand("miditracks");
         ((LoadListener)this.sqLoadListener).setGui(this);
@@ -240,6 +245,8 @@ public class MainGui extends JFrame {
         this.add(this.principal,BorderLayout.CENTER);
         //this.add(this.westPanel,BorderLayout.WEST);
         sml.setGui(this);
+
+
 
         sml.setMainSG(mainSG);
         ((LoadListener)this.sqLoadListener).setSml(sml);
@@ -485,6 +492,8 @@ public class MainGui extends JFrame {
             }
         }
     };
+
+
 
     private Button sqYes= new Button("Yes");
 
