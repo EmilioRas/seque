@@ -341,89 +341,83 @@ public class MainSeque {
                     mainSG.setTlr(tlr);
                     sqR.wait();
 
-                    System.out.println("Sequencer ...");
-                    ts = mainSG.getTsFinish();
-                    Sequencer s = ((MidiAccess1) mainSG.getMidiAccess()).getSequencer(0);
 
-                    mainSG.setSqStart(new MainButtonListener(s,ts) {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            if (this.getTs() != null) {
-                                Button button = (Button) e.getSource();
-                                Thread t = new Thread((Runnable) this.getTs());
-                                synchronized (this.getTs()) {
-                                    t.start();
-                                    button.setBackground(Color.BLUE);
-                                }
-                                button.setEnabled(false);
-                            }
-                        }
-                    });
-
-                    mainSG.setSqQuit(new MainButtonListener(s,ts) {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            if (this.getS() != null && this.getS().isOpen() && this.getS().isRunning()) {
-                                this.getS().stop();
-                                MainSequeGui.setQuitSeque("q");
-                            }
-                        }
-                    });
-
-                    mainSG.setSqStop(new MainButtonListener(s,ts) {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            if (this.getS() != null && this.getS().isOpen() && this.getS().isRunning()) {
-                                this.getS().stop();
-                            }
-                        }
-                    });
-
-                    mainSG.setSqContinue(new MainButtonListener(s,ts) {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            if (this.getS() != null && this.getS().isOpen() && !this.getS().isRunning()) {
-                                this.getS().start();
-                            }
-                        }
-                    });
-
-                    mainSG.setSqRestart(new MainButtonListener(s,ts) {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            if (this.getS() != null && this.getS().isOpen() && !this.getS().isRunning()) {
-                                this.getS().setTickPosition(1L);
-                                this.getS().start();
-                            }
-                        }
-                    });
-
-                    gui.getSqContinue().addActionListener(mainSG.gSqContinue());
-                    gui.getSqRestart().addActionListener(mainSG.gSqRestart());
-                    gui.getSqStop().addActionListener(mainSG.gSqStop());
-                    gui.getSqStart().addActionListener(mainSG.gSqStart());
-                    gui.getSqQuit().addActionListener(mainSG.gSqQuit());
                 }
 
 
-                    synchronized (mainSG.getMidiRecever().get(0)) {
-                        if (mainSG.getMidiRecever() != null && mainSG.getMidiRecever().size() > 0) {
+                System.out.println("Sequencer ...");
+                ts = mainSG.getTsFinish();
+                Sequencer s = ((MidiAccess1) mainSG.getMidiAccess()).getSequencer(0);
 
-                            System.out.println("seque start...");
-                            do {
-
-                            } while (!MainSequeGui.getQuitSeque().equals("q"));
-
-                            System.exit(0);
-                        } else {
-                            System.out.println("TBD");
+                mainSG.setSqStart(new MainButtonListener(s,ts) {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        if (this.getTs() != null) {
+                            Button button = (Button) e.getSource();
+                            Thread t = new Thread((Runnable) this.getTs());
+                            synchronized (this.getTs()) {
+                                t.start();
+                                button.setBackground(Color.BLUE);
+                            }
+                            button.setEnabled(false);
                         }
                     }
+                });
 
-                } catch (Exception i){
-                    System.err.println(i.getMessage() + " , Wait for Load... Error!!!");
+                mainSG.setSqQuit(new MainButtonListener(s,ts) {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        if (this.getS() != null && this.getS().isOpen() && this.getS().isRunning()) {
+                            this.getS().stop();
+                            MainSequeGui.setQuitSeque("q");
+                        }
+                    }
+                });
+
+                mainSG.setSqStop(new MainButtonListener(s,ts) {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        if (this.getS() != null && this.getS().isOpen() && this.getS().isRunning()) {
+                            this.getS().stop();
+                        }
+                    }
+                });
+
+                mainSG.setSqContinue(new MainButtonListener(s,ts) {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        if (this.getS() != null && this.getS().isOpen() && !this.getS().isRunning()) {
+                            this.getS().start();
+                        }
+                    }
+                });
+
+                mainSG.setSqRestart(new MainButtonListener(s,ts) {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        if (this.getS() != null && this.getS().isOpen() && !this.getS().isRunning()) {
+                            this.getS().setTickPosition(1L);
+                            this.getS().start();
+                        }
+                    }
+                });
+
+                gui.getSqContinue().addActionListener(mainSG.gSqContinue());
+                gui.getSqRestart().addActionListener(mainSG.gSqRestart());
+                gui.getSqStop().addActionListener(mainSG.gSqStop());
+                gui.getSqStart().addActionListener(mainSG.gSqStart());
+                gui.getSqQuit().addActionListener(mainSG.gSqQuit());
+
+                System.out.println("------|");
+                String e = io.next();
+                if (e.equals("q")) {
+                    System.exit(0);
                 }
+
+            } catch (Exception i){
+                System.err.println(i.getMessage() + " , Wait for Load... Error!!!");
             }
+        }
 
 
     }
