@@ -8,6 +8,10 @@ public class ResizeListener extends ComponentAdapter {
 
     private int clearY;
 
+    private int initX;
+
+    private int initY;
+
     private int w;
 
     private int h;
@@ -36,7 +40,15 @@ public class ResizeListener extends ComponentAdapter {
             return clearY;
             }
 
-            public static final int rWidth = 200;
+    public int getInitX() {
+        return initX;
+    }
+
+    public int getInitY() {
+        return initY;
+    }
+
+    public static final int rWidth = 200;
 
     public static final int rHeight = 200;
 

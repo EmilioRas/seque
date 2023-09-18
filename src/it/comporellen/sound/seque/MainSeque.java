@@ -125,19 +125,19 @@ public class MainSeque {
                                     textArea = soundEqualize.newInstance();
                                     //main.textArea = new GraphEqualize();
                                 }
-				                //JFrame equalizer = new JFrame("Seque > Sound");
-                            JPanel equalizer = new JPanel();
+				                JFrame equalizer = new JFrame("Seque > Sound");
+                           //JPanel equalizer = new JPanel();
                                 equalizer.setBackground(Color.BLACK);
                                 LayoutManager equSound = new BorderLayout();
                                 equalizer.setLayout(equSound);
                                 equalizer.setBounds(150,150,220,220);
-                                /*equalizer.setDefaultCloseOperation(3); //exit on close
+                                equalizer.setDefaultCloseOperation(3); //exit on close
                                 equalizer.setExtendedState(Frame.MAXIMIZED_BOTH);
-                                equalizer.setUndecorated(true);*/
+                                equalizer.setUndecorated(true);
                                 equalizer.add((Canvas)textArea,BorderLayout.CENTER);
                                 equalizer.addComponentListener(((SoundEqualize)textArea).getResizeListener());
 				equalizer.setVisible(true);
-                                gui.add(equalizer,BorderLayout.SOUTH);
+                            //gui.add(equalizer,BorderLayout.SOUTH);
                                 st.setTextArea((SoundEqualize) textArea);
                                 st.setLineCapture(eq.getLineCapture());
                                 st.setLineSourceCapture(eq.getLineSourceCapture());
@@ -409,6 +409,7 @@ public class MainSeque {
                 gui.getSqQuit().addActionListener(mainSG.gSqQuit());
 
                 System.out.println("------|");
+                Scanner io = new Scanner(System.in);
                 String e = io.next();
                 if (e.equals("q")) {
                     System.exit(0);
