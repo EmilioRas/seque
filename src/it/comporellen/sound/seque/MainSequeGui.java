@@ -42,6 +42,14 @@ public final class MainSequeGui extends MainSeque {
     private String wd;
     private String pwd;
 
+    public void setWd(String wd) {
+        this.wd = wd;
+    }
+
+    public void setPwd(String pwd) {
+        this.pwd = pwd;
+    }
+
     private static String quitSeque = "";
 
     public static String getQuitSeque() {

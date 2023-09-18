@@ -84,17 +84,24 @@ public class MainSeque {
         this.midiAccess = midiAccess;
     }
 
+
+    protected String[] argsSeque;
+
+    public String[] getArgsSeque() {
+        return argsSeque;
+    }
+
+    public void setArgsSeque(String[] argsSeque) {
+        this.argsSeque = argsSeque;
+    }
+
     public static void main(String[] args) {
-
-
-        if (args == null || args.length < 2){
-            System.out.println("Missing params. exit!");
-            System.out.println("1 - midi tracks folder");
-            System.out.println("2 - midi tracks loader . [in midi folder]");
-            System.out.println("3 - like service . [ie: BT,NO-SRV]");
-            System.out.println("4 - seque mode . [ie: LOOP,ST-END]");
-            System.exit(0);
+        //you can go in override of parameters
+        if (args == null || args.length == 0) {
+            args = new String[]{"",".","GUI","target","2","true","equalize.LinearEqualize"};
         }
+
+
 
         File wd = new File(args[1]);
         if (!wd.isDirectory()){
@@ -125,8 +132,8 @@ public class MainSeque {
                                     textArea = soundEqualize.newInstance();
                                     //main.textArea = new GraphEqualize();
                                 }
-				                JFrame equalizer = new JFrame("Seque > Sound");
-                           //JPanel equalizer = new JPanel();
+				                JFrame equalizer = new JFrame("Seque > Pcm on air");
+
                                 equalizer.setBackground(Color.BLACK);
                                 LayoutManager equSound = new BorderLayout();
                                 equalizer.setLayout(equSound);
@@ -136,8 +143,8 @@ public class MainSeque {
                                 equalizer.setUndecorated(true);
                                 equalizer.add((Canvas)textArea,BorderLayout.CENTER);
                                 equalizer.addComponentListener(((SoundEqualize)textArea).getResizeListener());
-				equalizer.setVisible(true);
-                            //gui.add(equalizer,BorderLayout.SOUTH);
+				                equalizer.setVisible(true);
+
                                 st.setTextArea((SoundEqualize) textArea);
                                 st.setLineCapture(eq.getLineCapture());
                                 st.setLineSourceCapture(eq.getLineSourceCapture());
@@ -216,6 +223,7 @@ public class MainSeque {
         if (args.length == 2 || (args.length >= 3 && args[2].equals(no_like_service))) {
             //
             main = new MainSeque();
+            main.setArgsSeque(args);
             int sequeInd = 0;
             main.setAudioAccess(AudioAccess1.getInstance());
             main.setMidiAccess(MidiAccess1.getInstance());
@@ -316,10 +324,13 @@ public class MainSeque {
         if (args.length >= 3 && args[2].equals(MainSeque.like_gui)) {
 
             mainSG = new MainSequeGui(args[0], args[1]);
-
+            mainSG.setArgsSeque(args);
+            args = mainSG.getArgsSeque();
             gui.setStartWith(args[0]);
             gui.setWd(args[1]);
+
             mainSG.init();
+
             gui.setMidiAccess(mainSG.getMidiAccess());
 
 
@@ -444,7 +455,7 @@ public class MainSeque {
 	public Sequence getSqCopy(){
 		return this.sqCopy;
 	}
-    private TrackSeque  singleSequeLoad(int index,Scanner io, MidiAccess midiAccess,String startWith,String wd) throws Exception{
+    protected TrackSeque  singleSequeLoad(int index,Scanner io, MidiAccess midiAccess,String startWith,String wd) throws Exception{
         System.out.println("Do you want load from midi tracks ? (Y/N)");
         String con = io.next();
         TrackSeque ts = null;
@@ -510,7 +521,8 @@ public class MainSeque {
             System.out.println("Init Seque tacks...");
             ts = new TrackSeque();
             Sequencer sq = null;
-
+            sq = ((MidiAccess1) this.getMidiAccess()).getSequencer(0);
+            this.generalSequenceSetting(sq, dscParams);
             this.setSqCopy(new Sequence(currSequeDivType,Integer.parseInt(dscParams[0][1])));
 
             int sqeNumber = 0;
@@ -526,8 +538,7 @@ public class MainSeque {
                 return ts;
             }
 
-            sq = ((MidiAccess1) this.getMidiAccess()).getSequencer(0);
-            this.generalSequenceSetting(sq, dscParams);
+
 	        while (dscNameDev < Integer.parseInt(dscParams[0][3])){
                 String deviceName = dscParams[dscNameDev +2][2];
                         System.out.println("SY num >> [\"" + deviceName + "\"] ...");
@@ -793,7 +804,7 @@ public class MainSeque {
 		return this.m2TransmitterMap;
 	}
 
-    private void singleMidiConnect(int index,Scanner io, MidiAccess midiAccess) throws Exception{
+    protected void singleMidiConnect(int index,Scanner io, MidiAccess midiAccess) throws Exception{
         System.out.println("Do you want connect two midi devices ? (Y/N)");
         String con = io.next();
 

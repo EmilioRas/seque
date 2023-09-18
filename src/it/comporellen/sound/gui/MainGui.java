@@ -20,7 +20,7 @@ import java.util.Set;
 public class MainGui extends JFrame {
 
     private static final int X = 900;
-    private static final int Y = 450;
+    private static final int Y = 1050;
 
     private MidiAccess midiAccess;
 
@@ -78,6 +78,61 @@ public class MainGui extends JFrame {
     private JPanel principal;
 
     private JPanel westPanel;
+
+    final JFileChooser sequencerMainDir = new JFileChooser();
+
+    ActionListener sequencerMainDirListener = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+            JFileChooser jfc = null;
+            jfc =(JFileChooser) e.getSource();
+
+            if (jfc != null) {
+
+
+
+                    File file = jfc.getSelectedFile();
+                    if (file.isDirectory()) {
+                        System.out.println("Seque main dir :" + file.getName());
+                        MainGui.this.mainSG.setWd(file.getName());
+                        MainGui.this.mainSG.getArgsSeque()[0] = file.getName();
+                        sequencerMainDir.setSelectedFile(file);
+                    } else {
+                        System.err.println("Seque main dir error :" + file.getName());
+                    }
+
+            }
+        }
+    };
+
+    final JFileChooser workingMainDir = new JFileChooser();
+
+    ActionListener workingMainDirListener = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+            JFileChooser jfc = null;
+
+            jfc =(JFileChooser) e.getSource();
+            if (jfc != null){
+
+
+
+                    File file = jfc.getSelectedFile();
+                    if (file.isDirectory()) {
+                        System.out.println("Working main dir :" + file.getAbsoluteFile().getPath());
+                        MainGui.this.mainSG.setPwd(file.getAbsoluteFile().getPath());
+                        MainGui.this.mainSG.getArgsSeque()[1] = file.getAbsoluteFile().getPath();
+                        workingMainDir.setSelectedFile(file);
+                    } else {
+                        System.err.println("Working main dir error :" + file.getAbsoluteFile().getPath());
+                    }
+                }
+            }
+
+    };
+
 
 
     public boolean initComponents(SequeLoadRun seque){
@@ -172,12 +227,28 @@ public class MainGui extends JFrame {
         this.instrumentName.setPreferredSize(new Dimension(96,18));
         intrumP.add(intrumL);
         intrumP.add(this.instrumentName);
+        sequencerMainDir.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        sequencerMainDir.addActionListener(sequencerMainDirListener);
         connPanel.add(midiInP);
         connPanel.add(midiOutP);
         connPanel.add(midiChP);
         connPanel.add(intrumP);
-
-
+        Label sequeL = new Label("Sequencer Main Folder");
+        JPanel sequenceMainPanel = new JPanel();
+        sequenceMainPanel.add(sequeL);
+        sequencerMainDir.setBackground(Color.DARK_GRAY);
+        sequencerMainDir.setForeground(Color.WHITE);
+        sequenceMainPanel.add(sequencerMainDir);
+        workingMainDir.addActionListener(workingMainDirListener);
+        workingMainDir.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        Label workingL = new Label("Working Main Folder");
+        JPanel workingMainPanel = new JPanel();
+        workingMainPanel.add(workingL);
+        workingMainDir.setBackground(Color.DARK_GRAY);
+        workingMainDir.setForeground(Color.WHITE);
+        workingMainPanel.add(workingMainDir);
+        this.principal.add(sequenceMainPanel);
+        this.principal.add(workingMainPanel);
         text2.setBackground(Color.DARK_GRAY);
         JScrollPane scrollPane2 = new JScrollPane(text2, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -371,9 +442,10 @@ public class MainGui extends JFrame {
 
 
 
-                    this.getSml().setStartWith(startWith);
-                this.getSml().setWd(wd);
-
+                    this.getSml().setStartWith(this.getMainSG().getArgsSeque()[0]);
+                this.getSml().setWd(this.getMainSG().getArgsSeque()[1]);
+                startWith = this.getMainSG().getArgsSeque()[0];
+                wd  = this.getMainSG().getArgsSeque()[1];
 
                 try {
 
