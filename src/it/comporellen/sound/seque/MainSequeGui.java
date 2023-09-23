@@ -8,10 +8,7 @@ import device.MidiAccess1;
 import gui.*;
 
 
-import javax.sound.midi.Sequence;
-import javax.sound.midi.Sequencer;
-import javax.sound.midi.Synthesizer;
-import javax.sound.midi.Track;
+import javax.sound.midi.*;
 import java.awt.event.ActionListener;
 import java.io.*;
 
@@ -274,7 +271,7 @@ public final class MainSequeGui extends MainSeque {
     }
 
 
-    public synchronized int updateTracks(String wd, String startWith, int sqeNumber, Sequencer sq, TrackSeque ts, String[][] dscParams, int tt, int jMap, Set<String> listTracksFile) throws IOException,InterruptedException {
+    public int updateTracks(String wd, String startWith, int sqeNumber, Sequencer sq, TrackSeque ts, String[][] dscParams, int tt, int jMap, Set<String> listTracksFile) throws IOException,InterruptedException {
        try {
             if (sq != null)
                 MainSequeGui.writeW2("seque ok...", this.forWText2);
@@ -291,81 +288,83 @@ public final class MainSequeGui extends MainSeque {
             FileInputStream ioF = null;
 
 
-            uploadingTkr:
-            while (tt < trackNum) {
+
+               uploadingTkr:
+               while (tt < trackNum) {
 
 
-                Object[] currentTrack = listTracksFile.toArray();
+                   Object[] currentTrack = listTracksFile.toArray();
 
 
-                MainSequeGui.writeW2("Loading midi :" + String.valueOf(currentTrack[tt]), this.forWText2);
+                   MainSequeGui.writeW2("Loading midi :" + String.valueOf(currentTrack[tt]), this.forWText2);
 
-                MainSequeGui.writeW2("Do you want to skip or load this midi ? ...", this.forWText2);
-
-
-                synchronized (((YesOrSkip) mainGui.getYesOrSkip()).getTlr()) {
-
-                    ((YesOrSkip) mainGui.getYesOrSkip()).getTlr().wait();
-
-                }
+                   MainSequeGui.writeW2("Do you want to skip or load this midi ? ...", this.forWText2);
 
 
-                if (skp != null && skp.equalsIgnoreCase("k")) {
-                    tt++;
-                    if (tt >= trackNum) {
+                   synchronized (((YesOrSkip) mainGui.getYesOrSkip()).getTlr()) {
 
-                        return -1;
-                    }
-                    continue uploadingTkr;
-                }
+                       ((YesOrSkip) mainGui.getYesOrSkip()).getTlr().wait();
 
+                   }
+
+
+                   if (skp != null && skp.equalsIgnoreCase("k")) {
+                       tt++;
+                       if (tt >= trackNum) {
+
+                           return -1;
+                       }
+                       continue uploadingTkr;
+                   }
+
+                   try {
+                       ioF = new FileInputStream(wd + File.separator + startWith + File.separator + String.valueOf(currentTrack[tt]));
+                   } catch (Exception ioe) {
+                       tt++;
+                       MainSequeGui.writeW2("Not found tkr num: " + (tt + 1), this.forWText2);
+
+                       return -1;
+                   }
+
+
+                   if (ioF == null) {
+                       MainSequeGui.writeW2("Attention!!! You sequence could be null... Check before your .mid", this.forWText2);
+                       tt++;
+
+                       return -1;
+                   }
+
+
+                   try {
+                       sq.setSequence(ioF);
+                       Sequence sq1 = sq.getSequence();
+
+
+                       this.addSqTracks(ioF, dscParams, ts, sq, sq1, jMap);
+
+
+                   } catch (Exception sqe) {
+                       tt++;
+                       MainSequeGui.writeW2("Some error occurred... | skip track ", this.forWText2);
+                       continue uploadingTkr;
+                   }
+
+
+                   tt++;
+
+                   sqeNumber++;
+
+               }
+
+            if (ioF != null) {
                 try {
-                    ioF = new FileInputStream(wd + File.separator + startWith + File.separator + String.valueOf(currentTrack[tt]));
-                } catch (Exception ioe) {
-                    tt++;
-                    MainSequeGui.writeW2("Not found tkr num: " + (tt + 1), this.forWText2);
-
-                    return -1;
+                    ioF.close();
+                } catch (IOException ioe3) {
+                    System.err.println("Error in closing ioF!");
                 }
-
-
-                if (ioF == null) {
-                    MainSequeGui.writeW2("Attention!!! You sequence could be null... Check before your .mid", this.forWText2);
-                    tt++;
-
-                    return -1;
-                }
-
-
-                try {
-                    sq.setSequence(ioF);
-                    Sequence sq1 = sq.getSequence();
-
-
-                    this.addSqTracks(ioF, dscParams, ts, sq, sq1, jMap);
-
-
-                } catch (Exception sqe) {
-                    tt++;
-                    MainSequeGui.writeW2("Some error occurred... | skip track ", this.forWText2);
-                    continue uploadingTkr;
-                }
-
-
-                tt++;
-
-                sqeNumber++;
-
-
-                if (ioF != null) {
-                    try {
-                        ioF.close();
-                    } catch (IOException ioe3) {
-                        System.err.println("Error in closing ioF!");
-                    }
-                }
-
             }
+
+
         } catch (Exception ex)  {
             System.err.println(ex.getMessage());
             ex.printStackTrace();
@@ -373,59 +372,64 @@ public final class MainSequeGui extends MainSeque {
         return sqeNumber;
     }
 
-    public synchronized void generalSequenceSetting(Sequencer sq, String[][] dscParams) {
+    public  void generalSequenceSetting(Sequencer sq, String[][] dscParams) {
         super.generalSequenceSetting(sq,dscParams);
     }
 
-    public synchronized void resultGeneralSequenceSetting(Sequencer sq) {
-        super.resultGeneralSequenceSetting(sq);
+    public  void resultGeneralSequenceSetting(Sequencer sq,String[][] dscParams) {
+        super.resultGeneralSequenceSetting(sq,dscParams);
     }
 
-    public synchronized void addSqTracks(FileInputStream ioF, String[][] dscParams, TrackSeque ts, Sequencer sq, Sequence sq1, int jMap) throws Exception {
+    public void addSqTracks(FileInputStream ioF, String[][] dscParams, TrackSeque ts, Sequencer sq, Sequence sq1, int jMap) throws Exception {
         int rs = 0;
         Track[] tracks = sq1.getTracks();
 
-        while (rs < tracks.length) {
+            while (rs < tracks.length) {
 
-
-
-            if (tracks.length > 1) {
-                MainSequeGui.writeW2("Your midi contains more than one track...",this.forWText2);
-            }
-
-
-            MainSequeGui.writeW2("ADD New Track in main sequence.",this.forWText2);
-            Track tr = this.getSqCopy().createTrack();
-            int k = 0;
-
-
-            while (k < sq1.getTracks()[rs].size()) {
-                //tr.add(tracks[rs].get(k));
-                int rowch = 2;
-                int checkInst = 0;
-                instName:
-                for (int r = 0; r < dscParams.length ; r++){
-                    String[] rname = dscParams[r];
-                    if (checkInst <= 1) {
-                        checkInst++;
-                        continue instName;
-                    }
-                    if (rname[2].equals(this.m2TransmitterMap[jMap][1])){
-                        rowch = Integer.parseInt(rname[3]) -1;
-                        break instName;
-                    }
-                    checkInst++;
+                if (tracks.length > 1) {
+                    MainSequeGui.writeW2("Your midi contains more than one track...", this.forWText2);
                 }
-                tr.add(ts.overrideCh(tracks[rs].get(k),rowch ));
-                k++;
-                MainSequeGui.writeW2("=",this.forWText2);
+
+
+                MainSequeGui.writeW2("ADD New Track in main sequence.", this.forWText2);
+                Track tr = this.getSqCopy().createTrack();
+                int k = 0;
+                int ch = 1;
+                //channel
+                while (k < tracks[rs].size()) {
+                    //tr.add(tracks[rs].get(k));
+
+                    int checkInst = 0;
+                    instName:
+                    for (int r = 0; r < dscParams.length; r++) {
+                        String[] rname = dscParams[r];
+                        if (checkInst <= 1) {
+                            checkInst++;
+                            continue instName;
+                        }
+                        if (rname[2].equals(m2TransmitterMap[jMap][1])) {
+                            ch = Integer.parseInt(rname[3]) - 1;
+                            break instName;
+                        }
+                        checkInst++;
+                    }
+
+                    k++;
+                }
+
+                MidiEvent[] mevents = ts.overrideTrack(ch, tracks, rs, dscParams, m2TransmitterMap, jMap);
+                for (MidiEvent m : mevents)
+                    tr.add(m);
+
+
+                MainSequeGui.writeW2("=", this.forWText2);
+
+                rs++;
+                MainSequeGui.writeW2("> oK!", this.forWText2);
+                MainSequeGui.writeW2("ticks :" + tr.ticks(), this.forWText2);
+                this.text2.repaint();
             }
 
-            rs++;
-            MainSequeGui.writeW2("> oK!",this.forWText2);
-            MainSequeGui.writeW2("ticks :" + tr.ticks(),this.forWText2);
-            this.text2.repaint();
-        }
     }
 
 

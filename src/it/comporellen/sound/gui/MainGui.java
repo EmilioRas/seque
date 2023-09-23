@@ -133,6 +133,8 @@ public class MainGui extends JFrame {
 
     };
 
+    private static  JTextField seqNumber = new JTextField();
+
 
 
     public boolean initComponents(SequeLoadRun seque){
@@ -298,8 +300,8 @@ public class MainGui extends JFrame {
         sqLoad.setForeground(Color.GRAY);
 
         this.add(connPanel,BorderLayout.NORTH);
-
-
+        this.seqNumber.setSize(new Dimension(48,18));
+        this.westPanel.add(this.seqNumber);
         this.westPanel.add(this.sqContinue);
         this.westPanel.add(this.sqRestart);
         this.westPanel.add(this.sqStop);
@@ -334,6 +336,10 @@ public class MainGui extends JFrame {
     private static JTextField inputPort;
 
     private static JTextField instrumentName;
+
+    public static JTextField getSeqNumber() {
+        return seqNumber;
+    }
 
     public static JTextField getChannel() {
         return channel;
@@ -525,13 +531,18 @@ public class MainGui extends JFrame {
 
                         return;
                     }
+                    MainSequeGui.writeW2("Let select your sequencer number index [0 for first]",this.getMainSG().getForWText2());
 
-                    sq = ((MidiAccess1) this.getMainSG().getMidiAccess()).getSequencer(0);
-
-                    ((YesOrSkip)this.getGui().getYesOrSkip()).setSq(sq);
+                    try {
+                        sq = ((MidiAccess1) this.getMainSG().getMidiAccess()).getSequencer(Integer.parseInt(this.getGui().getSeqNumber().getText()));
+                        MainSequeGui.setMainStartSeque(Integer.parseInt(this.getGui().getSeqNumber().getText()));
+                    } catch (NumberFormatException nfe){
+                        System.out.println("Error in select. Setted 0 index");
+                        sq = ((MidiAccess1) this.getMainSG().getMidiAccess()).getSequencer(0);
+                        MainSequeGui.setMainStartSeque(0);
+                    }
 
                     this.getMainSG().generalSequenceSetting(sq, dscParams);
-
 
                     TrackLoadRun tlr = mainSG.getTlr();
                     tlr.setMainSG(mainSG);
@@ -548,11 +559,29 @@ public class MainGui extends JFrame {
                     tlr.setStartWith(startWith);
                     tlr.setSeque(this.getSeque());
                     ((YesOrSkip)this.getGui().getYesOrSkip()).setTlr(tlr);
+                    SequeReady sr = new SequeReady();
+                    tlr.setSr(sr);
                     Thread t3 = new Thread((Runnable) tlr);
 
                     t3.start();
 
 
+                    ts.setSeque(sq);
+                    sq.setSequence(this.getMainSG().getSqCopy());
+                    ((YesOrSkip)this.getGui().getYesOrSkip()).setSq(sq);
+
+
+
+
+                    ts.setSequeParams(dscParams);
+                    sr.setSeque(((LoadListener)this).getSeque());
+                    synchronized (sr){
+
+
+                        Thread tsr = new Thread(sr);
+                        tsr.start();
+
+                    }
 
                 } catch (Exception ex){
                     System.err.println(ex.getMessage());

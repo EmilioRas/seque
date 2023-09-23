@@ -36,6 +36,16 @@ import java.util.List;
 
 public class MainSeque {
 
+    protected static Integer mainStartSeque = 0;
+
+    public static Integer getMainStartSeque() {
+        return mainStartSeque;
+    }
+
+    public static void setMainStartSeque(Integer mainStartSeque) {
+        MainSeque.mainStartSeque = mainStartSeque;
+    }
+
     public static final String loaderExtName = "sqe";
     public static final String loaderInitTrackSymb = "#>";
 
@@ -277,28 +287,28 @@ public class MainSeque {
                     e = io.next();
                     synchronized (main.getMidiRecever().get(0)) {
                         if (e.equals("q")) {
-                          Sequencer s = ((MidiAccess1) main.getMidiAccess()).getSequencer(0);
+                          Sequencer s = ((MidiAccess1) main.getMidiAccess()).getSequencer(MainSeque.getMainStartSeque());
                             if (s != null && s.isOpen() && s.isRunning()) {
                                 s.stop();
                                 System.out.println("Main sequencer " + ((MidiDevice) s).getDeviceInfo().getName() + " stopped and exit!");
                             }
                         }
                         if (e.equals("s")) {
-                            Sequencer s = ((MidiAccess1) main.getMidiAccess()).getSequencer(0);
+                            Sequencer s = ((MidiAccess1) main.getMidiAccess()).getSequencer(MainSeque.getMainStartSeque());
                             if (s != null && s.isOpen() && s.isRunning()) {
                                 s.stop();
                                 System.out.println("Main sequencer " + ((MidiDevice) s).getDeviceInfo().getName() + " stopped!");
                             }
                         }
                         if (e.equals("c")) {
-                            Sequencer s = ((MidiAccess1) main.getMidiAccess()).getSequencer(0);
+                            Sequencer s = ((MidiAccess1) main.getMidiAccess()).getSequencer(MainSeque.getMainStartSeque());
                             if (s != null && s.isOpen() && !s.isRunning()) {
                                 s.start();
                                 System.out.println("Main sequencer " + ((MidiDevice) s).getDeviceInfo().getName() + " continued!");
                             }
                         }
                         if (e.equals("r")) {
-                            Sequencer s = ((MidiAccess1) main.getMidiAccess()).getSequencer(0);
+                            Sequencer s = ((MidiAccess1) main.getMidiAccess()).getSequencer(MainSeque.getMainStartSeque());
                             if (s != null && s.isOpen() && !s.isRunning()) {
                                 s.setTickPosition(1L);
                                 s.start();
@@ -358,7 +368,7 @@ public class MainSeque {
 
                 System.out.println("Sequencer ...");
                 ts = mainSG.getTsFinish();
-                Sequencer s = ((MidiAccess1) mainSG.getMidiAccess()).getSequencer(0);
+                Sequencer s = ((MidiAccess1) mainSG.getMidiAccess()).getSequencer(MainSeque.getMainStartSeque());
 
                 mainSG.setSqStart(new MainButtonListener(s,ts) {
                     @Override
@@ -368,9 +378,9 @@ public class MainSeque {
                             Thread t = new Thread((Runnable) this.getTs());
                             synchronized (this.getTs()) {
                                 t.start();
-                                button.setBackground(Color.BLUE);
+
                             }
-                            button.setEnabled(false);
+
                         }
                     }
                 });
@@ -420,9 +430,22 @@ public class MainSeque {
                 gui.getSqQuit().addActionListener(mainSG.gSqQuit());
 
                 System.out.println("------|");
-                Scanner io = new Scanner(System.in);
-                String e = io.next();
-                if (e.equals("q")) {
+
+                synchronized (mainSG.getMidiRecever().get(0)) {
+                    if (mainSG.getMidiRecever() != null && mainSG.getMidiRecever().size() > 0) {
+
+                        System.out.println("seque start...");
+                        do {
+
+                        } while (!MainSequeGui.getQuitSeque().equals("q"));
+
+                        System.exit(0);
+                    } else {
+                        System.out.println("TBD");
+                    }
+                }
+
+                if (MainSequeGui.getQuitSeque() != null && MainSequeGui.getQuitSeque().equals("q")) {
                     System.exit(0);
                 }
 
@@ -521,10 +544,17 @@ public class MainSeque {
             System.out.println("Init Seque tacks...");
             ts = new TrackSeque();
             Sequencer sq = null;
-            sq = ((MidiAccess1) this.getMidiAccess()).getSequencer(0);
+            System.out.println("Let select your sequencer number index [0 for first]");
+            con = io.next();
+            try {
+                sq = ((MidiAccess1) this.getMidiAccess()).getSequencer(Integer.parseInt(con));
+                MainSeque.setMainStartSeque(Integer.parseInt(con));
+            } catch (NumberFormatException nfe){
+                System.out.println("Error in select. Setted 0 index");
+                sq = ((MidiAccess1) this.getMidiAccess()).getSequencer(0);
+                MainSeque.setMainStartSeque(0);
+            }
             this.generalSequenceSetting(sq, dscParams);
-            this.setSqCopy(new Sequence(currSequeDivType,Integer.parseInt(dscParams[0][1])));
-
             int sqeNumber = 0;
             int tt = 0;
             int dscNameDev = 0;
@@ -538,50 +568,55 @@ public class MainSeque {
                 return ts;
             }
 
+            this.setSqCopy(new Sequence(currSequeDivType,Integer.parseInt(dscParams[0][1])));
+                while (dscNameDev < Integer.parseInt(dscParams[0][3])){
+                    String deviceName = dscParams[dscNameDev +2][2];
+                            System.out.println("SY num >> [\"" + deviceName + "\"] ...");
+                    System.out.println("Loading... or do you want to skip ? (skip = \"k/y\")");
 
-	        while (dscNameDev < Integer.parseInt(dscParams[0][3])){
-                String deviceName = dscParams[dscNameDev +2][2];
-                        System.out.println("SY num >> [\"" + deviceName + "\"] ...");
-                System.out.println("Loading... or do you want to skip ? (skip = \"k/y\")");
-
-                        String s1 = io.next();
-
-
-                tt = 0;
+                            String s1 = io.next();
 
 
+                    tt = 0;
 
-                if (!s1.equalsIgnoreCase("k") && listTracksFile != null){
-                    for (int j = 0; j < this.m2TransmitterMap.length; j++){
-                        dnF = this.m2TransmitterMap[j][1];
-                        String dnFName = (String) dnF;
-                        System.out.println("Check... " + dnFName );
-                        if (deviceName.equals(dnFName)){
 
-                            ts.getReceivers().add(new SqeReceiver(this.getMidiTransmetter().get((Integer.parseInt(String.valueOf(this.m2TransmitterMap[j][0])))).getReceiver()));
 
-			                synchronized(this.getSqCopy()){
-                                sqeNumber = this.updateTracks(wd,startWith,sqeNumber,sq,ts,dscParams,io,tt,j,listTracksFile);
-                                System.out.println("In  device -" + deviceName + "- loaded num.: " + (sqeNumber != -1 ? sqeNumber : 0) +" tracks and planned num.: " + dscParams[dscNameDev][1]);
+                        if (!s1.equalsIgnoreCase("k") && listTracksFile != null) {
+                            for (int j = 0; j < this.m2TransmitterMap.length; j++) {
+                                dnF = this.m2TransmitterMap[j][1];
+                                String dnFName = (String) dnF;
+                                System.out.println("Check... " + dnFName);
+                                if (deviceName.equals(dnFName)) {
+
+                                    ts.getReceivers().add(new SqeReceiver(this.getMidiTransmetter().get((Integer.parseInt(String.valueOf(this.m2TransmitterMap[j][0])))).getReceiver()));
+
+
+                                    sqeNumber = this.updateTracks(wd, startWith, sqeNumber, sq, ts, dscParams, io, tt, j, listTracksFile);
+                                    System.out.println("In  device -" + deviceName + "- loaded num.: " + (sqeNumber != -1 ? sqeNumber : 0) + " tracks and planned num.: " + dscParams[dscNameDev][1]);
+
+                                }
                             }
+                        } else if (!s1.equalsIgnoreCase("k")) {
+                            System.out.println("Your tracksList is null");
                         }
-                    }
-                } else if (!s1.equalsIgnoreCase("k")){
-                    System.out.println("Your tracksList is null");
+
+
+                    dscNameDev++;
                 }
-
-
-		        dscNameDev++;
-	        }
-            sq.setSequence(this.getSqCopy());
 
 
 
             ts.setSeque(sq);
 
+            sq.setSequence(this.getSqCopy());
+
+
+
+
+
             ts.setSequeParams(dscParams);
 
-            this.resultGeneralSequenceSetting(sq);
+            this.resultGeneralSequenceSetting(sq,dscParams);
         }
         return ts;
     }
@@ -599,7 +634,7 @@ public class MainSeque {
     }
 
 
-	protected synchronized int updateTracks(String wd,String startWith,int sqeNumber,Sequencer sq,TrackSeque ts,String[][] dscParams,Scanner io,int tt,int jMap,Set<String> listTracksFile){
+	protected int updateTracks(String wd,String startWith,int sqeNumber,Sequencer sq,TrackSeque ts,String[][] dscParams,Scanner io,int tt,int jMap,Set<String> listTracksFile){
 
 
         System.out.println((sq != null ? "seque ok..." : "seque null..."));
@@ -692,10 +727,11 @@ public class MainSeque {
 		return sqeNumber;
 	}
 
-    protected synchronized void  generalSequenceSetting(Sequencer sq, String[][] dscParams){
+    protected void  generalSequenceSetting(Sequencer sq, String[][] dscParams){
         try {
 
             sq.setTempoInBPM(Float.parseFloat(dscParams[1][0]));
+
             System.out.println("General Sequencer setting BPM :" + sq.getTempoInBPM());
             sq.setTickPosition(Long.parseLong(dscParams[1][1]));
 
@@ -726,12 +762,14 @@ public class MainSeque {
         this.ts = ts;
     }
 
-    protected synchronized void resultGeneralSequenceSetting(Sequencer sq){
+    protected  void resultGeneralSequenceSetting(Sequencer sq,String[][] dscParams){
         //sq.setTickPosition(0L);
+
         if ( sq.getSequence() != null &&  sq.getSequence().getTracks() != null) {
             Track[] tracks = sq.getSequence().getTracks();
             System.out.println("Load number :" + tracks.length + " tracks");
         }
+        sq.setTempoInBPM(Float.parseFloat(dscParams[1][0]));
         if ( sq.getSequence() != null){
         System.out.println("\t Sequencer tickLength :" + sq.getTickLength());
         System.out.println("\t LoopCount :" + sq.getLoopCount());
@@ -747,54 +785,53 @@ public class MainSeque {
     }
 
 
-    protected synchronized void addSqTracks( FileInputStream ioF,Scanner io,String[][] dscParams, TrackSeque ts, Sequencer sq,Sequence sq1,int jMap) throws Exception {
+    protected void addSqTracks( FileInputStream ioF,Scanner io,String[][] dscParams, TrackSeque ts, Sequencer sq,Sequence sq1,int jMap) throws Exception {
 
         int rs = 0;
         Track[] tracks = sq1.getTracks();
 
-        while (rs < tracks.length) {
+            while (rs < tracks.length) {
 
 
-
-            if (tracks.length > 1) {
-                System.out.println("Your midi contains more than one track...");
-            }
-
-
-            System.out.println("ADD New Track in main sequence.");
-            Track tr = this.getSqCopy().createTrack();
-            int k = 0;
-
-            //System.out.println("...what channel for sequencer out [1..16] ?");
-            //String id3 = io.next();
-            while (k < sq1.getTracks()[rs].size()) {
-                //tr.add(tracks[rs].get(k));
-                int rowch = 2;
-                int checkInst = 0;
-                instName:
-                for (int r = 0; r < dscParams.length ; r++){
-                    String[] rname = dscParams[r];
-                    if (checkInst <= 1) {
-                        checkInst++;
-                        continue instName;
-                    }
-                    if (rname[2].equals(this.m2TransmitterMap[jMap][1])){
-                        rowch = Integer.parseInt(rname[3]) -1;
-                        break instName;
-                    }
-                    checkInst++;
+                if (tracks.length > 1) {
+                    System.out.println("Your midi contains more than one track...");
                 }
 
-                tr.add(ts.overrideCh(tracks[rs].get(k),rowch));
 
-                k++;
-                System.out.print("=");
+                System.out.println("ADD New Track in main sequence.");
+                Track tr = this.getSqCopy().createTrack();
+                int k = 0;
+                int ch = 1;
+                //channel
+                while (k < tracks[rs].size()) {
+                    //tr.add(tracks[rs].get(k));
+
+                    int checkInst = 0;
+                    instName:
+                    for (int r = 0; r < dscParams.length; r++) {
+                        String[] rname = dscParams[r];
+                        if (checkInst <= 1) {
+                            checkInst++;
+                            continue instName;
+                        }
+                        if (rname[2].equals(m2TransmitterMap[jMap][1])) {
+                            ch = Integer.parseInt(rname[3]) - 1;
+                            break instName;
+                        }
+                        checkInst++;
+                    }
+
+                    k++;
+                }
+
+                MidiEvent[] mevents = ts.overrideTrack(ch, tracks, rs, dscParams, m2TransmitterMap, jMap);
+                for (MidiEvent m : mevents)
+                    tr.add(m);
+
+                rs++;
+                System.out.println("> oK!");
+                System.out.println("ticks :" + tr.ticks());
             }
-
-            rs++;
-            System.out.println("> oK!");
-            System.out.println("ticks :" + tr.ticks());
-        }
 
      }
 

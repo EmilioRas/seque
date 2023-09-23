@@ -123,13 +123,23 @@ public class TrackLoadRun implements Runnable{
         this.seque = seque;
     }
 
+    private SequeReady sr;
+
+    public void setSr(SequeReady sr) {
+        this.sr = sr;
+    }
+
     @Override
     public void run() {
         synchronized (this) {
             try {
-                boolean finish = false;
+
+                sr.setDscParams(dscParams);
+                sr.setMainSG(this.getMainSG());
+                sr.setTs(this.ts);
+                sr.setSq(sq);
                 while (dscNameDev < Integer.parseInt(dscParams[0][3])) {
-                    finish = false;
+
                     String deviceName = dscParams[dscNameDev + 2][2];
                     MainSequeGui.writeW2("SY num >> [\"" + deviceName + "\"] ...", this.getMainSG().getForWText2());
                     MainSequeGui.writeW2("Loading... or do you want to skip ? (skip = \"k/y\")", this.getMainSG().getForWText2());
@@ -150,38 +160,27 @@ public class TrackLoadRun implements Runnable{
                                     sqeNumber = this.getMainSG().updateTracks(wd, startWith, sqeNumber, sq, ts, dscParams, tt, j, listTracksFile);
                                     MainSequeGui.writeW2("In  device -" + deviceName + "- loaded num.: " + (sqeNumber != -1 ? sqeNumber : 0) + " tracks and planned num.: " + dscParams[dscNameDev][1], this.getMainSG().getForWText2());
                                 }
+
                             }
                         }
+                        sr.setDscNameDev(dscNameDev);
+
                     } else if (!this.mainSG.getSkp().equals("k")) {
                         MainSequeGui.writeW2("Your tracksList is null", this.getMainSG().getForWText2());
                     }
 
                     dscNameDev++;
-                    finish = true;
-                }
-                synchronized (this.seque) {
-                    if (finish) {
-                        this.getMainSG().setTs(ts);
 
-
-                        sq.setSequence(this.getMainSG().getSqCopy());
-
-
-                        ts.setSeque(sq);
-
-
-                        this.getMainSG().resultGeneralSequenceSetting(sq);
-
-
-                        this.getMainSG().setTsFinish(ts);
-                        System.out.println("Ready to st");
-                        this.seque.notify();
-                    }
                 }
             } catch (Exception ex) {
                 System.err.println(ex.getMessage() + " , Trackloadrun");
                 ex.printStackTrace();
 
+            } finally {
+                synchronized (this.sr){
+                    this.sr.notify();
+                }
+                this.notify();
             }
         }
 
