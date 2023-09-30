@@ -214,15 +214,15 @@ public class TrackSeque implements Seque,Runnable{
             do {
                 MidiEvent me = t.get(countTrack);
 
-                if (metronomico01[1] < messLength + me.getMessage().getLength() &&
+                if (newTmpm.length > 0 && metronomico01[1] < messLength + me.getMessage().getLength() &&
                         metronomico01[1] >=  messLength){
                     me.getMessage().getMessage()[metronomico01[1]-messLength] = Byte.parseByte( newTmpm[0],16);
                 }
-                if (metronomico02[1] < messLength +me.getMessage().getLength() &&
+                if (newTmpm.length > 1 && metronomico02[1] < messLength +me.getMessage().getLength() &&
                         metronomico02[1] >=  messLength){
                     me.getMessage().getMessage()[metronomico02[1]-messLength] = Byte.parseByte( newTmpm[1],16);
                 }
-                if (metronomico03[1] < messLength + me.getMessage().getLength() &&
+                if (newTmpm.length > 2 && metronomico03[1] < messLength + me.getMessage().getLength() &&
                         metronomico03[1] >=  messLength){
                     me.getMessage().getMessage()[metronomico03[1]-messLength] = Byte.parseByte( newTmpm[2],16);
                 }

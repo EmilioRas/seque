@@ -61,7 +61,6 @@ public class MainGui extends JFrame {
 
 
 
-
     }
 
     private JTable connectedTable;
@@ -106,6 +105,8 @@ public class MainGui extends JFrame {
         }
     };
 
+    private JFrame workingMainPanel = new JFrame("WorkingDir");
+    private JFrame sequenceMainPanel = new JFrame("SequenceDir");
     final JFileChooser workingMainDir = new JFileChooser();
 
     ActionListener workingMainDirListener = new ActionListener() {
@@ -249,8 +250,12 @@ public class MainGui extends JFrame {
         workingMainDir.setBackground(Color.DARK_GRAY);
         workingMainDir.setForeground(Color.WHITE);
         workingMainPanel.add(workingMainDir);
-        this.principal.add(sequenceMainPanel);
-        this.principal.add(workingMainPanel);
+        this.sequenceMainPanel.setSize(new Dimension(200,200));
+        this.sequenceMainPanel.add(sequenceMainPanel);
+        this.sequenceMainPanel.setVisible(true);
+        this.workingMainPanel.setSize(new Dimension(200,200));
+        this.workingMainPanel.add(workingMainPanel);
+        this.workingMainPanel.setVisible(true);
         text2.setBackground(Color.DARK_GRAY);
         JScrollPane scrollPane2 = new JScrollPane(text2, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
