@@ -66,7 +66,7 @@ public class Start implements Runnable{
                             lineSourceCapture.start();
                         }
 
-                        this.startEqua(iAudio,AudioSystem.getAudioFileFormat(fAudio).getFrameLength());
+                        this.startEqua(iAudio,true);
                     }
 
                     lineSourceCapture.drain();
@@ -81,26 +81,11 @@ public class Start implements Runnable{
 
                     ((Equalizer) listener).setEqualize((SoundEqualize) textArea);
                     iAudio = new AudioInputStream(lineCapture);
-                    AudioFormat iFormat =  AudioSystem.getAudioFileFormat(iAudio).getFormat();
-                    System.out.println("AudioFormat :");
-                    System.out.println("\tsample rate :" + iFormat.getSampleRate());
-                    System.out.println("\tsize in bits :" + iFormat.getFrameSize());
-                    System.out.println("\tchannels :" + iFormat.getChannels());
-                    System.out.println("\tbig endian :" + iFormat.isBigEndian());
-                    byte[] buf = new byte[ AudioSystem.getAudioFileFormat(iAudio).getFrameLength()];
+
                     int len = 0;
                     if (!lineCapture.isRunning())
                         lineCapture.start();
-                    detected:
-                    while ((len = iAudio.read(buf)) != -1) {
-
-                        ((Equalizer) listener).setData(buf);
-
-                        textArea.myUpdate(buf);
-
-
-
-                    }
+                    this.startEqua(iAudio, false);
                     lineCapture.drain();
                     lineCapture.close();
                 }
@@ -118,7 +103,7 @@ public class Start implements Runnable{
         }
     }
 
-    private void startEqua(InputStream iAudio, int lenFormat) throws IOException {
+    private void startEqua(InputStream iAudio,  boolean wr) throws IOException {
         int len = 0;
         byte[] tmp = new byte[80];
         int range = 0;
@@ -127,11 +112,11 @@ public class Start implements Runnable{
             total += len;
             ((Equalizer) listener).setData(tmp);
             ((SoundEqualize) textArea).myUpdate(tmp);
-            lineSourceCapture.write(tmp, 0, tmp.length);
+            if (wr) lineSourceCapture.write(tmp, 0, tmp.length);
             range += 80;
 
         }
-        lineSourceCapture.flush();
+        if (wr) lineSourceCapture.flush();
 
     }
 }

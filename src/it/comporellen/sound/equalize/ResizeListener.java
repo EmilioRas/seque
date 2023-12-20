@@ -60,10 +60,14 @@ public class ResizeListener extends ComponentAdapter {
             newXY[2] = componentEvent.getComponent().getWidth();
             newXY[3] = componentEvent.getComponent().getHeight();
             if (componentEvent.getComponent().getWidth() > rWidth){
-            newXY[0] = componentEvent.getComponent().getWidth() / 2 - rHeight / 2;
+            newXY[0] = componentEvent.getComponent().getWidth() / 3 ;
+            } else {
+                newXY[0] = rWidth/3;
             }
             if (componentEvent.getComponent().getHeight() > rWidth){
-            newXY[1] = componentEvent.getComponent().getHeight() / 4 - rHeight / 4;
+            newXY[1] = componentEvent.getComponent().getHeight() / 6 ;
+            } else {
+                newXY[1] = rWidth/6;
             }
 
 

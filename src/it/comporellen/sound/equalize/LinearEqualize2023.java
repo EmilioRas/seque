@@ -32,7 +32,7 @@ public class LinearEqualize2023 extends Canvas implements SoundEqualize {
                 ((ResizeListener)this.resizeListener).getH()};
             g.setFont(Font.getFont("Courier"));
             g.setColor(Color.CYAN);
-            g.clearRect(XY[0]-345,0,XY[2], XY[3]);
+            g.clearRect(XY[0]-XY[0],0,XY[2], XY[3]);
 
             int initR = XY[0] ;
 
@@ -69,7 +69,7 @@ public class LinearEqualize2023 extends Canvas implements SoundEqualize {
                     ((ResizeListener)this.resizeListener).getH()};
             g.setFont(Font.getFont("Courier"));
             g.setColor(Color.CYAN);
-            g.clearRect(XY[0]-345,0,XY[2], XY[3]);
+            g.clearRect(XY[0]-XY[0],0,XY[2], XY[3]);
             int initR = XY[0];
 
             int initT = XY[1] + 300;
