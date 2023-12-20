@@ -152,7 +152,7 @@ public class MainSeque {
                             pEqualizer.setLayout(equSound);
                             pEqualizer.setBounds(150,150,220,220);
                                 //equalizer.setDefaultCloseOperation(3); //exit on close
-                                //equalizer.setExtendedState(Frame.MAXIMIZED_BOTH);
+                            equalizer.setExtendedState(Frame.MAXIMIZED_BOTH);
                                 //equalizer.setUndecorated(true);
                             pEqualizer.add((Canvas)textArea,BorderLayout.CENTER);
                             pEqualizer.addComponentListener(((SoundEqualize)textArea).getResizeListener());
