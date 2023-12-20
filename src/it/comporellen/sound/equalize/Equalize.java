@@ -221,21 +221,24 @@ public class Equalize extends JPanel implements Runnable {
 
 
                 //System.exit(0);
-                AudioFormat format = null;
-                format = new AudioFormat(44100, 16, 2, false, false);
+                //AudioFormat format = null;
+                //format = new AudioFormat(44100, 16, 2, false, false);
 
 
 
-                String line = sc.next();
+
 
                 if (equaArgs[0].equalsIgnoreCase("target")) {
+                    String line = sc.next();
+
                     lineCapture = (TargetDataLine) m.getLine(mmInfo[Integer.parseInt(line)]);
                     lineCapture.addLineListener(listener = new Equalizer());
                     this.notify();
                 }
 
                 if (equaArgs[0].equalsIgnoreCase("source")) {
-                    lineSourceCapture = (SourceDataLine) m.getLine(lInfo[Integer.parseInt(line)]);
+
+                    lineSourceCapture =  AudioSystem.getSourceDataLine(null);
                     lineSourceCapture.addLineListener(listener = new Equalizer());
                     this.notify();
 

@@ -1,7 +1,7 @@
 package device;
 
 
-import seque.MainSeque;
+
 
 import javax.sound.midi.*;
 import java.util.HashMap;

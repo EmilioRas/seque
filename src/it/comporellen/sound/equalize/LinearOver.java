@@ -5,7 +5,7 @@ import java.awt.event.ComponentListener;
 
 public class LinearOver extends Canvas implements SoundEqualize{
 
-    public int[] rPCM = new int[80];
+    public byte[] rPCM = null;
     @Override
     public void addEqualizer(Canvas equalize) {
 
@@ -66,7 +66,7 @@ public class LinearOver extends Canvas implements SoundEqualize{
 
 
     @Override
-    public void myUpdate(int[] data) {
+    public void myUpdate(byte[] data) {
         this.rPCM = data;
         this.repaint();
     }

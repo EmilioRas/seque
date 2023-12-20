@@ -8,5 +8,5 @@ public interface SoundEqualize {
     public SoundEqualize pullEqualize();
     public ComponentListener getResizeListener();
 
-    public void myUpdate(int[] data);
+    public void myUpdate(byte[] data);
 }

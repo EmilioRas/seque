@@ -7,7 +7,7 @@ import java.awt.event.ComponentListener;
 public class LinearEqualize extends Canvas implements SoundEqualize {
 
          
-        public int[] rPCM = new int[80];
+        public byte[] rPCM = null;
 
         private static int rCounter = 0;
 
@@ -44,7 +44,7 @@ public class LinearEqualize extends Canvas implements SoundEqualize {
 
             int p = 1;
             if (LinearEqualize.rCounter >= 600)  {LinearEqualize.rCounter = 0;}
-            while (p < rPCM.length ) {
+            while (rPCM != null && p < rPCM.length ) {
                 int l = 80 + rPCM[p] ;
                 for (int c = 0;   c < l;  c ++) {
                     g.drawLine(initR , initT - c, initR + 6, initT - c );
@@ -82,7 +82,7 @@ public class LinearEqualize extends Canvas implements SoundEqualize {
 
             int p = 1;
             if (LinearEqualize.rCounter >= 600)  {LinearEqualize.rCounter = 0;}
-            while (p < rPCM.length) {
+            while (rPCM != null && p < rPCM.length) {
 
                 int l = 80 + rPCM[p] ;
 
@@ -125,9 +125,9 @@ public class LinearEqualize extends Canvas implements SoundEqualize {
 
         }
 
-        public void myUpdate(int[] data){
+        public void myUpdate(byte[] data){
             this.rPCM = data;
-            this.repaint();
+                this.repaint();
         }
 
     @Override

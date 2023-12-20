@@ -1,6 +1,5 @@
 package device;
 
-import seque.MainSeque;
 
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Line;

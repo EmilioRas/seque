@@ -9,7 +9,7 @@ public class SinColorEqualize extends Canvas implements SoundEqualize {
         private Color[] lineColor = new Color[]{Color.BLACK,Color.LIGHT_GRAY,Color.GRAY,Color.DARK_GRAY,Color.RED};
     private Color[] lineBackColor = new Color[]{Color.BLACK,Color.WHITE,Color.CYAN,Color.RED,Color.BLUE};
 
-        public int[] rPCM = new int[80];
+        public byte[] rPCM = null;
 
         private static int rCounter = 0;
 
@@ -43,7 +43,7 @@ public class SinColorEqualize extends Canvas implements SoundEqualize {
 
             int initT = XY[1];
 
-            int initW = ResizeListener.rWidth;
+            int initW = 700;
 
 
             int p = 1;
@@ -99,7 +99,7 @@ public class SinColorEqualize extends Canvas implements SoundEqualize {
 
             int initT = XY[1];
 
-            int initW = ResizeListener.rWidth;
+            int initW = 500;
 
             int sR = 15;
 
@@ -166,7 +166,7 @@ public class SinColorEqualize extends Canvas implements SoundEqualize {
             }
         }
 
-        public void myUpdate(int[] data){
+        public void myUpdate(byte[] data){
             this.rPCM = data;
             this.repaint();
         }

@@ -108,7 +108,7 @@ public class MainSeque {
     public static void main(String[] args) {
         //you can go in override of parameters
         if (args == null || args.length == 0) {
-            args = new String[]{"",".","GUI","target","2","true","equalize.LinearEqualize"};
+            args = new String[]{"",".","GUI","target","2","true","equalize.SinColorEqualize"};
         }
 
 
@@ -129,7 +129,8 @@ public class MainSeque {
                     if (args.length >= 7) {
                         try {
                         Thread tEq = new Thread((Runnable) eq);
-                        String[] eqArgs = new String[]{args[3], args[4], args[5]};
+                        String[] eqArgs = args.length >= 8 ? new String[]{args[3], args[4], args[5], args[7]} :
+                                new String[]{args[3], args[4], args[5]};
                         eq.setEquaArgs(eqArgs);
                         eq.setGui(gui);
                                 tEq.start();
@@ -143,18 +144,21 @@ public class MainSeque {
                                     //main.textArea = new GraphEqualize();
                                 }
 				                JFrame equalizer = new JFrame("Seque > Pcm on air");
-
-                                equalizer.setBackground(Color.BLACK);
+                            equalizer.setBounds(150,150,500,500);
+                                JPanel pEqualizer = new JPanel();
+                            pEqualizer.setOpaque(false);
+                            pEqualizer.setBackground(new Color(0,0,0,125));
                                 LayoutManager equSound = new BorderLayout();
-                                equalizer.setLayout(equSound);
-                                equalizer.setBounds(150,150,220,220);
-                                equalizer.setDefaultCloseOperation(3); //exit on close
-                                equalizer.setExtendedState(Frame.MAXIMIZED_BOTH);
-                                equalizer.setUndecorated(true);
-                                equalizer.add((Canvas)textArea,BorderLayout.CENTER);
-                                equalizer.addComponentListener(((SoundEqualize)textArea).getResizeListener());
-				                equalizer.setVisible(true);
+                            pEqualizer.setLayout(equSound);
+                            pEqualizer.setBounds(150,150,220,220);
+                                //equalizer.setDefaultCloseOperation(3); //exit on close
+                                //equalizer.setExtendedState(Frame.MAXIMIZED_BOTH);
+                                //equalizer.setUndecorated(true);
+                            pEqualizer.add((Canvas)textArea,BorderLayout.CENTER);
+                            pEqualizer.addComponentListener(((SoundEqualize)textArea).getResizeListener());
 
+                                equalizer.add(pEqualizer);
+                            equalizer.setVisible(true);
                                 st.setTextArea((SoundEqualize) textArea);
                                 st.setLineCapture(eq.getLineCapture());
                                 st.setLineSourceCapture(eq.getLineSourceCapture());

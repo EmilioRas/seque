@@ -1,20 +1,19 @@
 package equalize;
 
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.SourceDataLine;
-import javax.sound.sampled.TargetDataLine;
+import javax.sound.sampled.*;
 import java.awt.*;
-import java.io.File;
+import java.io.*;
 
 public class Start implements Runnable{
+
+
     private String[] equaArgs;
 
     public void setEquaArgs(String[] equaArgs){
         this.equaArgs = equaArgs;
     }
 
-    private  AudioInputStream iAudio;
+    private InputStream iAudio;
 
     private Equalizer listener;
 
@@ -47,45 +46,27 @@ public class Start implements Runnable{
                 if (equaArgs[0].equalsIgnoreCase("source")) {
                     ((Equalizer) listener).setLineSourceCapture(lineSourceCapture);
                     if (equaArgs.length > 3 && equaArgs[3].length() > 0) {
-
-
                         File fAudio = new File(equaArgs[3]);
-                        iAudio = AudioSystem.getAudioInputStream(fAudio);
+                        iAudio = new FileInputStream(fAudio);
+                        AudioFormat format = AudioSystem.getAudioFileFormat(fAudio).getFormat();
 
-                        lineSourceCapture.open(iAudio.getFormat());
+                        lineSourceCapture.open(format);
 
                         ((Equalizer) listener).setEqualize((SoundEqualize) textArea);
 
-                        int len = 0;
-                        byte[] b = new byte[4096];
-                        int off = 0;
+
+                        byte[] b = new byte[AudioSystem.getAudioFileFormat(fAudio).getFrameLength()];
+
                         System.out.println("AudioFormat :");
-                        System.out.println("\tsample rate :" + iAudio.getFormat().getSampleRate());
-                        System.out.println("\tsize in bits :" + iAudio.getFormat().getFrameSize());
-                        System.out.println("\tchannels :" + iAudio.getFormat().getChannels());
-                        System.out.println("\tbig endian :" + iAudio.getFormat().isBigEndian());
-
-                        while ((len = iAudio.read(b)) != -1) {
-                            ((Equalizer) listener).setData(b);
-                            int[] d = new int[b.length];
-
-                            for (int i = 0; i < b.length; i++) {
-
-                                d[i] = b[i];
-
-                            }
-
-                            lineSourceCapture.write(b, 0, len);
-                            off = off + len;
-
-
-                            if (off == 0 || !lineSourceCapture.isRunning()) {
-                                lineSourceCapture.start();
-                            }
-
-                            ((SoundEqualize)textArea).myUpdate(d);
-
+                        System.out.println("\tsample rate :" + format.getSampleRate());
+                        System.out.println("\tsize in bits :" + format.getFrameSize());
+                        System.out.println("\tchannels :" + format.getChannels());
+                        System.out.println("\tbig endian :" + format.isBigEndian());
+                        if (!lineSourceCapture.isRunning()) {
+                            lineSourceCapture.start();
                         }
+
+                        this.startEqua(iAudio,AudioSystem.getAudioFileFormat(fAudio).getFrameLength());
                     }
 
                     lineSourceCapture.drain();
@@ -93,36 +74,30 @@ public class Start implements Runnable{
                 }
 
                 if (equaArgs[0].equalsIgnoreCase("target")) {
-                    byte[] buf = new byte[80];
-                    int len = 0;
-                    int count = 0;
 
+                    AudioFormat format = null;
                     lineCapture.open();
 
 
                     ((Equalizer) listener).setEqualize((SoundEqualize) textArea);
                     iAudio = new AudioInputStream(lineCapture);
-
+                    AudioFormat iFormat =  AudioSystem.getAudioFileFormat(iAudio).getFormat();
                     System.out.println("AudioFormat :");
-                    System.out.println("\tsample rate :" + iAudio.getFormat().getSampleRate());
-                    System.out.println("\tsize in bits :" + iAudio.getFormat().getFrameSize());
-                    System.out.println("\tchannels :" + iAudio.getFormat().getChannels());
-                    System.out.println("\tbig endian :" + iAudio.getFormat().isBigEndian());
-                    int cc = 0;
+                    System.out.println("\tsample rate :" + iFormat.getSampleRate());
+                    System.out.println("\tsize in bits :" + iFormat.getFrameSize());
+                    System.out.println("\tchannels :" + iFormat.getChannels());
+                    System.out.println("\tbig endian :" + iFormat.isBigEndian());
+                    byte[] buf = new byte[ AudioSystem.getAudioFileFormat(iAudio).getFrameLength()];
+                    int len = 0;
+                    if (!lineCapture.isRunning())
+                        lineCapture.start();
                     detected:
-                    while ((len = iAudio.read(buf, 0, 80)) != -1) {
-                        int[] d = new int[80];
-                        if (cc >= 80)
-                            cc = 0;
+                    while ((len = iAudio.read(buf)) != -1) {
+
                         ((Equalizer) listener).setData(buf);
 
-                        d[cc] = buf[cc];
-                        if (cc == 0 || !lineCapture.isRunning())
-                            lineCapture.start();
-                        textArea.myUpdate(d);
+                        textArea.myUpdate(buf);
 
-
-                        cc++;
 
 
                     }
@@ -141,5 +116,22 @@ public class Start implements Runnable{
                 System.err.println(e1);
             }
         }
+    }
+
+    private void startEqua(InputStream iAudio, int lenFormat) throws IOException {
+        int len = 0;
+        byte[] tmp = new byte[80];
+        int range = 0;
+        int total = 0;
+        while ((len = iAudio.read(tmp)) != -1 & range <= total) {
+            total += len;
+            ((Equalizer) listener).setData(tmp);
+            ((SoundEqualize) textArea).myUpdate(tmp);
+            lineSourceCapture.write(tmp, 0, tmp.length);
+            range += 80;
+
+        }
+        lineSourceCapture.flush();
+
     }
 }

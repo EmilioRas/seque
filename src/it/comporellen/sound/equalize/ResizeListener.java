@@ -48,9 +48,9 @@ public class ResizeListener extends ComponentAdapter {
         return initY;
     }
 
-    public static final int rWidth = 200;
+    public static final int rWidth = 750;
 
-    public static final int rHeight = 200;
+    public static final int rHeight = 750;
 
     public void componentResized(ComponentEvent componentEvent) {
             int[] newXY = new int[4];
