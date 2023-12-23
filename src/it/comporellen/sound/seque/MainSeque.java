@@ -6,10 +6,7 @@ import device.AudioAccess;
 import device.AudioAccess1;
 import device.MidiAccess;
 import device.MidiAccess1;
-import equalize.Equalize;
-import equalize.SinEqualize;
-import equalize.SoundEqualize;
-import equalize.Start;
+import equalize.*;
 import gui.MainButtonListener;
 import gui.MainGui;
 
@@ -146,7 +143,7 @@ public class MainSeque {
 				                JFrame equalizer = new JFrame("Seque > Pcm on air");
                             equalizer.setBounds(150,150,500,500);
                                 JPanel pEqualizer = new JPanel();
-                            pEqualizer.setOpaque(false);
+                            pEqualizer.setOpaque(true);
                             pEqualizer.setBackground(new Color(0,0,0,125));
                                 LayoutManager equSound = new BorderLayout();
                             pEqualizer.setLayout(equSound);
@@ -155,10 +152,13 @@ public class MainSeque {
                             equalizer.setExtendedState(Frame.MAXIMIZED_BOTH);
                                 //equalizer.setUndecorated(true);
                             pEqualizer.add((Canvas)textArea,BorderLayout.CENTER);
+
                             pEqualizer.addComponentListener(((SoundEqualize)textArea).getResizeListener());
 
                                 equalizer.add(pEqualizer);
                             equalizer.setVisible(true);
+                            ((ResizeListener)((SoundEqualize)textArea).getResizeListener()).setInitX(pEqualizer.getComponent(0).getWidth());
+                            ((ResizeListener)((SoundEqualize)textArea).getResizeListener()).setInitY(pEqualizer.getComponent(0).getHeight());
                                 st.setTextArea((SoundEqualize) textArea);
                                 st.setLineCapture(eq.getLineCapture());
                                 st.setLineSourceCapture(eq.getLineSourceCapture());

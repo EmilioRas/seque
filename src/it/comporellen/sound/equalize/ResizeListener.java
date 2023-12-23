@@ -48,9 +48,21 @@ public class ResizeListener extends ComponentAdapter {
         return initY;
     }
 
-    public static final int rWidth = 750;
+    public void setInitX(int initX) {
+        this.initX = initX;
+    }
 
-    public static final int rHeight = 750;
+    public void setInitY(int initY) {
+        this.initY = initY;
+    }
+
+    public static final int rWidth = 500;
+
+    public static final int rHeight = 500;
+
+    public ResizeListener(){
+
+    }
 
     public void componentResized(ComponentEvent componentEvent) {
             int[] newXY = new int[4];
@@ -60,14 +72,14 @@ public class ResizeListener extends ComponentAdapter {
             newXY[2] = componentEvent.getComponent().getWidth();
             newXY[3] = componentEvent.getComponent().getHeight();
             if (componentEvent.getComponent().getWidth() > rWidth){
-            newXY[0] = componentEvent.getComponent().getWidth() / 3 ;
+            newXY[0] = componentEvent.getComponent().getWidth() / 2 - this.getInitX() / 2;
             } else {
-                newXY[0] = rWidth/3;
+                newXY[0] =  componentEvent.getComponent().getWidth() /2 -rWidth / 2;
             }
-            if (componentEvent.getComponent().getHeight() > rWidth){
-            newXY[1] = componentEvent.getComponent().getHeight() / 6 ;
+            if (componentEvent.getComponent().getHeight() > rHeight){
+            newXY[1] = componentEvent.getComponent().getHeight() / 2 - this.getInitY() / 2;
             } else {
-                newXY[1] = rWidth/6;
+                newXY[1] =  componentEvent.getComponent().getHeight() /2 - rHeight / 2 ;
             }
 
 

@@ -33,11 +33,11 @@ public class LinearEqualize extends Canvas implements SoundEqualize {
                 ((ResizeListener)this.resizeListener).getH()};
             g.setFont(Font.getFont("Courier"));
             g.setColor(Color.GRAY);
-            g.clearRect(XY[0]-XY[0],0,XY[2], XY[3]);
+            g.clearRect(XY[0],XY[1],XY[2], XY[3]);
 
-            int initR = XY[0] - 330;
+        int initR = XY[2] / 2 - XY[0] /2 ;
 
-            int initT = XY[1] +150;
+        int initT = XY[3] / 2 + XY[1] / 4  ;
 
             int initW = 5;
 
@@ -70,10 +70,10 @@ public class LinearEqualize extends Canvas implements SoundEqualize {
                     ((ResizeListener)this.resizeListener).getH()};
             g.setFont(Font.getFont("Courier"));
             g.setColor(Color.GRAY);
-            g.clearRect(XY[0]-XY[0],0,XY[2], XY[3]);
-            int initR = XY[0] - 330;
+            g.clearRect(XY[0],XY[1],XY[2], XY[3]);
+            int initR = XY[2] / 2 - XY[0] /2 ;
 
-            int initT = XY[1] +150;
+            int initT = XY[3] / 2 + XY[1] / 4  ;
 
             int initW = 5;
 

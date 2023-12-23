@@ -49,7 +49,7 @@
                         <manifest>
                             <mainClass>seque.MainSeque</mainClass>
                             <addClasspath>true</addClasspath>
-                            
+
                         </manifest>
 
                     </archive>

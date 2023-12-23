@@ -32,11 +32,11 @@ public class LinearEqualize2023 extends Canvas implements SoundEqualize {
                 ((ResizeListener)this.resizeListener).getH()};
             g.setFont(Font.getFont("Courier"));
             g.setColor(Color.CYAN);
-            g.clearRect(XY[0]-XY[0],0,XY[2], XY[3]);
+            g.clearRect(0 ,0,XY[2], XY[3]);
 
-            int initR = XY[0] ;
+            int initR = XY[2] / 2 - XY[0] /2 ;
 
-            int initT = XY[1] + 300;
+            int initT = XY[3] / 2 + XY[1] / 5  ;
 
             int initW = 5;
 
@@ -69,10 +69,10 @@ public class LinearEqualize2023 extends Canvas implements SoundEqualize {
                     ((ResizeListener)this.resizeListener).getH()};
             g.setFont(Font.getFont("Courier"));
             g.setColor(Color.CYAN);
-            g.clearRect(XY[0]-XY[0],0,XY[2], XY[3]);
-            int initR = XY[0];
+            g.clearRect(0 ,0 ,XY[2], XY[3]);
+            int initR = XY[2] / 2 - XY[0] /2 ;
 
-            int initT = XY[1] + 300;
+            int initT = XY[3] / 2 + XY[1] / 5  ;
 
             int initW = 5;
 
@@ -114,8 +114,8 @@ public class LinearEqualize2023 extends Canvas implements SoundEqualize {
                     if (c > 91) {
                         g.setColor(Color.CYAN);
                     }
-                    g.drawLine(initR , initT - c, initR + 6, initT - c );
-                    g.drawLine(initR , initT + c, initR + 6, initT + c );
+                    g.drawLine(initR , initT -   rPCM[p], initR + 5, initT -   rPCM[p]);
+                    g.drawLine(initR , initT +   rPCM[p], initR + 5, initT +   rPCM[p]);
                 }
 
                 initR = initR + 7 + initW;
