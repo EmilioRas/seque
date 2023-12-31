@@ -148,9 +148,9 @@ public class MainSeque {
                                 LayoutManager equSound = new BorderLayout();
                             pEqualizer.setLayout(equSound);
                             pEqualizer.setBounds(150,150,220,220);
-                                //equalizer.setDefaultCloseOperation(3); //exit on close
+                            //equalizer.setDefaultCloseOperation(3); //exit on close
                             equalizer.setExtendedState(Frame.MAXIMIZED_BOTH);
-                                //equalizer.setUndecorated(true);
+                            //equalizer.setUndecorated(true);
                             pEqualizer.add((Canvas)textArea,BorderLayout.CENTER);
 
                             pEqualizer.addComponentListener(((SoundEqualize)textArea).getResizeListener());
@@ -166,7 +166,11 @@ public class MainSeque {
                                 st.setEquaArgs(eqArgs);
 
                                 Thread tStart = new Thread((Runnable) st);
-                                tStart.start();
+                                Scanner sc = new Scanner(System.in);
+                                System.out.println("Get new "+ args[3] + " ?");
+                                if (sc.next().equalsIgnoreCase("y")) {
+                                    tStart.start();
+                                }
 
                         } catch (Exception e) {
                             System.err.println(e.getMessage());
