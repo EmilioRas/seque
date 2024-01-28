@@ -20,6 +20,19 @@
             <artifactId>maven-jar-plugin</artifactId>
             <version>3.2.0</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.batik/org.apache.batik.swing
+        <dependency>
+            <groupId>org.apache.batik</groupId>
+            <artifactId>org.apache.batik.swing</artifactId>
+            <version>1.6.0-20070705</version>
+        </dependency>-->
+        <!-- https://mvnrepository.com/artifact/org.apache.batik/org.apache.batik.ext.awt
+        <dependency>
+            <groupId>org.apache.batik</groupId>
+            <artifactId>org.apache.batik.ext.awt</artifactId>
+            <version>1.6.0-20070705</version>
+        </dependency>-->
+
     </dependencies>
     <build>
 

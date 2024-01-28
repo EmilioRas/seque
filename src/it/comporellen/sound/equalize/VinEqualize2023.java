@@ -88,7 +88,7 @@ public class VinEqualize2023 extends Canvas implements SoundEqualize {
 
                     int vin = Math.round(Math.round((25 + rPCM[p]) * Math.sin(25 * (c - 1)) + initT));
 
-                    g.drawLine(c,vin,c,vin);
+                    g.drawOval(c,vin,2,2);
 
                     c++;
                 }

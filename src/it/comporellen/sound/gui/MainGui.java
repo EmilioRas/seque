@@ -20,7 +20,7 @@ import java.util.Set;
 public class MainGui extends JFrame {
 
     private static final int X = 900;
-    private static final int Y = 1050;
+    private static final int Y = 350;
 
     private MidiAccess midiAccess;
 
@@ -91,9 +91,9 @@ public class MainGui extends JFrame {
         ImageIcon mainIcon = new ImageIcon(this.getClass().getResource("/a3896961812_16.jpg").getPath());
         this.setIconImage(mainIcon.getImage());
         this.principal = new JPanel();
-        this.principal.setBackground(Color.BLACK);
+        this.principal.setBackground(Color.LIGHT_GRAY);
         this.westPanel = new JPanel();
-        this.westPanel.setBackground(Color.BLACK);
+        this.westPanel.setBackground(Color.LIGHT_GRAY);
         LayoutManager westManager = new FlowLayout(FlowLayout.LEFT);
         this.westPanel.setLayout(westManager);
         this.principal.setBounds(0,0,150,100);
@@ -118,63 +118,63 @@ public class MainGui extends JFrame {
         textFrame.setBounds(500,0,200,300);
         textFrame.setVisible(true);
         Label lConn = new Label("Connectors");
-        lConn.setBackground(Color.BLACK);
+        lConn.setBackground(Color.LIGHT_GRAY);
 
         JPanel connPanel = new JPanel();
         connPanel.add(lConn);
         Button connection = new Button("+");
-        connection.setBackground(Color.BLACK);
+        connection.setBackground(Color.LIGHT_GRAY);
 
         ((ConnectorListener)this.connectorListener).setMidiAccess(this.midiAccess);
         ((ConnectorListener)this.connectorListener).setMainSG(this.mainSG);
 
         connection.addActionListener(this.connectorListener);
         connPanel.add(connection);
-        connPanel.setBackground(Color.BLACK);
+        connPanel.setBackground(Color.LIGHT_GRAY);
         JPanel midiInP = new JPanel();
         Label midiIn = new Label("Midi In");
-        midiInP.setBackground(Color.BLACK);
+        midiInP.setBackground(Color.LIGHT_GRAY);
 
-        midiIn.setBackground(Color.BLACK);
+        midiIn.setBackground(Color.LIGHT_GRAY);
 
         this.inputPort = new JTextField();
-        this.inputPort.setBackground(Color.BLACK);
+        this.inputPort.setBackground(Color.LIGHT_GRAY);
 
         this.inputPort.setPreferredSize(new Dimension(48,18));
         midiInP.add(midiIn);
         midiInP.add(this.inputPort);
         JPanel midiOutP = new JPanel();
-        midiOutP.setBackground(Color.BLACK);
+        midiOutP.setBackground(Color.LIGHT_GRAY);
 
         Label midiOut = new Label("Midi Out");
-        midiOut.setBackground(Color.BLACK);
+        midiOut.setBackground(Color.LIGHT_GRAY);
 
         this.outPort = new JTextField();
-        this.outPort.setBackground(Color.BLACK);
+        this.outPort.setBackground(Color.LIGHT_GRAY);
 
         this.outPort.setPreferredSize(new Dimension(48,18));
         midiOutP.add(midiOut);
         midiOutP.add(this.outPort);
         JPanel midiChP = new JPanel();
-        midiChP.setBackground(Color.BLACK);
+        midiChP.setBackground(Color.LIGHT_GRAY);
 
         Label midiChannel = new Label("Channel (1-16)");
-        midiChannel.setBackground(Color.BLACK);
+        midiChannel.setBackground(Color.LIGHT_GRAY);
 
         this.channel = new JTextField();
-        this.channel.setBackground(Color.BLACK);
+        this.channel.setBackground(Color.LIGHT_GRAY);
 
         this.channel.setPreferredSize(new Dimension(48,18));
         midiChP.add(midiChannel);
         midiChP.add(this.channel);
         JPanel intrumP = new JPanel();
-        intrumP.setBackground(Color.BLACK);
+        intrumP.setBackground(Color.LIGHT_GRAY);
 
         Label intrumL = new Label("Instrument Name");
-        intrumL.setBackground(Color.BLACK);
+        intrumL.setBackground(Color.LIGHT_GRAY);
 
         this.instrumentName = new JTextField();
-        this.instrumentName.setBackground(Color.BLACK);
+        this.instrumentName.setBackground(Color.LIGHT_GRAY);
 
         this.instrumentName.setPreferredSize(new Dimension(96,18));
         intrumP.add(intrumL);
@@ -207,7 +207,7 @@ public class MainGui extends JFrame {
         this.sqLoad.setActionCommand("miditracks");
         ((LoadListener)this.sqLoadListener).setGui(this);
         JPanel yesOrSkipP = new JPanel();
-        yesOrSkipP.setBackground(Color.BLACK);
+        yesOrSkipP.setBackground(Color.LIGHT_GRAY);
         yesOrSkipP.setForeground(Color.GRAY);
         this.sqYes.setActionCommand("yes");
         this.sqYes.addActionListener(this.yesOrSkip);
@@ -217,7 +217,7 @@ public class MainGui extends JFrame {
         yesOrSkipP.add(this.sqSkip);
 
         this.connectedTable = new JTable(1,4);
-        this.connectedTable.setBackground(Color.BLACK);
+        this.connectedTable.setBackground(Color.LIGHT_GRAY);
 
         this.tModel = (DefaultTableModel) this.connectedTable.getModel();
         this.tModel.setValueAt("Input->Port",0,0);
@@ -244,6 +244,8 @@ public class MainGui extends JFrame {
 
         this.add(connPanel,BorderLayout.NORTH);
         JLabel lSqeNum = new JLabel("Seque num");
+        lSqeNum.setBackground(Color.LIGHT_GRAY);
+        this.seqNumber.setBackground(Color.LIGHT_GRAY);
         lSqeNum.setLabelFor(this.seqNumber);
         this.westPanel.add(lSqeNum);
         this.seqNumber.setBounds(0,0,150,30);

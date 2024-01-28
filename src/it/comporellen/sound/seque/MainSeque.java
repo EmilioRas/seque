@@ -33,6 +33,8 @@ import java.util.List;
 
 public class MainSeque {
 
+    public static final int widthHeightIcon = 30;
+
     protected static Integer mainStartSeque = 0;
 
     public static Integer getMainStartSeque() {
@@ -148,9 +150,12 @@ public class MainSeque {
                                 LayoutManager equSound = new BorderLayout();
                             pEqualizer.setLayout(equSound);
                             pEqualizer.setBounds(150,150,220,220);
-                            //equalizer.setDefaultCloseOperation(3); //exit on close
+                            equalizer.setDefaultCloseOperation(3); //exit on close
                             equalizer.setExtendedState(Frame.MAXIMIZED_BOTH);
                             //equalizer.setUndecorated(true);
+
+                            // new ImageIcon(eq.getClass().getResource("/_gly_glyphicons-basic-2-3_svg_individual-svg_glyphicons-basic-154-square-empty.svg").getPath());
+
                             pEqualizer.add((Canvas)textArea,BorderLayout.CENTER);
 
                             pEqualizer.addComponentListener(((SoundEqualize)textArea).getResizeListener());
@@ -159,7 +164,7 @@ public class MainSeque {
                             equalizer.setVisible(true);
                             ((ResizeListener)((SoundEqualize)textArea).getResizeListener()).setInitX(pEqualizer.getComponent(0).getWidth());
                             ((ResizeListener)((SoundEqualize)textArea).getResizeListener()).setInitY(pEqualizer.getComponent(0).getHeight());
-                                st.setTextArea((SoundEqualize) textArea);
+                                 st.setTextArea((SoundEqualize) textArea);
                                 st.setLineCapture(eq.getLineCapture());
                                 st.setLineSourceCapture(eq.getLineSourceCapture());
                                 st.setListener(eq.getListener());
@@ -170,6 +175,9 @@ public class MainSeque {
                                 System.out.println("Get new "+ args[3] + " ?");
                                 if (sc.next().equalsIgnoreCase("y")) {
                                     tStart.start();
+
+                                   // maxEq.paintIcon(pEqualizer,((Canvas)textArea).getGraphics(),pEqualizer.getComponent(0).getWidth()-widthHeightIcon,widthHeightIcon);
+
                                 }
 
                         } catch (Exception e) {
