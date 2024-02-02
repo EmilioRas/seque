@@ -1,5 +1,7 @@
 package gui;
 
+import seque.MainSeque;
+import seque.MainSequeGui;
 import seque.TrackSeque;
 
 import javax.sound.midi.Sequencer;
@@ -21,18 +23,15 @@ public abstract class MainButtonListener implements ActionListener {
         return ts;
     }
 
-    public MainButtonListener(Sequencer s,TrackSeque ts){
-        this.s = s;this.ts = ts;
+    public MainButtonListener(Sequencer s,TrackSeque ts,MainSeque ms){
+        this.s = s;this.ts = ts;this.mainSeque = ms;
     }
 
-    public Sequencer getS() {
-        return s;
-    }
-
-    public void setS(Sequencer s) {
-        this.s = s;
-    }
+    private MainSeque mainSeque;
 
     public abstract void actionPerformed(ActionEvent e);
 
+    public MainSeque getMainSeque() {
+        return mainSeque;
+    }
 }

@@ -384,15 +384,16 @@ public class MainSeque {
 
                 System.out.println("Sequencer ...");
                 ts = mainSG.getTsFinish();
-                Sequencer s = ((MidiAccess1) mainSG.getMidiAccess()).getSequencer(MainSeque.getMainStartSeque());
+                Sequencer s = ts.getSeque();
 
-                mainSG.setSqStart(new MainButtonListener(s,ts) {
+                mainSG.setSqStart(new MainButtonListener(s,ts,mainSG) {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         if (this.getTs() != null) {
                             Button button = (Button) e.getSource();
                             Thread t = new Thread((Runnable) this.getTs());
                             synchronized (this.getTs()) {
+                                this.getTs().getSeque().setMasterSyncMode(Sequencer.SyncMode.MIDI_SYNC);
                                 t.start();
 
                             }
@@ -401,40 +402,51 @@ public class MainSeque {
                     }
                 });
 
-                mainSG.setSqQuit(new MainButtonListener(s,ts) {
+                mainSG.setSqQuit(new MainButtonListener(s,ts,mainSG) {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        if (this.getS() != null && this.getS().isOpen() && this.getS().isRunning()) {
-                            this.getS().stop();
-                            MainSequeGui.setQuitSeque("q");
+                        if (this.getTs().getSeque() != null && this.getTs().getSeque().isOpen() && this.getTs().getSeque().isRunning()) {
+                            synchronized (this.getTs()) {
+                                this.getTs().getSeque().stop();
+
+                                MainSequeGui.setQuitSeque("q");
+                            }
                         }
                     }
                 });
 
-                mainSG.setSqStop(new MainButtonListener(s,ts) {
+                mainSG.setSqStop(new MainButtonListener(s,ts,mainSG) {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        if (this.getS() != null && this.getS().isOpen() && this.getS().isRunning()) {
-                            this.getS().stop();
+                        if (this.getTs().getSeque() != null && this.getTs().getSeque().isOpen() && this.getTs().getSeque().isRunning()) {
+                            synchronized (this.getTs()) {
+                               this.getTs().getSeque().stop();
+                            }
                         }
                     }
                 });
 
-                mainSG.setSqContinue(new MainButtonListener(s,ts) {
+                mainSG.setSqContinue(new MainButtonListener(s,ts,mainSG) {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        if (this.getS() != null && this.getS().isOpen() && !this.getS().isRunning()) {
-                            this.getS().start();
+                        if (this.getTs().getSeque() != null && this.getTs().getSeque().isOpen() && !this.getTs().getSeque().isRunning()) {
+                            synchronized (this.getTs()) {
+                                this.getTs().getSeque().setTempoInBPM(Float.parseFloat(this.getTs().getSequeParams()[1][0]));
+                                this.getTs().getSeque().start();
+                            }
                         }
                     }
                 });
 
-                mainSG.setSqRestart(new MainButtonListener(s,ts) {
+                mainSG.setSqRestart(new MainButtonListener(s,ts,mainSG) {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        if (this.getS() != null && this.getS().isOpen() && !this.getS().isRunning()) {
-                            this.getS().setTickPosition(1L);
-                            this.getS().start();
+                        if (this.getTs().getSeque() != null && this.getTs().getSeque().isOpen() && !this.getTs().getSeque().isRunning()) {
+                            synchronized (this.getTs()) {
+                                this.getTs().getSeque().setTickPosition(1L);
+                                this.getTs().getSeque().setTempoInBPM(Float.parseFloat(this.getTs().getSequeParams()[1][0]));
+                                this.getTs().getSeque().start();
+                            }
                         }
                     }
                 });

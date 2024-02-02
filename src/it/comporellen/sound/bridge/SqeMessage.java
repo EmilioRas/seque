@@ -11,6 +11,7 @@ public class SqeMessage extends MidiMessage {
         this.midi = midi;
     }
 
+
     @Override
     public Object clone() {
         return new SqeMessage(this.midi);

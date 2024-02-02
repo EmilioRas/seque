@@ -32,6 +32,10 @@ public class TrackSeque implements Seque,Runnable{
 
     private List<Track> tracks;
 
+    public List<Track> getTracks() {
+        return tracks;
+    }
+
     public List<SqeReceiver> getReceivers() {
         return receivers;
     }
@@ -212,82 +216,85 @@ public class TrackSeque implements Seque,Runnable{
             countTrack = 0;
             int messLength = 0;
             do {
-                MidiEvent me = t.get(countTrack);
 
-                if (newTmpm.length > 0 && metronomico01[1] < messLength + me.getMessage().getLength() &&
-                        metronomico01[1] >=  messLength){
-                    me.getMessage().getMessage()[metronomico01[1]-messLength] = Byte.parseByte( newTmpm[0],16);
-                }
-                if (newTmpm.length > 1 && metronomico02[1] < messLength +me.getMessage().getLength() &&
-                        metronomico02[1] >=  messLength){
-                    me.getMessage().getMessage()[metronomico02[1]-messLength] = Byte.parseByte( newTmpm[1],16);
-                }
-                if (newTmpm.length > 2 && metronomico03[1] < messLength + me.getMessage().getLength() &&
-                        metronomico03[1] >=  messLength){
-                    me.getMessage().getMessage()[metronomico03[1]-messLength] = Byte.parseByte( newTmpm[2],16);
-                }
-                messLength += messLength + me.getMessage().getLength();
+                try {
+                    MidiEvent me = t.get(countTrack);
+
+                    if (newTmpm.length > 0 && metronomico01[1] < messLength + me.getMessage().getLength() &&
+                            metronomico01[1] >= messLength) {
+                        me.getMessage().getMessage()[metronomico01[1] - messLength] = (byte)Integer.parseInt(newTmpm[0], 16);
+                    }
+                    if (newTmpm.length > 1 && metronomico02[1] < messLength + me.getMessage().getLength() &&
+                            metronomico02[1] >= messLength) {
+                        me.getMessage().getMessage()[metronomico02[1] - messLength] = (byte)Integer.parseInt(newTmpm[1], 16);
+                    }
+                    if (newTmpm.length > 2 && metronomico03[1] < messLength + me.getMessage().getLength() &&
+                            metronomico03[1] >= messLength) {
+                        me.getMessage().getMessage()[metronomico03[1] - messLength] = (byte)Integer.parseInt(newTmpm[2], 16);
+                    }
+                    messLength += messLength + me.getMessage().getLength();
 
 
-                //overridechannel
-                if (ch >= 0 && ch <= 15) {
+                    //overridechannel
+                    if (ch >= 0 && ch <= 15) {
 
-                    int l = 0;
-                    while (l < me.getMessage().getMessage().length) {
-                        //A0
-                        if ((me.getMessage().getMessage()[l] & 0xF0) == 0xA0) {
-                            me.getMessage().getMessage()[l] = (byte) (
-                                    ( me.getMessage().getMessage()[l] & 0xF0) | (ch & 0x0F));
+                        int l = 0;
+                        while (l < me.getMessage().getMessage().length) {
+                            //A0
+                            if ((me.getMessage().getMessage()[l] & 0xF0) == 0xA0) {
+                                me.getMessage().getMessage()[l] = (byte) (
+                                        (me.getMessage().getMessage()[l] & 0xF0) | (ch & 0x0F));
 
+                            }
+                            //B0
+                            if ((me.getMessage().getMessage()[l] & 0xF0) == 0xB0) {
+                                me.getMessage().getMessage()[l] = (byte) (
+                                        (me.getMessage().getMessage()[l] & 0xF0) | (ch & 0x0F));
+
+                            }
+                            //C0
+                            if ((me.getMessage().getMessage()[l] & 0xF0) == 0xC0) {
+                                me.getMessage().getMessage()[l] = (byte) (
+                                        (me.getMessage().getMessage()[l] & 0xF0) | (ch & 0x0F));
+
+                            }
+                            //D0
+                            if ((me.getMessage().getMessage()[l] & 0xF0) == 0xD0) {
+                                me.getMessage().getMessage()[l] = (byte) (
+                                        (me.getMessage().getMessage()[l] & 0xF0) | (ch & 0x0F));
+
+                            }
+                            //E0
+                            if ((me.getMessage().getMessage()[l] & 0xF0) == 0xE0) {
+                                me.getMessage().getMessage()[l] = (byte) (
+                                        (me.getMessage().getMessage()[l] & 0xF0) | (ch & 0x0F));
+
+                            }
+                            if ((me.getMessage().getMessage()[l] & 0xF0) == 0x90) {
+                                me.getMessage().getMessage()[l] = (byte) (
+                                        (me.getMessage().getMessage()[l] & 0xF0) | (ch & 0x0F));
+
+                            }
+                            if ((me.getMessage().getMessage()[l] & 0xF0) == 0x80) {
+                                me.getMessage().getMessage()[l] = (byte) (
+                                        (me.getMessage().getMessage()[l] & 0xF0) | (ch & 0x0F));
+
+                            }
+                            l++;
                         }
-                        //B0
-                        if (( me.getMessage().getMessage()[l] & 0xF0) == 0xB0) {
-                            me.getMessage().getMessage()[l] = (byte) (
-                                    ( me.getMessage().getMessage()[l] & 0xF0) | (ch & 0x0F));
 
-                        }
-                        //C0
-                        if (( me.getMessage().getMessage()[l] & 0xF0) == 0xC0) {
-                            me.getMessage().getMessage()[l] = (byte) (
-                                    ( me.getMessage().getMessage()[l] & 0xF0) | (ch & 0x0F));
-
-                        }
-                        //D0
-                        if (( me.getMessage().getMessage()[l] & 0xF0) == 0xD0) {
-                            me.getMessage().getMessage()[l] = (byte) (
-                                    ( me.getMessage().getMessage()[l] & 0xF0) | (ch & 0x0F));
-
-                        }
-                        //E0
-                        if (( me.getMessage().getMessage()[l] & 0xF0) == 0xE0) {
-                            me.getMessage().getMessage()[l] = (byte) (
-                                    ( me.getMessage().getMessage()[l] & 0xF0) | (ch & 0x0F));
-
-                        }
-                        if (( me.getMessage().getMessage()[l] & 0xF0) == 0x90) {
-                            me.getMessage().getMessage()[l] = (byte) (
-                                    ( me.getMessage().getMessage()[l] & 0xF0) | (ch & 0x0F));
-
-                        }
-                        if (( me.getMessage().getMessage()[l] & 0xF0) == 0x80) {
-                            me.getMessage().getMessage()[l] = (byte) (
-                                    ( me.getMessage().getMessage()[l] & 0xF0) | (ch & 0x0F));
-
-                        }
-                        l++;
                     }
 
+                    mevents[countTrack] = new MidiEvent(me.getMessage(), me.getTick());
+                    countTrack++;
+                } catch (Exception e){
+                    System.err.println(e.getMessage());
                 }
-
-                mevents[countTrack] = new MidiEvent(me.getMessage(),me.getTick());
-                countTrack++;
-
             } while (t.size() > countTrack);
 
 
         } catch (Exception e){
             System.err.println(e.getMessage());
-            e.printStackTrace();
         }
 
 
@@ -307,11 +314,11 @@ public class TrackSeque implements Seque,Runnable{
 
                 if (this.seque != null && this.seque.isOpen() && this.seque.getSequence() != null &&  this.seque.getSequence().getTracks() != null){
                     System.out.println("Seque " + ((MidiDevice) this.seque).getDeviceInfo().getName() + " open...");
-                    /*this.tracks = new LinkedList<Track>();
+                    this.tracks = new LinkedList<Track>();
 
-                    for (Track t : this.seque.getSequence().getTracks()){
-                        this.tracks.add(t);
-                    }*/
+                   // for (Track t : this.seque.getSequence().getTracks()){
+                     //   this.tracks.add(t);
+                    //}
                 }
 
 
@@ -321,9 +328,9 @@ public class TrackSeque implements Seque,Runnable{
                 if (this.seque != null && this.seque.isRunning()){
                     System.out.println("Seque " + ((MidiDevice) this.seque).getDeviceInfo().getName()+ " running...");
 
-                    while (this.seque.isRunning()){
+                    //while (this.seque.isRunning()){
                         this.wait();
-                    }
+                    //}
                 }
                 System.out.println("Seque " + ((MidiDevice) this.seque).getDeviceInfo().getName()+ " terminate.");
 
