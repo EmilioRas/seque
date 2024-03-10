@@ -225,7 +225,7 @@ public class Equalize extends JPanel implements Runnable {
                 //format = new AudioFormat(44100, 16, 2, false, false);
 
 
-
+                boolean linefound = false;
 
 
                 if (equaArgs[0].equalsIgnoreCase("target")) {
@@ -233,15 +233,21 @@ public class Equalize extends JPanel implements Runnable {
 
                     lineCapture = (TargetDataLine) m.getLine(mmInfo[Integer.parseInt(line)]);
                     lineCapture.addLineListener(listener = new Equalizer());
-                    this.notify();
+                    linefound = true;
                 }
 
-                if (equaArgs[0].equalsIgnoreCase("source")) {
+                if (equaArgs[0].equalsIgnoreCase("source") || (
+                        equaArgs[0].equalsIgnoreCase("target") && equaArgs[1].equals("3")
+                        )) {
 
                     lineSourceCapture =  AudioSystem.getSourceDataLine(null);
                     lineSourceCapture.addLineListener(listener = new Equalizer());
-                    this.notify();
+                    linefound = true;
 
+                }
+
+                if (linefound){
+                    this.notify();
                 }
 
                 ((Equalizer) listener).setArg(equaArgs[0]);

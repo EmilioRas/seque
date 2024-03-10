@@ -85,9 +85,20 @@ public class Start implements Runnable{
                     int len = 0;
                     if (!lineCapture.isRunning())
                         lineCapture.start();
-                    this.startEqua(iAudio, false);
+                    if (equaArgs[1].equals("3")) {
+                        lineSourceCapture.open();
+                        if (!lineSourceCapture.isRunning()) {
+                            lineSourceCapture.start();
+                        }
+                        this.startEqua(iAudio, true);
+                    } else
+                        this.startEqua(iAudio, false);
                     lineCapture.drain();
                     lineCapture.close();
+                    if (equaArgs[1].equals("3")) {
+                        lineSourceCapture.drain();
+                        lineSourceCapture.close();
+                    }
                 }
             }
         } catch (Exception e) {
