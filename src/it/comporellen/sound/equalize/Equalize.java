@@ -196,6 +196,10 @@ public class Equalize extends JPanel implements Runnable {
                 if (equaArgs.length > 1 && equaArgs[1].length() > 0) {
                     try {
                         channels = Integer.parseInt(equaArgs[1]);
+                        if (channels == 3){
+                            channels = 2;
+                            System.out.println("target will write also on output");
+                        }
                     } catch (NumberFormatException e) {
                         channels = 2;
                         System.out.println("Force 2 channels");
