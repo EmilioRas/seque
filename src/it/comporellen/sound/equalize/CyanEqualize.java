@@ -26,6 +26,11 @@ public class CyanEqualize extends Canvas implements SoundEqualize {
     }
 
     @Override
+    public String getTitle() {
+        return this.getClass().getName();
+    }
+
+    @Override
         public void paint(Graphics g) {
         int[] XY = new int[]{((ResizeListener)this.resizeListener).getClearX(),
                 ((ResizeListener)this.resizeListener).getClearY(),((ResizeListener)this.resizeListener).getW(),

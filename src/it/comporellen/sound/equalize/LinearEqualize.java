@@ -139,4 +139,9 @@ public class LinearEqualize extends Canvas implements SoundEqualize {
     public SoundEqualize pullEqualize() {
         return this;
     }
+
+    @Override
+    public String getTitle() {
+        return this.getClass().getName();
+    }
 }
