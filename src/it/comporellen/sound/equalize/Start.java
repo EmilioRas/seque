@@ -85,7 +85,7 @@ public class Start implements Runnable{
                     int len = 0;
                     if (!lineCapture.isRunning())
                         lineCapture.start();
-                    if (equaArgs[1].equals("3")) {
+                    if (equaArgs[1].equals("3") || equaArgs[1].equals("4")) {
                         lineSourceCapture.open();
                         if (!lineSourceCapture.isRunning()) {
                             lineSourceCapture.start();
@@ -95,7 +95,7 @@ public class Start implements Runnable{
                         this.startEqua(iAudio, false);
                     lineCapture.drain();
                     lineCapture.close();
-                    if (equaArgs[1].equals("3")) {
+                    if (equaArgs[1].equals("3") || equaArgs[1].equals("4")) {
                         lineSourceCapture.drain();
                         lineSourceCapture.close();
                     }

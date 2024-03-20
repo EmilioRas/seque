@@ -94,7 +94,7 @@ public class VinColorEqualize2023 extends Canvas implements SoundEqualize {
 
 
 
-                g.drawOval(c,vin,2,2);
+                g.drawOval(c,vin,1,1);
 
                 c++;
             }

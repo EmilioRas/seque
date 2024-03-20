@@ -152,7 +152,8 @@ public class MainSeque {
                             pEqualizer.setBounds(150,150,220,220);
                             equalizer.setDefaultCloseOperation(3); //exit on close
                             equalizer.setExtendedState(Frame.MAXIMIZED_BOTH);
-                            //equalizer.setUndecorated(true);
+                            if (eqArgs.length >= 2 && eqArgs[1].equals("4"))
+                                equalizer.setUndecorated(true);
 
                             // new ImageIcon(eq.getClass().getResource("/_gly_glyphicons-basic-2-3_svg_individual-svg_glyphicons-basic-154-square-empty.svg").getPath());
 

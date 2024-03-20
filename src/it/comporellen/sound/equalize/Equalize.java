@@ -196,7 +196,7 @@ public class Equalize extends JPanel implements Runnable {
                 if (equaArgs.length > 1 && equaArgs[1].length() > 0) {
                     try {
                         channels = Integer.parseInt(equaArgs[1]);
-                        if (channels == 3){
+                        if (channels >= 3 && channels <= 4){
                             channels = 2;
                             System.out.println("target will write also on output");
                         }
@@ -242,7 +242,7 @@ public class Equalize extends JPanel implements Runnable {
 
                 if (equaArgs[0].equalsIgnoreCase("source") || (
                         equaArgs[0].equalsIgnoreCase("target") && equaArgs[1].equals("3")
-                        )) {
+                        || equaArgs[1].equals("4"))) {
 
                     lineSourceCapture =  AudioSystem.getSourceDataLine(null);
                     lineSourceCapture.addLineListener(listener = new Equalizer());
