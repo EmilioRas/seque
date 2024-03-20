@@ -76,4 +76,9 @@ public class LinearOver extends Canvas implements SoundEqualize{
     public ComponentListener getResizeListener() {
         return resizeListener;
     }
+
+    @Override
+    public String getTitle() {
+        return this.getClass().getName();
+    }
 }

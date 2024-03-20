@@ -114,5 +114,8 @@ public class VinEqualize2023 extends Canvas implements SoundEqualize {
             return this;
         }
 
-
+    @Override
+    public String getTitle() {
+        return this.getClass().getName();
+    }
 }

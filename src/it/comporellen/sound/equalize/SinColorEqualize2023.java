@@ -180,4 +180,9 @@ public class SinColorEqualize2023 extends Canvas implements SoundEqualize {
     public SoundEqualize pullEqualize() {
         return this;
     }
+
+    @Override
+    public String getTitle() {
+        return this.getClass().getName();
+    }
 }

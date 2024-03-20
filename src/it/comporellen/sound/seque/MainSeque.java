@@ -142,7 +142,8 @@ public class MainSeque {
                                     textArea = soundEqualize.newInstance();
                                     //main.textArea = new GraphEqualize();
                                 }
-				                JFrame equalizer = new JFrame("Seque > Pcm on air");
+                                String[] tTLength = null;
+				                JFrame equalizer = new JFrame("Seque > " + ((tTLength = ((SoundEqualize)textArea).getTitle().split("\\.")) != null && tTLength.length > 0 ? tTLength[tTLength.length -1] : ""));
                             equalizer.setBounds(150,150,500,500);
                                 JPanel pEqualizer = new JPanel();
                             pEqualizer.setOpaque(true);
