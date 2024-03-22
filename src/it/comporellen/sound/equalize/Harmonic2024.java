@@ -64,7 +64,7 @@ public class Harmonic2024 extends Canvas implements SoundEqualize{
                 ((ResizeListener) this.resizeListener).getClearY(), ((ResizeListener) this.resizeListener).getW(),
                 ((ResizeListener) this.resizeListener).getH()};
         g.setFont(Font.getFont("Courier"));
-        g.setColor(Color.LIGHT_GRAY);
+        g.setColor(Color.WHITE);
         g.clearRect(0, 0, XY[2], XY[3]);
 
         int initR = XY[2] / 2 ;
@@ -77,8 +77,7 @@ public class Harmonic2024 extends Canvas implements SoundEqualize{
 
 
         while (rPCM != null && p < rPCM.length) {
-            int col = Math.round((Math.round(Math.random()* 10)));
-            g.setColor(oColor[col]);
+
 
             int hx = Math.round(Math.round((XY[3] - XY[3] /20) * Math.cos(rPCM[p]) + initR));
             int hy = Math.round(Math.round((XY[3] - XY[3] /20) * Math.sin(rPCM[p]) + initT));
