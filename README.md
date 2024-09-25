@@ -28,8 +28,16 @@ java -jar seque-1.0.0.jar [arg1] [arg2] [arg3]
 
 [arg2] is the path of your working dir (where you have your jar (seque) . It's root for your [arg1] folder for your midi files)
 
-[arg3] (optional). use NO-SRV to no show gui interface. for example in ssh connection to other device. Instead if you use GUI Seque can show its gui.
-. In order to nothing in arg3 Seque shell work in command line.
+[arg3] use NO-SRV to no show gui interface. for example in ssh connection to other device. Instead if you use GUI Seque can show its gui.
+. In order to nothing in arg3 Seque shell work in command line. Use "none" if you have no (optional) and you have no gui interface type or doubts on gui.
+
+[arg4] (optional) "target,source" allow seque to listen on tagert input devices or listen on source output devices
+
+[arg5] (optional) channel audio number
+
+[arg6] (optional) boolean flag  
+
+[arg7] (optional) package name of equalizer
 
 ###Quit
 type 'q' to exit, 's' to stop sequencer, 'r' to restart sequencer
